@@ -328,7 +328,11 @@ html:-webkit-full-screen body{background:#000}
 .mix i{display:flex;align-items:center;padding:0 12px;font-style:normal;font-size:15.5px;font-weight:700;white-space:nowrap;overflow:hidden}
 .mix .m1{background:var(--qualified);color:var(--on-q)}.mix .m2{background:var(--q2);color:var(--on-q)}.mix .m3{background:var(--q3);color:var(--ink)}
 .mix .m0{background:var(--paper);color:var(--slate);border-radius:0 999px 999px 0}
-.cost .mix .m1{justify-content:center;padding:0}
+.cost .mix{height:36px;overflow:visible;border-radius:0}
+.cost .mix i{font-size:16.5px}
+.cost .mix .m3{border-radius:999px 0 0 999px}
+.cost .mix .m1{justify-content:center;padding:0;border-radius:0 999px 999px 0}
+.cost .mix .m0{background:none;border-radius:0;padding:0 0 0 10px;font-size:15.5px;font-weight:600}
 
 /* ---------- 5 balance sheet ---------- */
 .s5{display:grid;grid-template-columns:860px 1fr;gap:24px}
@@ -584,6 +588,117 @@ body.idle #ctrl{opacity:0;pointer-events:none}
 .gl .rk .imp{box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}
 .gl .rk .rid,.gl .eff .n{box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 10px -6px rgba(0,40,100,.5)}
 .gl .pil.c3{box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 0 0 1px rgba(255,255,255,.3),0 10px 18px -10px rgba(140,90,0,.55)}
+
+/* Presenter mode, screen picker, on-screen timer, blank screen. Injected by tools/build.py after the theme CSS. */
+
+/* ---------- elements used by the presentation window ---------- */
+#ctrl button.live::after{content:"";display:inline-block;width:7px;height:7px;margin-left:7px;border-radius:50%;background:#2BC48A;vertical-align:1px}
+#hud{position:fixed;left:16px;bottom:16px;z-index:9;display:flex;align-items:baseline;gap:10px;padding:9px 16px;border-radius:999px;background:rgba(24,28,50,.82);color:#fff;
+  font:700 22px/1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.01em;box-shadow:0 10px 26px -12px rgba(0,0,0,.6);pointer-events:none}
+#hud small{font:600 14px/1 var(--sans);opacity:.7;letter-spacing:0}
+#hud[data-s="warn"] b{color:#F5B335}#hud[data-s="over"] b{color:#FF6B86}
+#blank{position:fixed;inset:0;z-index:30;background:#000;display:none}
+body.blank #blank{display:block}
+#toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);z-index:40;max-width:min(560px,calc(100% - 32px));padding:11px 18px;border-radius:14px;background:var(--ink);color:#fff;
+  font:600 14.5px/1.4 var(--sans);text-align:center;box-shadow:0 14px 34px -14px rgba(0,0,0,.6);pointer-events:none;opacity:0;transition:opacity .25s}
+#toast.on{opacity:1}
+#fsgo{position:fixed;inset:0;z-index:35;display:grid;place-items:center;background:rgba(10,14,28,.78);color:#fff;cursor:pointer;text-align:center;font:700 34px/1.2 var(--display)}
+#fsgo small{display:block;margin-top:12px;font:500 18px/1.4 var(--sans);opacity:.75}
+
+/* screen picker (full screen on a chosen display, or where to open the presentation window) */
+#fsm{position:fixed;left:50%;bottom:72px;transform:translateX(-50%);z-index:45;width:min(460px,calc(100% - 24px));padding:14px;border-radius:20px;background:var(--chrome);color:var(--chrome-fg);
+  border:1px solid var(--chrome-line);box-shadow:0 22px 60px -18px rgba(0,0,0,.55);font:500 14px/1.4 var(--sans)}
+#fsm h3{margin:2px 4px 10px;font:700 16px/1.3 var(--display)}
+#fsm .fm-l{display:grid;gap:8px}
+#fsm button{appearance:none;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:center;width:100%;text-align:left;padding:11px 14px;border:1px solid var(--chrome-line);border-radius:14px;
+  background:transparent;color:inherit;font:inherit;cursor:pointer}
+#fsm button:hover,#fsm button:focus-visible{background:var(--chrome-line);outline:none}
+#fsm button b{display:block;font:700 15px/1.25 var(--display)}
+#fsm button small{display:block;margin-top:2px;opacity:.7;font-size:12.5px}
+#fsm .fm-i{display:grid;place-items:center;width:34px;height:24px;border-radius:5px;background:var(--q2);color:#fff;font:700 12px/1 var(--display)}
+#fsm button[data-cur="1"] .fm-i{background:var(--slate)}
+#fsm .fm-n{margin:10px 4px 2px;font-size:12.5px;opacity:.7}
+#fsm .fm-x{margin:10px 0 0;grid-template-columns:1fr;text-align:center;opacity:.8}
+
+/* ---------- presenter view (laptop window) ---------- */
+body.pv{background:#0E1322;overflow:hidden;padding:0}
+body.pv #stage,body.pv #ctrl,body.pv #notes,body.pv #prog,body.pv #tip,body.pv #curtain{display:none!important}
+.pv-root{--bg:#0E1322;--pn:#161D33;--pn2:#1D2640;--ln:#2A3556;--tx:#E8ECF5;--mu:#98A2BD;--ok:#2BC48A;--wa:#F5B335;--er:#FF6B86;--ac:#4DA3FF;
+  position:fixed;inset:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;background:var(--bg);color:var(--tx);font-family:var(--sans);font-size:15px;line-height:1.4}
+.pv-root *{box-sizing:border-box}
+.pv-top,.pv-bar{display:flex;align-items:center;gap:12px;padding:12px 18px}
+.pv-top{padding-bottom:10px}
+.pv-brand{display:flex;align-items:center;gap:12px;font:700 17px/1 var(--display)}
+.pv-brand .lg{width:112px;height:30px}
+.pv-brand span{padding-left:12px;border-left:1px solid var(--ln);color:var(--mu);font-weight:600}
+.pv-sp{flex:1}
+.pv-link{display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:var(--pn);border:1px solid var(--ln);font-weight:600;font-size:14px;white-space:nowrap}
+.pv-link i{width:9px;height:9px;border-radius:50%;background:var(--wa)}
+.pv-link[data-s="on"] i{background:var(--ok);box-shadow:0 0 0 4px rgba(43,196,138,.2)}
+.pv-clock{font:700 20px/1 var(--display);font-variant-numeric:tabular-nums;color:var(--mu);min-width:64px;text-align:right}
+.pv-btn{appearance:none;border:1px solid var(--ln);background:var(--pn2);color:var(--tx);font:600 14.5px/1 var(--sans);height:38px;padding:0 16px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.pv-btn:hover{background:#27335A}
+.pv-btn:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.pv-btn[aria-pressed="true"]{background:#fff;color:#0E1322;border-color:#fff}
+.pv-pri{background:#0073DA;border-color:#0073DA;color:#fff}.pv-pri:hover{background:#1583EA}
+.pv-lg{height:46px;padding:0 24px;font-size:16.5px}
+.pv-btn kbd{margin-left:6px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.14);font:600 11.5px/1 var(--sans)}
+.pv-main{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:14px;padding:0 18px 12px;min-height:0}
+.pv-left{display:grid;grid-template-rows:minmax(0,1.9fr) minmax(0,1fr);gap:14px;min-height:0}
+.pv-right{display:grid;grid-template-rows:auto minmax(0,1fr);gap:14px;min-height:0}
+.pv-pane{display:flex;flex-direction:column;min-height:0;min-width:0;padding:12px 14px;border-radius:18px;background:var(--pn);border:1px solid var(--ln)}
+.pv-label{display:flex;align-items:baseline;gap:10px;margin-bottom:9px;font-size:13px;color:var(--mu)}
+.pv-label b{font:700 12.5px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--tx)}
+.pv-label em{margin-left:auto;font-style:normal}
+.pv-area{flex:1;min-height:0;display:grid;place-items:center}
+.pv-box{position:relative;overflow:hidden;border-radius:10px;background:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.1),0 18px 40px -22px #000}
+#pv-cur{cursor:pointer}
+.pvs{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;pointer-events:none}
+.pvs .slide{position:absolute;inset:0;opacity:1;visibility:visible}
+.pvs *{animation:none!important;transition:none!important}
+.pv-end{position:absolute;inset:0;display:grid;place-items:center;background:var(--pn2);color:var(--mu);font:700 18px/1.2 var(--display)}
+.pv-timer{gap:10px}
+.pv-tm{display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+.pv-tm small{display:block;margin-bottom:4px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);font-weight:600}
+.pv-tm b{display:block;font:700 64px/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.pv-tm .pv-rem{text-align:right}
+.pv-tm .pv-rem b{font-size:36px;color:var(--mu)}
+.pv-timer[data-s="warn"] #pv-rem{color:var(--wa)}.pv-timer[data-s="over"] #pv-rem{color:var(--er)}
+.pv-timer[data-s="over"] #pv-el{color:var(--er)}
+.pv-tc{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.pv-tc label{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--mu)}
+.pv-tc input[type=text]{width:66px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);font:700 15px/1 var(--display);text-align:center}
+.pv-tc input[type=checkbox]{width:16px;height:16px;accent-color:#0073DA}
+.pv-pace{display:flex;flex-wrap:wrap;gap:8px;font-size:14px}
+.pv-pace span{padding:5px 12px;border-radius:999px;background:var(--pn2);border:1px solid var(--ln);font-weight:600}
+.pv-pace span[data-s="ok"]{color:var(--ok)}.pv-pace span[data-s="warn"]{color:var(--wa)}.pv-pace span[data-s="over"]{color:var(--er)}
+.pv-notes{min-height:0}
+.pv-notes .pv-label span{font-weight:600;color:var(--tx)}
+.pv-nbody{flex:1;min-height:0;overflow:auto;padding-right:8px;font-size:var(--nf,22px);line-height:1.5;scrollbar-color:#3A4770 transparent}
+.pv-nbody p{margin:0 0 .75em}
+.pv-nbody h4{margin:0 0 .6em;font:600 .62em/1.35 var(--sans);color:var(--mu)}
+.pv-bar{border-top:1px solid var(--ln);background:#0B101E}
+.pv-dots{display:flex;align-items:center;gap:6px;padding:0 8px}
+.pv-dots button{appearance:none;border:0;padding:0;width:10px;height:10px;border-radius:999px;background:#3A4770;cursor:pointer;transition:width .25s,background .25s}
+.pv-dots button[aria-current="true"]{width:28px;background:var(--ac)}
+.pv-cnt{font:700 15px/1 var(--display);font-variant-numeric:tabular-nums;color:var(--mu);min-width:54px}
+.pv-help{position:fixed;inset:0;z-index:5;display:grid;place-items:center;background:rgba(5,8,18,.72);padding:20px}
+.pv-help>div{width:min(760px,100%);max-height:100%;overflow:auto;padding:26px 30px;border-radius:22px;background:var(--pn);border:1px solid var(--ln);box-shadow:0 30px 80px -20px #000}
+.pv-help h2{margin:0 0 14px;font:700 24px/1.2 var(--display)}
+.pv-help h3{margin:18px 0 6px;font:700 15px/1.3 var(--display);color:var(--ac)}
+.pv-help p,.pv-help li{margin:0 0 6px;color:var(--tx);font-size:15.5px;line-height:1.55}
+.pv-help ol,.pv-help ul{margin:0;padding-left:22px}
+.pv-help kbd{padding:2px 7px;border-radius:6px;background:var(--pn2);border:1px solid var(--ln);font:600 13px/1 var(--sans)}
+.pv-help .pv-btn{margin-top:18px}
+@media (max-width:900px){
+  .pv-main{grid-template-columns:1fr;overflow:auto;grid-auto-rows:auto}
+  .pv-left{grid-template-rows:auto auto}.pv-area{min-height:200px}
+  .pv-right{grid-template-rows:auto minmax(260px,auto)}
+  .pv-brand span,.pv-clock{display:none}
+}
+@media (max-height:620px){.pv-tm b{font-size:44px}.pv-tm .pv-rem b{font-size:26px}}
+@media (max-width:640px){#b-pv{display:none}}
 
 </style>
 
@@ -1077,8 +1192,9 @@ body.idle #ctrl{opacity:0;pointer-events:none}
   <div id="dots"></div>
   <span id="count" aria-live="polite">1 / 13</span>
   <button id="b-next" type="button" aria-label="Next slide">›</button>
+  <button id="b-pv" type="button" aria-pressed="false" title="Presenter view for a second screen (P)">Presenter</button>
   <button id="b-notes" type="button" aria-pressed="false" title="Speaker notes (N)">Notes</button>
-  <button id="b-fs" type="button" title="Full screen (F)">Full screen</button>
+  <button id="b-fs" type="button" title="Full screen, choose the display (F)">Full screen</button>
 </nav>
 <aside id="notes" hidden><h2 id="notes-h"></h2><p id="notes-t"></p></aside>
 
@@ -1344,7 +1460,7 @@ const dots=[...dotsEl.children];
 dots.forEach((d,i)=>d.addEventListener('click',()=>go(i)));
 
 function fit(){
-  const fs=!!document.fullscreenElement,W=innerWidth,H=innerHeight,root=document.documentElement.style;
+  const fs=!!fsEl(),W=innerWidth,H=innerHeight,root=document.documentElement.style;
   document.body.classList.toggle('fs',fs);
   const gut=fs?0:Math.max(16,Math.min(40,W*.03)),res=fs?0:58;
   const port=!fs&&W<=820&&H>W,land=!fs&&H<=500&&W>H&&W<=1100;
@@ -1388,7 +1504,7 @@ function show(n,hold){
   const s=slides[n];cur=n;
   if(!reduce.matches)s.classList.add('pre');
   kreset(s);
-  s.classList.add('on');ui();
+  s.classList.add('on');ui();pvShow(n);
   if(!hold)build(s);
 }
 function build(s){if(reduce.matches)return;void s.offsetWidth;s.classList.remove('pre');counts(s);kstart(s)}
@@ -1433,22 +1549,17 @@ function go(n,force){
   const from=slides[cur].dataset.sec,to=slides[n].dataset.sec;
   if(!force&&!reduce.matches&&to&&to!==from&&curtain.animate){
     busy=true;
-    runCurtain(+to,()=>show(n,true),()=>{setTimeout(()=>build(slides[n]),560);setTimeout(()=>{busy=false},760)});
+    runCurtain(+to,()=>show(n,true),()=>{setTimeout(()=>build(slides[n]),560);setTimeout(()=>{busy=false;afterBusy()},760)});
   }else show(n,false);
 }
 function toggleNotes(){notes.hidden=!notes.hidden;bn.setAttribute('aria-pressed',String(!notes.hidden))}
-function toggleFs(){
-  try{
-    if(!document.fullscreenElement){const r=document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();if(r&&r.catch)r.catch(()=>{})}
-    else{const r=document.exitFullscreen&&document.exitFullscreen();if(r&&r.catch)r.catch(()=>{})}
-  }catch(e){}
-}
+function toggleFs(){fsAsk()}
 document.getElementById('b-prev').addEventListener('click',()=>go(cur-1));
 document.getElementById('b-next').addEventListener('click',()=>go(cur+1));
 bn.addEventListener('click',toggleNotes);
 document.getElementById('b-fs').addEventListener('click',toggleFs);
 addEventListener('keydown',e=>{
-  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if(MODE==='presenter'||menuOpen||e.metaKey||e.ctrlKey||e.altKey)return;
   const k=e.key,onBtn=e.target&&e.target.closest&&e.target.closest('button');
   if(onBtn&&(k===' '||k==='Enter'))return;
   if(k==='ArrowRight'||k==='ArrowDown'||k==='PageDown'||k===' '||k==='Enter'){e.preventDefault();go(cur+1)}
@@ -1476,9 +1587,10 @@ let tx=null,ty=null;
 stage.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
 stage.addEventListener('touchend',e=>{if(tx==null)return;const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy))go(cur+(dx<0?1:-1));tx=null},{passive:true});
 let idle;
-function wake(){document.body.classList.remove('idle');clearTimeout(idle);if(document.fullscreenElement)idle=setTimeout(()=>document.body.classList.add('idle'),2200)}
+function wake(){document.body.classList.remove('idle');clearTimeout(idle);if(fsEl())idle=setTimeout(()=>document.body.classList.add('idle'),2200)}
 addEventListener('mousemove',wake);
 document.addEventListener('fullscreenchange',()=>{fit();wake()});
+document.addEventListener('webkitfullscreenchange',()=>{fit();wake()});
 addEventListener('resize',fit);
 addEventListener('hashchange',()=>{const h=parseInt(location.hash.slice(1),10);if(h>=1&&h<=N&&h-1!==cur)go(h-1)});
 function split(el){
@@ -1500,6 +1612,447 @@ const h0=parseInt(location.hash.slice(1),10),start=h0>=1&&h0<=N?h0-1:0;
 let started=false;
 const isPhone=()=>innerWidth<=820||(innerHeight<=500&&innerWidth<=1100);
 const begin=()=>{if(started)return;started=true;if(isPhone()){notes.hidden=false;bn.setAttribute('aria-pressed','true')}go(start,true)};
+/* ======================================================================================================================
+   Presenter mode: two windows (presentation for the projector, presenter view for the laptop) kept in step, plus a timer,
+   a blank-screen switch and a full-screen picker that lets you choose the display.
+   Injected inside the deck IIFE by tools/build.py (it uses slides, N, cur, go, show, started, NOTES, SPK, SECL, ui).
+   Windows talk through: window.postMessage on the windows we opened (works from file:// too), BroadcastChannel and, as a
+   last resort, localStorage events.
+   ====================================================================================================================== */
+const QS=new URLSearchParams(location.search);
+const MODE=QS.has('presenter')?'presenter':'deck';
+const AUD=QS.has('audience');
+const ID=Math.random().toString(36).slice(2,9);
+const peers=new Set(),seen={};
+let seq=0,bc=null;
+try{if(typeof BroadcastChannel==='function')bc=new BroadcastChannel('lleida-deck-v1')}catch(e){bc=null}
+if(window.opener&&window.opener!==window)peers.add(window.opener);
+const $=id=>document.getElementById(id);
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const mmss=s=>{s=Math.max(0,Math.round(s));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const baseUrl=()=>location.href.split('#')[0].split('?')[0];
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+/* ---------- transport ---------- */
+function post(m){
+  m.__ld=1;m.from=ID;m.seq=++seq;m.role=MODE;
+  if(bc){try{bc.postMessage(m)}catch(e){}}
+  else{try{localStorage.setItem('lleida-sync',JSON.stringify(m));localStorage.removeItem('lleida-sync')}catch(e){}}
+  peers.forEach(w=>{try{if(w.closed)peers.delete(w);else w.postMessage(m,'*')}catch(e){peers.delete(w)}});
+}
+function receive(m,src){
+  if(!m||m.__ld!==1||m.from===ID||typeof m.type!=='string')return;
+  if(typeof m.seq!=='number'||(seen[m.from]!==undefined&&m.seq<=seen[m.from]))return;
+  seen[m.from]=m.seq;
+  if(src&&src!==window&&typeof src.postMessage==='function')peers.add(src);
+  onMessage(m);
+}
+if(bc)bc.onmessage=e=>receive(e.data);
+addEventListener('message',e=>receive(e.data,e.source));
+addEventListener('storage',e=>{if(e.key==='lleida-sync'&&e.newValue){try{receive(JSON.parse(e.newValue))}catch(x){}}});
+addEventListener('pagehide',()=>post({type:'bye'}));
+function focusPeers(){peers.forEach(w=>{try{w.focus()}catch(e){}})}
+
+/* ---------- small helpers ---------- */
+let toastT=0;
+function toast(msg,ms){
+  let t=$('toast');if(!t){t=document.createElement('div');t.id='toast';t.setAttribute('role','status');document.body.appendChild(t)}
+  t.textContent=msg;void t.offsetWidth;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),ms||4200);
+}
+
+/* ---------- timer (shared by both windows, survives a reload) ---------- */
+const TKEY='lleida-timer-v1',TARGET0=11*60+35;   /* the plan in the notes ends at about 11:35 */
+let timer={run:false,acc:0,t0:0,target:TARGET0*1000};
+(function(){
+  try{
+    const s=JSON.parse(store.get(TKEY)||'null');
+    if(s&&isFinite(s.acc)&&isFinite(s.target)){
+      const stale=Date.now()-(s.savedAt||0)>3*3600*1000;   /* a leftover from an earlier session */
+      timer={run:!!s.run&&!stale,acc:stale?0:s.acc,t0:s.t0||0,target:s.target};
+      if(timer.run&&!(timer.t0>0))timer.run=false;
+    }
+  }catch(e){}
+})();
+const elapsed=()=>timer.acc+(timer.run?Math.max(0,Date.now()-timer.t0):0);
+function setTimer(t,send){
+  timer=t;store.set(TKEY,JSON.stringify(Object.assign({savedAt:Date.now()},t)));
+  if(send)post({type:'timer',t:t});
+  renderTimer();
+}
+function timerToggle(){setTimer(timer.run?Object.assign({},timer,{run:false,acc:elapsed(),t0:0}):Object.assign({},timer,{run:true,t0:Date.now()}),true)}
+function timerReset(){setTimer({run:false,acc:0,t0:0,target:timer.target},true);entryAt=0}
+function validTimer(t){return t&&typeof t==='object'&&isFinite(t.acc)&&isFinite(t.t0)&&isFinite(t.target)&&t.target>=0&&t.target<=86400000}
+function timerState(){const rem=timer.target-elapsed();return timer.target>0?(rem<0?'over':rem<=60000?'warn':'ok'):'ok'}
+/* planned timing, read from the notes ("about 1:10"): the cumulative sum gives when each slide should start */
+const DUR=NOTES.map(n=>{const m=/about (\d+):(\d\d)/.exec(n[1]);return m?(+m[1])*60+(+m[2]):0});
+const PLAN=[];(function(){let a=0;DUR.forEach((d,i)=>{PLAN[i]=a;a+=d})})();
+
+/* ---------- full screen, with a choice of display ---------- */
+function fsEl(){return document.fullscreenElement||document.webkitFullscreenElement||null}
+function reqFs(opts){
+  const el=document.documentElement,f=el.requestFullscreen||el.webkitRequestFullscreen;
+  if(!f)return Promise.reject(new Error('no fullscreen'));
+  try{const r=(opts&&el.requestFullscreen)?el.requestFullscreen(opts):f.call(el);return r&&r.then?r:Promise.resolve()}catch(e){return Promise.reject(e)}
+}
+function exitFs(){const f=document.exitFullscreen||document.webkitExitFullscreen;if(f){try{const r=f.call(document);if(r&&r.catch)r.catch(()=>{})}catch(e){}}}
+let menuOpen=false,hintShown=false;
+function closeMenu(){const m=$('fsm');if(m)m.remove();menuOpen=false;document.removeEventListener('keydown',menuKey,true);document.removeEventListener('pointerdown',menuOut,true)}
+function menuKey(e){
+  if(e.key==='Escape'){e.preventDefault();e.stopPropagation();closeMenu();return}
+  const b=[...document.querySelectorAll('#fsm .fm-l button')];
+  if(/^[1-9]$/.test(e.key)&&b[+e.key-1]){e.preventDefault();e.stopPropagation();b[+e.key-1].click()}
+  else if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();e.stopPropagation();const i=b.indexOf(document.activeElement);b[(i+(e.key==='ArrowDown'?1:-1)+b.length)%b.length].focus()}
+}
+function menuOut(e){if(!e.target.closest('#fsm')&&!e.target.closest('#b-fs')&&!e.target.closest('#pv-aud'))closeMenu()}
+/* shows a list of displays; onPick(screen) runs on the click, so it has the user gesture that full screen and window.open need */
+function pickScreen(details,title,note,onPick){
+  closeMenu();
+  const cur=details.currentScreen,list=details.screens;
+  const m=document.createElement('div');m.id='fsm';m.setAttribute('role','dialog');m.setAttribute('aria-label',title);
+  m.innerHTML='<h3>'+esc(title)+'</h3><div class="fm-l">'+list.map((s,i)=>{
+    const tags=[s.isPrimary?'main display':'',s.isInternal?'built-in':'',s===cur||(cur&&s.label===cur.label&&s.left===cur.left)?'this window is here':''].filter(Boolean).join(' · ');
+    const isCur=s===cur||(cur&&s.left===cur.left&&s.top===cur.top);
+    return '<button type="button" data-i="'+i+'" data-cur="'+(isCur?1:0)+'"><span class="fm-i">'+(i+1)+'</span><span><b>'+esc(s.label||('Display '+(i+1)))+'</b><small>'+s.width+' × '+s.height+(tags?' · '+esc(tags):'')+'</small></span></button>';
+  }).join('')+'</div><p class="fm-n">'+esc(note)+'</p><button type="button" class="fm-x">Cancel</button>';
+  document.body.appendChild(m);menuOpen=true;
+  m.querySelectorAll('.fm-l button').forEach(b=>b.addEventListener('click',()=>{const s=list[+b.dataset.i];closeMenu();onPick(s)}));
+  m.querySelector('.fm-x').addEventListener('click',closeMenu);
+  const first=[...m.querySelectorAll('.fm-l button')].find(b=>b.dataset.cur==='0')||m.querySelector('.fm-l button');
+  first.focus();
+  document.addEventListener('keydown',menuKey,true);document.addEventListener('pointerdown',menuOut,true);
+}
+async function screenDetails(){
+  if(window.getScreenDetails&&window.screen&&window.screen.isExtended){
+    try{const d=await window.getScreenDetails();if(d&&d.screens&&d.screens.length>1)return d}catch(e){}
+  }
+  return null;
+}
+function fsDirect(){
+  reqFs().catch(()=>toast('Full screen was blocked. Click Full screen again.'));
+  if(!hintShown&&!AUD){hintShown=true;toast('Full screen opens on the display this window is on. To use the projector, drag the window there first.',5200)}
+}
+const canListScreens=()=>!!(window.getScreenDetails&&window.screen&&window.screen.isExtended);
+function fsAsk(){
+  if(fsEl()){exitFs();return}
+  if(menuOpen){closeMenu();return}
+  /* no await before the plain path: Safari and Firefox only allow full screen inside the click itself */
+  if(!canListScreens()){fsDirect();return}
+  screenDetails().then(d=>{
+    if(!d){fsDirect();return}
+    pickScreen(d,'Full screen on which display?','Pick the projector. Allow "window management" if the browser asks, so it can list your displays.',s=>{
+      reqFs({screen:s}).catch(()=>reqFs().catch(()=>toast('Full screen was blocked. Click Full screen again.')));
+    });
+  });
+}
+
+/* ---------- messages ---------- */
+let pendingGo=null,presAt=0,audAt=0,audInfo=null,blank=false;
+const presenterAlive=()=>Date.now()-presAt<6000;
+const audienceAlive=()=>Date.now()-audAt<6000;
+function onMessage(m){
+  switch(m.type){
+    case 'hello':
+      if(MODE==='deck'){post(stateMsg())}
+      else{post({type:'timer',t:timer});if(m.role==='deck'){want=pcur;wantAt=Date.now();post({type:'go',n:pcur,force:true});if(blank)post({type:'blank',on:true})}}
+      break;
+    case 'ping':if(MODE==='deck'){presAt=Date.now();post({type:'pong',slide:cur,fs:!!fsEl(),blank:blank,w:innerWidth,h:innerHeight});renderDeckUi()}break;
+    case 'pong':if(MODE==='presenter'&&m.role==='deck'){audAt=Date.now();audInfo=m;renderLink()}break;
+    case 'bye':
+      if(MODE==='presenter'&&m.role==='deck'){audAt=0;renderLink()}
+      if(MODE==='deck'&&m.role==='presenter'){presAt=0;renderDeckUi()}
+      break;
+    case 'state':
+      if(MODE==='presenter'&&m.role==='deck'){
+        audAt=Date.now();audInfo=m;
+        if(validTimer(m.timer)&&!timer.run&&!(elapsed()>0))applyTimer(m.timer);
+        if(Number.isInteger(m.slide)&&!(Date.now()-wantAt<3000&&m.slide!==want))pvSet(clamp(m.slide,0,N-1),true);
+        renderLink();
+      }
+      break;
+    case 'go':
+      if(MODE==='deck'&&Number.isInteger(m.n)){presAt=Date.now();goRemote(clamp(m.n,0,N-1),!!m.force)}
+      break;
+    case 'timer':if(validTimer(m.t))applyTimer(m.t);break;
+    case 'blank':setBlank(!!m.on,false);break;
+  }
+}
+function applyTimer(t){timer={run:!!t.run,acc:t.acc,t0:t.t0,target:t.target};store.set(TKEY,JSON.stringify(Object.assign({savedAt:Date.now()},timer)));renderTimer()}
+function stateMsg(){return {type:'state',slide:cur,blank:blank,timer:timer,fs:!!fsEl()}}
+
+/* ---------- blank screen (the room sees black) ---------- */
+function setBlank(on,send){
+  blank=on;
+  if(MODE==='deck'){
+    let b=$('blank');if(!b){b=document.createElement('div');b.id='blank';document.body.appendChild(b)}
+    document.body.classList.toggle('blank',on);
+  }else{const bb=$('pv-blank');if(bb)bb.setAttribute('aria-pressed',String(on))}
+  if(send)post({type:'blank',on:on});
+}
+
+/* ======================================================================================================================
+   Presentation window (the one for the projector)
+   ====================================================================================================================== */
+function goRemote(n,force){
+  if(!started)started=true;           /* a window opened by the presenter view starts on the presenter's slide */
+  if(busy){pendingGo=n;return}
+  go(n,force);
+}
+function pvShow(n){   /* called by show(): tell the presenter view which slide the room is looking at */
+  if(MODE!=='deck')return;
+  post(stateMsg());
+  renderDeckUi();
+}
+function afterBusy(){if(pendingGo!=null){const t=pendingGo;pendingGo=null;go(t)}}
+function renderDeckUi(){
+  const b=$('b-pv');if(b){b.classList.toggle('live',presenterAlive());b.setAttribute('aria-pressed',String(presenterAlive()))}
+}
+function openPresenter(){
+  if(presenterAlive()){focusPeers();toast('The presenter view is already open.',2600);return}
+  const w=window.open(baseUrl()+'?presenter','lleida-presenter','popup=yes,width=1320,height=840,left=40,top=40');
+  if(!w){toast('The browser blocked the pop-up. Allow pop-ups for this page, or open the presentation in its own browser tab, and try again.',6500);return}
+  peers.add(w);try{w.focus()}catch(e){}
+}
+function hudRender(){
+  const h=$('hud');if(!h||h.hidden)return;
+  const s=timerState();h.dataset.s=s;
+  h.innerHTML='<b>'+mmss(elapsed()/1000)+'</b>'+(timer.target>0?'<small>of '+mmss(timer.target/1000)+'</small>':'');
+}
+function hudToggle(){
+  let h=$('hud');
+  if(!h){h=document.createElement('div');h.id='hud';h.hidden=true;h.setAttribute('aria-hidden','true');document.body.appendChild(h)}
+  h.hidden=!h.hidden;hudRender();
+  if(!h.hidden)toast(timer.run?'Timer on screen (T hides it).':'Timer on screen. Start it from the presenter view; T hides it.',2800);
+}
+if(MODE==='deck'){
+  const bp=$('b-pv');if(bp)bp.addEventListener('click',openPresenter);
+  addEventListener('keydown',e=>{
+    if(e.metaKey||e.ctrlKey||e.altKey||menuOpen)return;
+    const k=e.key;
+    if(k==='p'||k==='P')openPresenter();
+    else if(k==='t'||k==='T')hudToggle();
+    else if(k==='b'||k==='B'||k==='.')setBlank(!blank,true);
+  });
+  setInterval(()=>{hudRender();renderDeckUi()},500);
+  if(AUD){
+    const g=document.createElement('div');g.id='fsgo';g.innerHTML='<div>Click to go full screen<small>Press F at any time. Esc leaves full screen.</small></div>';
+    document.body.appendChild(g);
+    const done=ev=>{if(ev){ev.stopPropagation();ev.preventDefault()}g.remove();reqFs().catch(()=>{})};
+    g.addEventListener('click',done);
+    addEventListener('keydown',e=>{if(g.isConnected&&(e.key==='f'||e.key==='F')){g.remove()}},true);
+  }
+  post({type:'hello'});
+}
+
+/* ======================================================================================================================
+   Presenter view (the window that stays on the laptop)
+   ====================================================================================================================== */
+let pcur=0,want=-1,wantAt=0,entryAt=0,autoStart=store.get('lleida-autostart')!=='0',nfont=+store.get('lleida-nfont')||22,pristine=null,els={};
+let mountSeq=0;
+/* the clone must not share ids (clip paths, patterns) with the slide it came from */
+function uniq(root,tag){
+  const els=[...root.querySelectorAll('[id]')];if(!els.length)return;
+  const map={};els.forEach(e=>{map[e.id]=e.id+'-'+tag;e.id=map[e.id]});
+  const fix=v=>v.replace(/url\(#([^)]+)\)/g,(m,i)=>map[i]?'url(#'+map[i]+')':m);
+  root.querySelectorAll('*').forEach(e=>{
+    ['clip-path','mask','fill','stroke','filter','style'].forEach(a=>{const v=e.getAttribute(a);if(v&&v.indexOf('url(#')>-1)e.setAttribute(a,fix(v))});
+    ['href','xlink:href'].forEach(a=>{const v=e.getAttribute(a);if(v&&v.charAt(0)==='#'&&map[v.slice(1)])e.setAttribute(a,'#'+map[v.slice(1)])});
+  });
+}
+function mount(box,i){
+  box.textContent='';
+  if(i<0||i>=N){const d=document.createElement('div');d.className='pv-end';d.textContent='End of the presentation';box.appendChild(d);return}
+  const w=document.createElement('div');w.className='gl pvs';w.setAttribute('aria-hidden','true');
+  const c=pristine[i].cloneNode(true);c.classList.add('on');c.removeAttribute('aria-label');uniq(c,'m'+(++mountSeq));
+  w.appendChild(c);box.appendChild(w);box._w=w;fitBox(box.parentNode);
+}
+function fitBox(area){
+  const box=area.firstElementChild;if(!box)return;
+  const aw=area.clientWidth,ah=area.clientHeight;if(!aw||!ah)return;
+  const s=Math.min(aw/1600,ah/900);
+  box.style.width=Math.floor(1600*s)+'px';box.style.height=Math.floor(900*s)+'px';
+  if(box._w)box._w.style.transform='scale('+s+')';
+}
+function notesHtml(i){
+  const no=NOTES[i],who=no[0]>=0?SPK[no[0]]:'';
+  const sent=no[2].replace(/([.!?])\s+(?=[A-Z“"(])/g,'$1\u0001').split('\u0001'),ps=[];
+  for(let k=0;k<sent.length;k+=2)ps.push(sent.slice(k,k+2).join(' '));
+  return '<h4>'+esc(no[1])+'</h4>'+ps.map(p=>'<p>'+esc(p)+'</p>').join('');
+}
+function pvSet(n,fromAudience){
+  const prev=pcur;pcur=n;
+  if(!fromAudience){want=n;wantAt=Date.now()}
+  if(prev===0&&n>0&&autoStart&&!timer.run&&elapsed()===0)timerToggle();
+  entryAt=elapsed();
+  mount(els.cur,n);mount(els.next,n+1);
+  const sec=+slides[n].dataset.sec;
+  els.cl.textContent=(n+1)+' / '+N;els.nl.textContent=n+1<N?(n+2)+' / '+N:'';
+  els.sec.textContent=sec?'Part '+sec+' of 6 · '+SECL[sec-1]:'';
+  const no=NOTES[n];els.who.textContent=no[0]>=0?SPK[no[0]]:'';
+  els.nb.innerHTML=notesHtml(n);els.nb.scrollTop=0;
+  els.cnt.textContent=(n+1)+' / '+N;
+  els.dots.forEach((d,i)=>d.setAttribute('aria-current',String(i===n)));
+  els.prev.disabled=n===0;els.nextb.disabled=n===N-1;
+  renderTimer();
+}
+function pvGo(n){
+  n=clamp(n,0,N-1);if(n===pcur)return;
+  pvSet(n,false);post({type:'go',n:n});
+}
+function renderLink(){
+  if(MODE!=='presenter'||!els.link)return;
+  const on=audienceAlive();
+  els.link.dataset.s=on?'on':'off';
+  els.linkT.textContent=on?('Presentation window connected'+(audInfo&&audInfo.fs?' · full screen':'')+(audInfo&&audInfo.w?' · '+audInfo.w+' × '+audInfo.h:'')):'No presentation window yet';
+  els.aud.hidden=on;
+}
+function renderTimer(){
+  if(MODE==='deck'){hudRender();return}
+  if(!els.el)return;
+  const e=elapsed()/1000,rem=timer.target/1000-e,st=timerState();
+  els.timer.dataset.s=st;
+  els.el.textContent=mmss(e);
+  els.rem.textContent=timer.target>0?(rem<0?'−':'')+mmss(Math.abs(rem)):'—';
+  els.remL.textContent=timer.target>0?(rem<0?'Over time':'Remaining'):'No target';
+  els.tt.textContent=timer.run?'Pause':(e>0?'Resume':'Start');
+  if(document.activeElement!==els.tg)els.tg.value=timer.target>0?mmss(timer.target/1000):'';
+  /* pace against the plan in the notes */
+  const spent=e-entryAt/1000,dur=DUR[pcur],delta=entryAt/1000-PLAN[pcur];
+  let h='';
+  if(!timer.run&&e===0)h='<span data-s="">Timer not started</span>';
+  else{
+    const ds=Math.abs(delta)<=15?'on plan':mmss(Math.abs(delta))+(delta>0?' behind plan':' ahead of plan');
+    h+='<span data-s="'+(Math.abs(delta)<=15?'ok':delta>0?'warn':'ok')+'">Pace: '+ds+'</span>';
+    if(dur>0)h+='<span data-s="'+(spent>dur+10?'over':'')+'">This slide: '+mmss(Math.max(0,spent))+' of about '+mmss(dur)+'</span>';
+    if(!timer.run)h+='<span data-s="warn">Timer paused</span>';
+  }
+  els.pace.innerHTML=h;
+  els.clock.textContent=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+}
+function parseTarget(v){
+  v=String(v).trim();if(!v)return 0;
+  const m=/^(\d{1,3}):([0-5]?\d)$/.exec(v);
+  if(m)return(+m[1]*60+ +m[2])*1000;
+  if(/^\d{1,3}$/.test(v))return +v*60000;
+  return -1;
+}
+function pvOpenAudience(){
+  const open=(s)=>{
+    const f=s?'popup=yes,left='+Math.round(s.availLeft!=null?s.availLeft:s.left)+',top='+Math.round(s.availTop!=null?s.availTop:s.top)+',width='+Math.round(s.availWidth||s.width)+',height='+Math.round(s.availHeight||s.height)
+            :'popup=yes,width=1100,height=640,left=80,top=80';
+    const w=window.open(baseUrl()+'?audience#'+(pcur+1),'lleida-audience',f);
+    if(!w){toast('The browser blocked the pop-up. Allow pop-ups for this page and try again.',6000);return}
+    peers.add(w);
+    toast(s?'Presentation window opened. Click inside it to go full screen.':'Presentation window opened. Drag it to the projector, then click inside it to go full screen.',6500);
+  };
+  if(!canListScreens()){open(null);return}
+  screenDetails().then(d=>{
+    if(d)pickScreen(d,'Show the presentation on which display?','Choose the projector. The window opens there; click inside it once to go full screen.',open);
+    else open(null);
+  });
+}
+function buildPresenter(){
+  started=true;pristine=slides.map(s=>s.cloneNode(true));
+  document.body.classList.add('pv');
+  document.title='Presenter view · '+document.title;
+  const r=document.createElement('div');r.id='pv';r.className='pv-root';
+  r.innerHTML=
+  '<header class="pv-top"><div class="pv-brand"><i class="lg lg-llw"></i><span>Presenter view</span></div>'+
+  '<div class="pv-link" id="pv-link" data-s="off"><i></i><span id="pv-linkt"></span></div>'+
+  '<button type="button" class="pv-btn pv-pri" id="pv-aud">Open presentation window</button><span class="pv-sp"></span>'+
+  '<div class="pv-clock" id="pv-clock" title="Time of day"></div><button type="button" class="pv-btn" id="pv-help">Help <kbd>?</kbd></button></header>'+
+  '<main class="pv-main"><section class="pv-left">'+
+   '<div class="pv-pane"><div class="pv-label"><b>Current</b><span id="pv-cl"></span><em id="pv-sec"></em></div><div class="pv-area" id="pv-ac"><div class="pv-box" id="pv-cur" role="button" tabindex="0" aria-label="Current slide. Click for the next slide"></div></div></div>'+
+   '<div class="pv-pane"><div class="pv-label"><b>Next</b><span id="pv-nl"></span></div><div class="pv-area" id="pv-an"><div class="pv-box" id="pv-next"></div></div></div></section>'+
+  '<section class="pv-right"><div class="pv-pane pv-timer" id="pv-timer"><div class="pv-tm"><div><small>Elapsed</small><b id="pv-el">00:00</b></div><div class="pv-rem"><small id="pv-reml">Remaining</small><b id="pv-rem"></b></div></div>'+
+   '<div class="pv-tc"><button type="button" class="pv-btn pv-pri" id="pv-tt">Start</button><button type="button" class="pv-btn" id="pv-tr">Reset</button>'+
+   '<label>Target <input type="text" id="pv-tg" size="5" inputmode="numeric" aria-label="Target time, minutes and seconds"></label>'+
+   '<label><input type="checkbox" id="pv-as"> Start with the first slide change</label></div><div class="pv-pace" id="pv-pace"></div></div>'+
+   '<div class="pv-pane pv-notes"><div class="pv-label"><b>Speaker notes</b><span id="pv-who"></span></div><div class="pv-nbody" id="pv-nb" tabindex="0"></div></div></section></main>'+
+  '<footer class="pv-bar"><button type="button" class="pv-btn pv-lg" id="pv-prev">‹ Previous</button><button type="button" class="pv-btn pv-lg pv-pri" id="pv-nextb">Next ›</button>'+
+   '<span class="pv-cnt" id="pv-cnt"></span><div class="pv-dots" id="pv-dots"></div><span class="pv-sp"></span>'+
+   '<button type="button" class="pv-btn" id="pv-blank" aria-pressed="false" title="Black screen in the presentation window">Blank screen <kbd>B</kbd></button>'+
+   '<button type="button" class="pv-btn" id="pv-fm" aria-label="Smaller notes text">A−</button><button type="button" class="pv-btn" id="pv-fp" aria-label="Larger notes text">A+</button></footer>';
+  document.body.appendChild(r);
+  const g=i=>$(i);
+  els={link:g('pv-link'),linkT:g('pv-linkt'),aud:g('pv-aud'),clock:g('pv-clock'),cur:g('pv-cur'),next:g('pv-next'),cl:g('pv-cl'),nl:g('pv-nl'),sec:g('pv-sec'),
+       timer:g('pv-timer'),el:g('pv-el'),rem:g('pv-rem'),remL:g('pv-reml'),tt:g('pv-tt'),tr:g('pv-tr'),tg:g('pv-tg'),as:g('pv-as'),pace:g('pv-pace'),
+       who:g('pv-who'),nb:g('pv-nb'),cnt:g('pv-cnt'),prev:g('pv-prev'),nextb:g('pv-nextb')};
+  const dd=g('pv-dots');
+  dd.innerHTML=slides.map((s,i)=>'<button type="button" aria-label="Go to slide '+(i+1)+'"></button>').join('');
+  els.dots=[...dd.children];els.dots.forEach((d,i)=>d.addEventListener('click',()=>pvGo(i)));
+  r.style.setProperty('--nf',nfont+'px');
+  els.as.checked=autoStart;
+  els.as.addEventListener('change',()=>{autoStart=els.as.checked;store.set('lleida-autostart',autoStart?'1':'0')});
+  els.tt.addEventListener('click',timerToggle);
+  let rt=0;
+  els.tr.addEventListener('click',()=>{
+    if(els.tr.dataset.c){clearTimeout(rt);delete els.tr.dataset.c;els.tr.textContent='Reset';timerReset();return}
+    els.tr.dataset.c='1';els.tr.textContent='Sure? Click again';rt=setTimeout(()=>{delete els.tr.dataset.c;els.tr.textContent='Reset'},3000);
+  });
+  const applyTarget=()=>{const v=parseTarget(els.tg.value);if(v>=0)setTimer(Object.assign({},timer,{target:v}),true);else renderTimer()};
+  els.tg.addEventListener('change',applyTarget);
+  els.tg.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter'){applyTarget();els.tg.blur()}});
+  els.prev.addEventListener('click',()=>pvGo(pcur-1));
+  els.nextb.addEventListener('click',()=>pvGo(pcur+1));
+  els.cur.addEventListener('click',()=>pvGo(pcur+1));
+  els.next.addEventListener('click',()=>pvGo(pcur+1));
+  els.aud.addEventListener('click',pvOpenAudience);
+  g('pv-blank').addEventListener('click',()=>setBlank(!blank,true));
+  const setFont=v=>{nfont=clamp(v,15,44);store.set('lleida-nfont',nfont);r.style.setProperty('--nf',nfont+'px')};
+  g('pv-fm').addEventListener('click',()=>setFont(nfont-2));g('pv-fp').addEventListener('click',()=>setFont(nfont+2));
+  g('pv-help').addEventListener('click',pvHelp);
+  addEventListener('keydown',pvKey);
+  if(window.ResizeObserver){const ro=new ResizeObserver(()=>{fitBox(g('pv-ac'));fitBox(g('pv-an'))});ro.observe(g('pv-ac'));ro.observe(g('pv-an'))}
+  else addEventListener('resize',()=>{fitBox(g('pv-ac'));fitBox(g('pv-an'))});
+  pvSet(0,true);entryAt=elapsed();
+  setInterval(renderTimer,250);
+  setInterval(()=>{post({type:'ping'});renderLink()},2000);
+  renderLink();renderTimer();
+  post({type:'hello'});post({type:'ping'});
+  if(!store.get('lleida-pv-seen')){store.set('lleida-pv-seen','1');setTimeout(pvHelp,400)}
+}
+function pvKey(e){
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  const t=e.target,tag=t&&t.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
+  const k=e.key,helpOpen=!!document.querySelector('.pv-help');
+  if(helpOpen){e.preventDefault();pvHelp();return}   /* any key closes the help */
+  if(menuOpen)return;
+  const onBtn=t&&t.closest&&t.closest('button');
+  if(onBtn&&(k===' '||k==='Enter'))return;
+  if(k==='ArrowRight'||k==='ArrowDown'||k==='PageDown'||k===' '||k==='Enter'){e.preventDefault();pvGo(pcur+1)}
+  else if(k==='ArrowLeft'||k==='ArrowUp'||k==='PageUp'||k==='Backspace'){e.preventDefault();pvGo(pcur-1)}
+  else if(k==='Home'){e.preventDefault();pvGo(0)}
+  else if(k==='End'){e.preventDefault();pvGo(N-1)}
+  else if(k==='t'||k==='T'){e.preventDefault();timerToggle()}
+  else if(k==='b'||k==='B'||k==='.'){e.preventDefault();setBlank(!blank,true)}
+  else if(k==='+'||k==='='){nfont=clamp(nfont+2,15,44);store.set('lleida-nfont',nfont);$('pv').style.setProperty('--nf',nfont+'px')}
+  else if(k==='-'||k==='_'){nfont=clamp(nfont-2,15,44);store.set('lleida-nfont',nfont);$('pv').style.setProperty('--nf',nfont+'px')}
+  else if(k==='?'){e.preventDefault();pvHelp()}
+}
+function pvHelp(){
+  const old=document.querySelector('.pv-help');if(old){old.remove();return}
+  const h=document.createElement('div');h.className='pv-help';
+  h.innerHTML='<div role="dialog" aria-label="How to present with two screens"><h2>Presenting with a projector</h2>'+
+  '<h3>1. Extend the screens</h3><ul><li><b>Mac:</b> System Settings › Displays › your projector › Use as: <b>Extended display</b> (not “Mirror”).</li>'+
+  '<li><b>Windows:</b> press <kbd>Win</kbd> + <kbd>P</kbd> and choose <b>Extend</b>.</li></ul>'+
+  '<h3>2. Open the presentation window</h3><ol><li>Click <b>Open presentation window</b>. In Chrome or Edge you can pick the projector from a list (allow “window management” once).</li>'+
+  '<li>In Safari and Firefox the window opens here: drag it onto the projector.</li><li>Click once inside it to go full screen. <kbd>Esc</kbd> leaves full screen.</li></ol>'+
+  '<h3>3. Present from this window</h3><ul><li><kbd>←</kbd> <kbd>→</kbd> <kbd>Space</kbd> move the projector; click the current slide for the next one.</li>'+
+  '<li><kbd>T</kbd> starts or pauses the timer, <kbd>B</kbd> blanks the projector, <kbd>+</kbd> <kbd>−</kbd> change the notes size.</li>'+
+  '<li>The timer, the target and the pace come from the plan in the notes (about 11:35 in total).</li></ul>'+
+  '<h3>If the screens are mirrored</h3><p>A mirrored projector shows exactly what is on your laptop screen, so the notes would be visible to the room. Switch to Extend. If you cannot, present from the presentation window alone: <kbd>N</kbd> shows the notes and <kbd>T</kbd> a discreet timer, and both are visible to the room.</p>'+
+  '<button type="button" class="pv-btn pv-pri" id="pv-hx">Got it</button></div>';
+  $('pv').appendChild(h);
+  h.addEventListener('click',e=>{if(e.target===h)h.remove()});
+  h.querySelector('#pv-hx').addEventListener('click',()=>h.remove());
+  h.querySelector('#pv-hx').focus();
+}
+
+/* ---------- start ---------- */
+if(MODE==='presenter')buildPresenter();
+
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(begin);
 setTimeout(begin,700);
 })();
