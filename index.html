@@ -643,27 +643,49 @@ body.pv #stage,body.pv #ctrl,body.pv #notes,body.pv #prog,body.pv #tip,body.pv #
 .pv-pri{background:#0073DA;border-color:#0073DA;color:#fff}.pv-pri:hover{background:#1583EA}
 .pv-lg{height:46px;padding:0 24px;font-size:16.5px}
 .pv-btn kbd{margin-left:6px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.14);font:600 11.5px/1 var(--sans)}
-.pv-main{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:14px;padding:0 18px 12px;min-height:0}
-.pv-left{display:grid;grid-template-rows:minmax(0,1.9fr) minmax(0,1fr);gap:14px;min-height:0}
-.pv-right{display:grid;grid-template-rows:auto minmax(0,1fr);gap:14px;min-height:0}
+.pv-main{display:grid;grid-template-columns:164px minmax(0,1.3fr) minmax(0,.95fr);gap:14px;padding:0 18px 12px;min-height:0}
+.pv-center{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:14px;min-height:0;min-width:0}
+.pv-right{display:grid;grid-template-rows:minmax(0,1fr);min-height:0;min-width:0}
+/* slide selector (like the sidebar of Preview on the Mac): it widens and enlarges its thumbnails under the pointer */
+.pv-railw{position:relative;min-height:0}
+.pv-rail{--tw:128px;--ts:.08;position:absolute;left:0;top:0;bottom:0;width:calc(var(--tw) + 28px);overflow-x:hidden;overflow-y:auto;padding:12px 14px 2px;border-radius:18px;background:var(--pn);
+  border:1px solid var(--ln);z-index:6;transition:width .26s cubic-bezier(.2,.75,.2,1),box-shadow .26s;scrollbar-width:thin;scrollbar-color:#3A4770 transparent;overscroll-behavior:contain}
+.pv-rail:hover{--tw:300px;--ts:.1875;box-shadow:0 28px 64px -18px #000}
+.pv-th{display:block;width:100%;margin:0 0 14px;padding:0;border:0;background:none;text-align:left;color:var(--mu);cursor:pointer;font:inherit}
+.pv-th .tb{position:relative;display:block;width:var(--tw);height:calc(var(--tw) * .5625);overflow:hidden;border-radius:7px;background:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.14);
+  transition:width .26s cubic-bezier(.2,.75,.2,1),height .26s cubic-bezier(.2,.75,.2,1),box-shadow .2s}
+.pv-th .pvs{transform:scale(var(--ts));transition:transform .26s cubic-bezier(.2,.75,.2,1)}
+.pv-th:hover .tb{box-shadow:0 0 0 2px #6C7FB0}
+.pv-th[aria-current="true"] .tb{box-shadow:0 0 0 3px var(--ac)}
+.pv-th:focus-visible{outline:none}.pv-th:focus-visible .tb{box-shadow:0 0 0 3px #fff}
+.pv-th .tl{display:flex;align-items:baseline;gap:8px;margin-top:6px;font:600 13px/1.2 var(--sans);min-width:0}
+.pv-th .tl b{flex:none;min-width:18px;font:700 13px/1.2 var(--display);font-variant-numeric:tabular-nums}
+.pv-th .tl span{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;opacity:0;transition:opacity .2s}
+.pv-rail:hover .tl span{opacity:1}
+.pv-th[aria-current="true"] .tl{color:var(--tx)}
 .pv-pane{display:flex;flex-direction:column;min-height:0;min-width:0;padding:12px 14px;border-radius:18px;background:var(--pn);border:1px solid var(--ln)}
 .pv-label{display:flex;align-items:baseline;gap:10px;margin-bottom:9px;font-size:13px;color:var(--mu)}
 .pv-label b{font:700 12.5px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--tx)}
 .pv-label em{margin-left:auto;font-style:normal}
 .pv-area{flex:1;min-height:0;display:grid;place-items:center}
 .pv-box{position:relative;overflow:hidden;border-radius:10px;background:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.1),0 18px 40px -22px #000}
+.pv-layer{position:absolute;inset:0;will-change:transform}
+.pv-box .pvs{transform:scale(var(--s,.5))}
 #pv-cur{cursor:pointer}
 .pvs{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--sans);
   -webkit-font-smoothing:antialiased;pointer-events:none}
 .pvs .slide{position:absolute;inset:0;opacity:1;visibility:visible}
 .pvs *{animation:none!important;transition:none!important}
-.pv-end{position:absolute;inset:0;display:grid;place-items:center;background:var(--pn2);color:var(--mu);font:700 18px/1.2 var(--display)}
-.pv-timer{gap:10px}
-.pv-tm{display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
-.pv-tm small{display:block;margin-bottom:4px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);font-weight:600}
-.pv-tm b{display:block;font:700 64px/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.pv-timer{gap:10px;padding:12px 22px 14px}
+.pv-tm{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+.pv-tm small{display:block;margin-bottom:2px;font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);font-weight:600}
+.pv-tm b{display:block;font:700 clamp(76px,12.5vh,168px)/.95 var(--display);letter-spacing:-.035em;font-variant-numeric:tabular-nums}
 .pv-tm .pv-rem{text-align:right}
-.pv-tm .pv-rem b{font-size:36px;color:var(--mu)}
+.pv-tm .pv-rem b{font-size:clamp(42px,7vh,92px);color:var(--mu)}
+.pv-pb{position:relative;height:10px;border-radius:999px;background:var(--pn2);overflow:hidden}
+.pv-pb i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:999px;background:var(--ac);transition:width .3s linear}
+.pv-pb em{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:rgba(255,255,255,.3)}
+.pv-timer[data-s="warn"] .pv-pb i{background:var(--wa)}.pv-timer[data-s="over"] .pv-pb i{background:var(--er)}
 .pv-timer[data-s="warn"] #pv-rem{color:var(--wa)}.pv-timer[data-s="over"] #pv-rem{color:var(--er)}
 .pv-timer[data-s="over"] #pv-el{color:var(--er)}
 .pv-tc{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
@@ -671,7 +693,7 @@ body.pv #stage,body.pv #ctrl,body.pv #notes,body.pv #prog,body.pv #tip,body.pv #
 .pv-tc input[type=text]{width:66px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);font:700 15px/1 var(--display);text-align:center}
 .pv-tc input[type=checkbox]{width:16px;height:16px;accent-color:#0073DA}
 .pv-pace{display:flex;flex-wrap:wrap;gap:8px;font-size:14px}
-.pv-pace span{padding:5px 12px;border-radius:999px;background:var(--pn2);border:1px solid var(--ln);font-weight:600}
+.pv-pace span{padding:4px 12px;border-radius:999px;background:var(--pn2);border:1px solid var(--ln);font-weight:600;font-size:13.5px}
 .pv-pace span[data-s="ok"]{color:var(--ok)}.pv-pace span[data-s="warn"]{color:var(--wa)}.pv-pace span[data-s="over"]{color:var(--er)}
 .pv-notes{min-height:0}
 .pv-notes .pv-label span{font-weight:600;color:var(--tx)}
@@ -691,13 +713,12 @@ body.pv #stage,body.pv #ctrl,body.pv #notes,body.pv #prog,body.pv #tip,body.pv #
 .pv-help ol,.pv-help ul{margin:0;padding-left:22px}
 .pv-help kbd{padding:2px 7px;border-radius:6px;background:var(--pn2);border:1px solid var(--ln);font:600 13px/1 var(--sans)}
 .pv-help .pv-btn{margin-top:18px}
-@media (max-width:900px){
-  .pv-main{grid-template-columns:1fr;overflow:auto;grid-auto-rows:auto}
-  .pv-left{grid-template-rows:auto auto}.pv-area{min-height:200px}
-  .pv-right{grid-template-rows:auto minmax(260px,auto)}
+@media (max-width:1000px){
+  .pv-main{grid-template-columns:150px minmax(0,1fr)}
+  .pv-right{grid-column:1/-1;min-height:260px}
   .pv-brand span,.pv-clock{display:none}
 }
-@media (max-height:620px){.pv-tm b{font-size:44px}.pv-tm .pv-rem b{font-size:26px}}
+@media (max-height:620px){.pv-tm b{font-size:56px}.pv-tm .pv-rem b{font-size:30px}}
 @media (max-width:640px){#b-pv{display:none}}
 
 </style>
@@ -1662,7 +1683,7 @@ function toast(msg,ms){
 }
 
 /* ---------- timer (shared by both windows, survives a reload) ---------- */
-const TKEY='lleida-timer-v1',TARGET0=11*60+35;   /* the plan in the notes ends at about 11:35 */
+const TKEY='lleida-timer-v2',TARGET0=15*60;   /* the talk lasts 15 minutes by default (editable in the presenter view) */
 let timer={run:false,acc:0,t0:0,target:TARGET0*1000};
 (function(){
   try{
@@ -1686,7 +1707,9 @@ function validTimer(t){return t&&typeof t==='object'&&isFinite(t.acc)&&isFinite(
 function timerState(){const rem=timer.target-elapsed();return timer.target>0?(rem<0?'over':rem<=60000?'warn':'ok'):'ok'}
 /* planned timing, read from the notes ("about 1:10"): the cumulative sum gives when each slide should start */
 const DUR=NOTES.map(n=>{const m=/about (\d+):(\d\d)/.exec(n[1]);return m?(+m[1])*60+(+m[2]):0});
-const PLAN=[];(function(){let a=0;DUR.forEach((d,i)=>{PLAN[i]=a;a+=d})})();
+const PLAN=[];let PLAN_END=0;(function(){let a=0;DUR.forEach((d,i)=>{PLAN[i]=a;a+=d});PLAN_END=a})();
+/* the relative weights of the slides come from the notes; the plan is stretched to the target time */
+const planK=()=>timer.target>0&&PLAN_END>0?timer.target/1000/PLAN_END:1;
 
 /* ---------- full screen, with a choice of display ---------- */
 function fsEl(){return document.fullscreenElement||document.webkitFullscreenElement||null}
@@ -1847,34 +1870,44 @@ if(MODE==='deck'){
 /* ======================================================================================================================
    Presenter view (the window that stays on the laptop)
    ====================================================================================================================== */
-let pcur=0,want=-1,wantAt=0,entryAt=0,autoStart=store.get('lleida-autostart')!=='0',nfont=+store.get('lleida-nfont')||22,pristine=null,els={};
-let mountSeq=0;
-/* the clone must not share ids (clip paths, patterns) with the slide it came from */
+let pcur=0,want=-1,wantAt=0,entryAt=0,autoStart=store.get('lleida-autostart')!=='0',nfont=+store.get('lleida-nfont')||22,pristine=null,els={},mountSeq=0,tickT=-1;
+const TOPIC=slides.map(s=>{const t=(s.getAttribute('aria-label')||'').replace(/^Slide \d+,\s*/,'');return t.charAt(0).toUpperCase()+t.slice(1)});
+/* a clone must not share ids (clip paths, patterns) with the slide it came from */
 function uniq(root,tag){
-  const els=[...root.querySelectorAll('[id]')];if(!els.length)return;
-  const map={};els.forEach(e=>{map[e.id]=e.id+'-'+tag;e.id=map[e.id]});
+  const list=[...root.querySelectorAll('[id]')];if(!list.length)return;
+  const map={};list.forEach(e=>{map[e.id]=e.id+'-'+tag;e.id=map[e.id]});
   const fix=v=>v.replace(/url\(#([^)]+)\)/g,(m,i)=>map[i]?'url(#'+map[i]+')':m);
   root.querySelectorAll('*').forEach(e=>{
     ['clip-path','mask','fill','stroke','filter','style'].forEach(a=>{const v=e.getAttribute(a);if(v&&v.indexOf('url(#')>-1)e.setAttribute(a,fix(v))});
     ['href','xlink:href'].forEach(a=>{const v=e.getAttribute(a);if(v&&v.charAt(0)==='#'&&map[v.slice(1)])e.setAttribute(a,'#'+map[v.slice(1)])});
   });
 }
-function mount(box,i){
-  box.textContent='';
-  if(i<0||i>=N){const d=document.createElement('div');d.className='pv-end';d.textContent='End of the presentation';box.appendChild(d);return}
+function makePvs(i,kind){
   const w=document.createElement('div');w.className='gl pvs';w.setAttribute('aria-hidden','true');
-  const c=pristine[i].cloneNode(true);c.classList.add('on');c.removeAttribute('aria-label');uniq(c,'m'+(++mountSeq));
-  w.appendChild(c);box.appendChild(w);box._w=w;fitBox(box.parentNode);
+  const c=pristine[i].cloneNode(true);c.classList.add('on');c.removeAttribute('aria-label');uniq(c,kind+(++mountSeq));
+  w.appendChild(c);return w;
 }
-function fitBox(area){
-  const box=area.firstElementChild;if(!box)return;
+function fitBox(){
+  const area=els.ac,box=els.cur;if(!area||!box)return;
   const aw=area.clientWidth,ah=area.clientHeight;if(!aw||!ah)return;
   const s=Math.min(aw/1600,ah/900);
-  box.style.width=Math.floor(1600*s)+'px';box.style.height=Math.floor(900*s)+'px';
-  if(box._w)box._w.style.transform='scale('+s+')';
+  box.style.width=Math.floor(1600*s)+'px';box.style.height=Math.floor(900*s)+'px';box.style.setProperty('--s',s);
+}
+/* the current slide slides in from the right when going forward and from the left when going back */
+function swapSlide(n,dir){
+  const box=els.cur;
+  [...box.querySelectorAll('.pv-layer.out')].forEach(l=>l.remove());
+  const old=[...box.querySelectorAll('.pv-layer')];
+  old.forEach(l=>{try{l.getAnimations().forEach(a=>a.finish())}catch(e){}});
+  const layer=document.createElement('div');layer.className='pv-layer';layer.appendChild(makePvs(n,'c'));box.appendChild(layer);
+  const still=!dir||!old.length||!layer.animate||(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  if(still){old.forEach(l=>l.remove());return}
+  const o={duration:340,easing:'cubic-bezier(.22,.8,.24,1)',fill:'both'};
+  old.forEach(l=>{l.classList.add('out');const a=l.animate([{transform:'translateX(0)'},{transform:'translateX('+(-100*dir)+'%)'}],o);a.onfinish=()=>l.remove()});
+  layer.animate([{transform:'translateX('+(100*dir)+'%)'},{transform:'translateX(0)'}],o);
 }
 function notesHtml(i){
-  const no=NOTES[i],who=no[0]>=0?SPK[no[0]]:'';
+  const no=NOTES[i];
   const sent=no[2].replace(/([.!?])\s+(?=[A-Z“"(])/g,'$1\u0001').split('\u0001'),ps=[];
   for(let k=0;k<sent.length;k+=2)ps.push(sent.slice(k,k+2).join(' '));
   return '<h4>'+esc(no[1])+'</h4>'+ps.map(p=>'<p>'+esc(p)+'</p>').join('');
@@ -1884,14 +1917,15 @@ function pvSet(n,fromAudience){
   if(!fromAudience){want=n;wantAt=Date.now()}
   if(prev===0&&n>0&&autoStart&&!timer.run&&elapsed()===0)timerToggle();
   entryAt=elapsed();
-  mount(els.cur,n);mount(els.next,n+1);
+  swapSlide(n,n>prev?1:n<prev?-1:0);
   const sec=+slides[n].dataset.sec;
-  els.cl.textContent=(n+1)+' / '+N;els.nl.textContent=n+1<N?(n+2)+' / '+N:'';
+  els.cl.textContent=(n+1)+' / '+N;
   els.sec.textContent=sec?'Part '+sec+' of 6 · '+SECL[sec-1]:'';
   const no=NOTES[n];els.who.textContent=no[0]>=0?SPK[no[0]]:'';
   els.nb.innerHTML=notesHtml(n);els.nb.scrollTop=0;
   els.cnt.textContent=(n+1)+' / '+N;
-  els.dots.forEach((d,i)=>d.setAttribute('aria-current',String(i===n)));
+  els.th.forEach((b,i)=>b.setAttribute('aria-current',String(i===n)));
+  if(!els.rail.matches(':hover')){const b=els.th[n];els.rail.scrollTo?els.rail.scrollTo({top:b.offsetTop-(els.rail.clientHeight-b.offsetHeight)/2,behavior:'smooth'}):0}
   els.prev.disabled=n===0;els.nextb.disabled=n===N-1;
   renderTimer();
 }
@@ -1906,6 +1940,14 @@ function renderLink(){
   els.linkT.textContent=on?('Presentation window connected'+(audInfo&&audInfo.fs?' · full screen':'')+(audInfo&&audInfo.w?' · '+audInfo.w+' × '+audInfo.h:'')):'No presentation window yet';
   els.aud.hidden=on;
 }
+function buildTicks(){
+  /* a thin mark on the progress bar for each slide, where the plan says it should start */
+  if(tickT===timer.target)return;tickT=timer.target;
+  const T=timer.target/1000,k=planK();
+  els.pb.querySelectorAll('em').forEach(e=>e.remove());
+  if(!(T>0))return;
+  PLAN.forEach((p,i)=>{if(i>0&&DUR[i-1]>0){const x=p*k/T*100;if(x>0&&x<100){const e=document.createElement('em');e.style.left=x+'%';els.pb.appendChild(e)}}});
+}
 function renderTimer(){
   if(MODE==='deck'){hudRender();return}
   if(!els.el)return;
@@ -1916,15 +1958,17 @@ function renderTimer(){
   els.remL.textContent=timer.target>0?(rem<0?'Over time':'Remaining'):'No target';
   els.tt.textContent=timer.run?'Pause':(e>0?'Resume':'Start');
   if(document.activeElement!==els.tg)els.tg.value=timer.target>0?mmss(timer.target/1000):'';
-  /* pace against the plan in the notes */
-  const spent=e-entryAt/1000,dur=DUR[pcur],delta=entryAt/1000-PLAN[pcur];
+  buildTicks();
+  els.pbi.style.width=timer.target>0?Math.min(100,e/(timer.target/1000)*100)+'%':'0%';
+  /* pace against the plan (the notes' proportions, stretched to the target) */
+  const k=planK(),spent=e-entryAt/1000,dur=DUR[pcur]*k,delta=entryAt/1000-PLAN[pcur]*k;
   let h='';
   if(!timer.run&&e===0)h='<span data-s="">Timer not started</span>';
   else{
-    const ds=Math.abs(delta)<=15?'on plan':mmss(Math.abs(delta))+(delta>0?' behind plan':' ahead of plan');
-    h+='<span data-s="'+(Math.abs(delta)<=15?'ok':delta>0?'warn':'ok')+'">Pace: '+ds+'</span>';
-    if(dur>0)h+='<span data-s="'+(spent>dur+10?'over':'')+'">This slide: '+mmss(Math.max(0,spent))+' of about '+mmss(dur)+'</span>';
-    if(!timer.run)h+='<span data-s="warn">Timer paused</span>';
+    const ds=Math.abs(delta)<=15?'on plan':mmss(Math.abs(delta))+(delta>0?' behind':' ahead');
+    h+='<span data-s="'+(Math.abs(delta)<=15?'ok':delta>0?'warn':'ok')+'" title="Compared with the plan in the notes, stretched to the target time">Pace: '+ds+'</span>';
+    if(dur>0)h+='<span data-s="'+(spent>dur+10?'over':'')+'" title="Time on this slide, and the time the plan gives it">Slide '+mmss(Math.max(0,spent))+' / '+mmss(dur)+'</span>';
+    if(!timer.run)h+='<span data-s="warn">Paused</span>';
   }
   els.pace.innerHTML=h;
   els.clock.textContent=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
@@ -1951,6 +1995,13 @@ function pvOpenAudience(){
     else open(null);
   });
 }
+function buildRail(){
+  els.rail.innerHTML=slides.map((s,i)=>'<button type="button" class="pv-th" aria-label="Go to slide '+(i+1)+': '+esc(TOPIC[i])+'"><span class="tb"></span><span class="tl"><b>'+(i+1)+'</b><span>'+esc(TOPIC[i])+'</span></span></button>').join('');
+  els.th=[...els.rail.children];
+  els.th.forEach((b,i)=>b.addEventListener('click',()=>{pvGo(i);b.blur()}));
+  let i=0;   /* thumbnails are filled in one by one so the window appears at once */
+  (function step(){if(i>=N)return;els.th[i].firstChild.appendChild(makePvs(i,'t'));i++;setTimeout(step,28)})();
+}
 function buildPresenter(){
   started=true;pristine=slides.map(s=>s.cloneNode(true));
   document.body.classList.add('pv');
@@ -1961,26 +2012,25 @@ function buildPresenter(){
   '<div class="pv-link" id="pv-link" data-s="off"><i></i><span id="pv-linkt"></span></div>'+
   '<button type="button" class="pv-btn pv-pri" id="pv-aud">Open presentation window</button><span class="pv-sp"></span>'+
   '<div class="pv-clock" id="pv-clock" title="Time of day"></div><button type="button" class="pv-btn" id="pv-help">Help <kbd>?</kbd></button></header>'+
-  '<main class="pv-main"><section class="pv-left">'+
-   '<div class="pv-pane"><div class="pv-label"><b>Current</b><span id="pv-cl"></span><em id="pv-sec"></em></div><div class="pv-area" id="pv-ac"><div class="pv-box" id="pv-cur" role="button" tabindex="0" aria-label="Current slide. Click for the next slide"></div></div></div>'+
-   '<div class="pv-pane"><div class="pv-label"><b>Next</b><span id="pv-nl"></span></div><div class="pv-area" id="pv-an"><div class="pv-box" id="pv-next"></div></div></div></section>'+
-  '<section class="pv-right"><div class="pv-pane pv-timer" id="pv-timer"><div class="pv-tm"><div><small>Elapsed</small><b id="pv-el">00:00</b></div><div class="pv-rem"><small id="pv-reml">Remaining</small><b id="pv-rem"></b></div></div>'+
+  '<main class="pv-main"><aside class="pv-railw"><nav class="pv-rail" id="pv-rail" aria-label="Slides"></nav></aside>'+
+  '<section class="pv-center">'+
+   '<div class="pv-pane pv-curp"><div class="pv-label"><b>Current</b><span id="pv-cl"></span><em id="pv-sec"></em></div><div class="pv-area" id="pv-ac"><div class="pv-box" id="pv-cur" role="button" tabindex="0" aria-label="Current slide. Click for the next slide"></div></div></div>'+
+   '<div class="pv-pane pv-timer" id="pv-timer"><div class="pv-tm"><div><small>Elapsed</small><b id="pv-el">00:00</b></div><div class="pv-rem"><small id="pv-reml">Remaining</small><b id="pv-rem"></b></div></div>'+
+   '<div class="pv-pb" id="pv-pb"><i id="pv-pbi"></i></div>'+
    '<div class="pv-tc"><button type="button" class="pv-btn pv-pri" id="pv-tt">Start</button><button type="button" class="pv-btn" id="pv-tr">Reset</button>'+
    '<label>Target <input type="text" id="pv-tg" size="5" inputmode="numeric" aria-label="Target time, minutes and seconds"></label>'+
-   '<label><input type="checkbox" id="pv-as"> Start with the first slide change</label></div><div class="pv-pace" id="pv-pace"></div></div>'+
-   '<div class="pv-pane pv-notes"><div class="pv-label"><b>Speaker notes</b><span id="pv-who"></span></div><div class="pv-nbody" id="pv-nb" tabindex="0"></div></div></section></main>'+
+   '<label title="Start the timer when you leave the first slide"><input type="checkbox" id="pv-as"> Auto-start</label></div><div class="pv-pace" id="pv-pace"></div></div></section>'+
+  '<section class="pv-right"><div class="pv-pane pv-notes"><div class="pv-label"><b>Speaker notes</b><span id="pv-who"></span></div><div class="pv-nbody" id="pv-nb" tabindex="0"></div></div></section></main>'+
   '<footer class="pv-bar"><button type="button" class="pv-btn pv-lg" id="pv-prev">‹ Previous</button><button type="button" class="pv-btn pv-lg pv-pri" id="pv-nextb">Next ›</button>'+
-   '<span class="pv-cnt" id="pv-cnt"></span><div class="pv-dots" id="pv-dots"></div><span class="pv-sp"></span>'+
+   '<span class="pv-cnt" id="pv-cnt"></span><span class="pv-sp"></span>'+
    '<button type="button" class="pv-btn" id="pv-blank" aria-pressed="false" title="Black screen in the presentation window">Blank screen <kbd>B</kbd></button>'+
    '<button type="button" class="pv-btn" id="pv-fm" aria-label="Smaller notes text">A−</button><button type="button" class="pv-btn" id="pv-fp" aria-label="Larger notes text">A+</button></footer>';
   document.body.appendChild(r);
   const g=i=>$(i);
-  els={link:g('pv-link'),linkT:g('pv-linkt'),aud:g('pv-aud'),clock:g('pv-clock'),cur:g('pv-cur'),next:g('pv-next'),cl:g('pv-cl'),nl:g('pv-nl'),sec:g('pv-sec'),
-       timer:g('pv-timer'),el:g('pv-el'),rem:g('pv-rem'),remL:g('pv-reml'),tt:g('pv-tt'),tr:g('pv-tr'),tg:g('pv-tg'),as:g('pv-as'),pace:g('pv-pace'),
+  els={link:g('pv-link'),linkT:g('pv-linkt'),aud:g('pv-aud'),clock:g('pv-clock'),cur:g('pv-cur'),ac:g('pv-ac'),cl:g('pv-cl'),sec:g('pv-sec'),rail:g('pv-rail'),
+       timer:g('pv-timer'),el:g('pv-el'),rem:g('pv-rem'),remL:g('pv-reml'),pb:g('pv-pb'),pbi:g('pv-pbi'),tt:g('pv-tt'),tr:g('pv-tr'),tg:g('pv-tg'),as:g('pv-as'),pace:g('pv-pace'),
        who:g('pv-who'),nb:g('pv-nb'),cnt:g('pv-cnt'),prev:g('pv-prev'),nextb:g('pv-nextb')};
-  const dd=g('pv-dots');
-  dd.innerHTML=slides.map((s,i)=>'<button type="button" aria-label="Go to slide '+(i+1)+'"></button>').join('');
-  els.dots=[...dd.children];els.dots.forEach((d,i)=>d.addEventListener('click',()=>pvGo(i)));
+  buildRail();
   r.style.setProperty('--nf',nfont+'px');
   els.as.checked=autoStart;
   els.as.addEventListener('change',()=>{autoStart=els.as.checked;store.set('lleida-autostart',autoStart?'1':'0')});
@@ -1996,15 +2046,14 @@ function buildPresenter(){
   els.prev.addEventListener('click',()=>pvGo(pcur-1));
   els.nextb.addEventListener('click',()=>pvGo(pcur+1));
   els.cur.addEventListener('click',()=>pvGo(pcur+1));
-  els.next.addEventListener('click',()=>pvGo(pcur+1));
   els.aud.addEventListener('click',pvOpenAudience);
   g('pv-blank').addEventListener('click',()=>setBlank(!blank,true));
   const setFont=v=>{nfont=clamp(v,15,44);store.set('lleida-nfont',nfont);r.style.setProperty('--nf',nfont+'px')};
   g('pv-fm').addEventListener('click',()=>setFont(nfont-2));g('pv-fp').addEventListener('click',()=>setFont(nfont+2));
   g('pv-help').addEventListener('click',pvHelp);
   addEventListener('keydown',pvKey);
-  if(window.ResizeObserver){const ro=new ResizeObserver(()=>{fitBox(g('pv-ac'));fitBox(g('pv-an'))});ro.observe(g('pv-ac'));ro.observe(g('pv-an'))}
-  else addEventListener('resize',()=>{fitBox(g('pv-ac'));fitBox(g('pv-an'))});
+  if(window.ResizeObserver){new ResizeObserver(fitBox).observe(els.ac)}else addEventListener('resize',fitBox);
+  fitBox();
   pvSet(0,true);entryAt=elapsed();
   setInterval(renderTimer,250);
   setInterval(()=>{post({type:'ping'});renderLink()},2000);
@@ -2039,9 +2088,9 @@ function pvHelp(){
   '<li><b>Windows:</b> press <kbd>Win</kbd> + <kbd>P</kbd> and choose <b>Extend</b>.</li></ul>'+
   '<h3>2. Open the presentation window</h3><ol><li>Click <b>Open presentation window</b>. In Chrome or Edge you can pick the projector from a list (allow “window management” once).</li>'+
   '<li>In Safari and Firefox the window opens here: drag it onto the projector.</li><li>Click once inside it to go full screen. <kbd>Esc</kbd> leaves full screen.</li></ol>'+
-  '<h3>3. Present from this window</h3><ul><li><kbd>←</kbd> <kbd>→</kbd> <kbd>Space</kbd> move the projector; click the current slide for the next one.</li>'+
+  '<h3>3. Present from this window</h3><ul><li><kbd>←</kbd> <kbd>→</kbd> <kbd>Space</kbd> move the projector; click the current slide for the next one, or any thumbnail on the left to jump there (point at the column to enlarge it and scroll).</li>'+
   '<li><kbd>T</kbd> starts or pauses the timer, <kbd>B</kbd> blanks the projector, <kbd>+</kbd> <kbd>−</kbd> change the notes size.</li>'+
-  '<li>The timer, the target and the pace come from the plan in the notes (about 11:35 in total).</li></ul>'+
+  '<li>The talk lasts 15 minutes by default; change the target under the timer. The pace follows the plan in the notes, stretched to that time.</li></ul>'+
   '<h3>If the screens are mirrored</h3><p>A mirrored projector shows exactly what is on your laptop screen, so the notes would be visible to the room. Switch to Extend. If you cannot, present from the presentation window alone: <kbd>N</kbd> shows the notes and <kbd>T</kbd> a discreet timer, and both are visible to the room.</p>'+
   '<button type="button" class="pv-btn pv-pri" id="pv-hx">Got it</button></div>';
   $('pv').appendChild(h);
