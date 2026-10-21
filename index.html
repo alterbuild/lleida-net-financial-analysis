@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lleida.net Financial Analysis</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="build" content="20261021-132101">
+<meta name="build" content="20261021-140307">
 <script>
 /* GitHub Pages lets a browser keep the page for ten minutes (cache-control: max-age=600). On Pages the deck therefore asks for a fresh
    copy of itself, skipping the cache, when it opens and when the tab comes back to the front, and reloads once if that copy is newer.
@@ -761,6 +761,58 @@ body.pv #stage,body.pv #ctrl,body.pv #notes,body.pv #prog,body.pv #tip,body.pv #
 @media (max-height:620px){.pv-tm b{font-size:56px}.pv-tm .pv-rem b{font-size:30px}}
 @media (max-width:640px){#b-pv{display:none}}
 
+/* ---------- audio of the speech: player in the notes, "more options" menu, automatic presentation ---------- */
+.ap{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:6px 14px 6px 6px;border-radius:999px;background:var(--apbg,var(--chrome-line));color:var(--apfg,var(--chrome-fg))}
+.ap[hidden]{display:none}
+.ap-b{flex:none;appearance:none;display:grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:50%;background:var(--q2);color:#fff;cursor:pointer}
+.ap-b:disabled{opacity:.45;cursor:default}
+.ap-b:focus-visible{outline:2px solid var(--q2);outline-offset:2px}
+.ap-b svg{width:15px;height:15px;fill:currentColor}
+.ap-b .i-pause{display:none}
+.ap[data-s="play"] .ap-b .i-play{display:none}
+.ap[data-s="play"] .ap-b .i-pause{display:block}
+.ap-r{flex:1;min-width:0;height:20px;margin:0;accent-color:var(--q2);cursor:pointer}
+.ap-t{flex:none;min-width:84px;text-align:right;font:600 12.5px/1 var(--sans);font-variant-numeric:tabular-nums;opacity:.85}
+.ap[data-s="err"] .ap-t{color:#E5484D;opacity:1}
+#notes .ap{position:sticky;top:0;z-index:1}
+
+/* control bar: three dots, and the pause and stop buttons that appear while the presentation runs by itself */
+#ctrl #b-more{padding:0;display:grid;place-items:center}
+#b-more svg,#b-apause svg,#b-astop svg{width:18px;height:18px;fill:currentColor}
+#ctrl #b-more[aria-expanded="true"]{background:var(--chrome-line)}
+#ctrl #b-apause,#ctrl #b-astop{display:none;place-items:center;padding:0}
+body.auto #ctrl #b-apause,body.auto #ctrl #b-astop{display:grid}
+#ctrl #b-apause{background:var(--q2);color:#fff}
+#ctrl #b-apause:hover{background:var(--qualified)}
+#b-apause .i-pause{display:none}
+#b-apause[data-s="play"] .i-play{display:none}
+#b-apause[data-s="play"] .i-pause{display:block}
+#aprog{display:none;position:absolute;left:16px;bottom:2px;height:3px;width:calc((100% - 32px)*var(--ap,0));border-radius:3px;background:var(--q2);pointer-events:none}
+body.auto #aprog{display:block}
+
+#more{position:fixed;z-index:45;width:min(340px,calc(100% - 24px));display:grid;gap:4px;padding:8px;border-radius:20px;background:var(--chrome);color:var(--chrome-fg);
+  border:1px solid var(--chrome-line);box-shadow:0 22px 60px -18px rgba(0,0,0,.55);font:500 14px/1.4 var(--sans)}
+#more[hidden]{display:none}
+#more button{appearance:none;display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:center;width:100%;text-align:left;padding:9px 10px;border:0;border-radius:14px;background:transparent;color:inherit;font:inherit;cursor:pointer}
+#more button[hidden]{display:none}
+#more button:hover,#more button:focus-visible{background:var(--chrome-line);outline:none}
+#more button b{display:block;font:700 14.5px/1.25 var(--display)}
+#more button small{display:block;margin-top:2px;opacity:.7;font-size:12.5px}
+#more .mi{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:var(--q2);color:#fff}
+#more .mi svg{width:18px;height:18px;fill:currentColor;stroke:none}
+#more #b-pv .mi svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#more button[data-on="1"] .mi{background:#E5484D}
+#more button[data-on="1"] .mi svg{fill:currentColor}
+#more kbd{padding:2px 7px;border-radius:6px;border:1px solid var(--chrome-line);font:600 12px/1 var(--sans);opacity:.8}
+#more .live-t{display:none;font-style:normal;color:#12936B;font-weight:600}
+#more #b-pv.live .live-t{display:inline}
+
+/* presenter view */
+.pv-root .ap{--apbg:var(--pn2);--apfg:var(--tx);margin:0 0 10px;flex:none}
+.pv-root .ap-b{background:var(--ac)}
+.pv-root .ap-r{accent-color:var(--ac)}
+.pv-root .ap-t{font-size:13.5px;min-width:96px}
+
 </style>
 
 <div id="stage" class="gl" aria-roledescription="slide deck" aria-label="Lleida.net financial analysis">
@@ -1253,11 +1305,18 @@ body.pv #stage,body.pv #ctrl,body.pv #notes,body.pv #prog,body.pv #tip,body.pv #
   <div id="dots"></div>
   <span id="count" aria-live="polite">1 / 13</span>
   <button id="b-next" type="button" aria-label="Next slide">›</button>
-  <button id="b-pv" type="button" aria-pressed="false" title="Presenter view for a second screen (P)">Presenter</button>
+  <button id="b-apause" type="button" aria-label="Pause the automatic presentation" title="Pause the automatic presentation (Space)"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4.2" height="14" rx="1.2"/><rect x="13.8" y="5" width="4.2" height="14" rx="1.2"/></svg></button>
+  <button id="b-astop" type="button" aria-label="Stop the automatic presentation" title="Stop the automatic presentation (A)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.4"/></svg></button>
+  <button id="b-more" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="more" aria-label="More options" title="More options"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>
   <button id="b-notes" type="button" aria-pressed="false" title="Speaker notes (N)">Notes</button>
   <button id="b-fs" type="button" title="Full screen, choose the display (F)">Full screen</button>
+  <i id="aprog" aria-hidden="true"></i>
 </nav>
-<aside id="notes" hidden><h2 id="notes-h"></h2><div id="notes-t"></div></aside>
+<div id="more" role="menu" aria-label="More options" hidden>
+  <button id="b-auto" type="button" role="menuitem" data-on="0"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg></span><span><b>Present automatically</b><small>Plays the audio of each slide and moves on by itself</small></span><kbd>A</kbd></button>
+  <button id="b-pv" type="button" role="menuitem" aria-pressed="false"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2.2"/><path d="M8 20h8M12 16v4"/></svg></span><span><b>Presenter view</b><small>Notes, timer and slides on a second screen<em class="live-t"> · open</em></small></span><kbd>P</kbd></button>
+</div>
+<aside id="notes" hidden><h2 id="notes-h"></h2><div id="notes-a" hidden></div><div id="notes-t"></div></aside>
 
 <script>
 (function(){
@@ -1507,6 +1566,7 @@ document.querySelectorAll('.slide[data-sec]').forEach(sl=>{const c=+sl.dataset.s
 })();
 
 /* ---------- deck engine ---------- */
+const AUDIO=[null, null, null, null, null, null, null, null, null, null, null, null, null];   /* audio file of each slide, null when there is none (set by tools/build.py) */
 const NOTES=[[-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""]];
 
 /* a note with several lines is a Q&A bank: '# ' starts a group, 'Q: ' a question, any other line is its answer */
@@ -1564,6 +1624,7 @@ function ui(){
   const no=NOTES[cur];
   nh.innerHTML=no[0]>=0?`<span class="av p${no[0]+1}">${SPK[no[0]].split(' ').map(w=>w[0]).join('')}</span><span>${SPK[no[0]]}<br><small>${no[1]}</small></span>`:`<span>${no[1]}</span>`;
   if(no[2].indexOf('\n')<0)nt.textContent=no[2];else nt.innerHTML=noteHtml(no[2]);
+  avSlide(cur);
 }
 function show(n,hold){
   kstop();
@@ -1573,6 +1634,7 @@ function show(n,hold){
   kreset(s);
   s.classList.add('on');ui();pvShow(n);
   if(!hold)build(s);
+  if(!hold)avShown(n);
 }
 function build(s){if(reduce.matches)return;void s.offsetWidth;s.classList.remove('pre');counts(s);kstart(s)}
 /* cover: the two card sets (SME criteria, 2025 key figures) take turns */
@@ -1616,7 +1678,7 @@ function go(n,force){
   const from=slides[cur].dataset.sec,to=slides[n].dataset.sec;
   if(!force&&!reduce.matches&&to&&to!==from&&curtain.animate){
     busy=true;
-    runCurtain(+to,()=>show(n,true),()=>{setTimeout(()=>build(slides[n]),560);setTimeout(()=>{busy=false;afterBusy()},760)});
+    runCurtain(+to,()=>show(n,true),()=>{setTimeout(()=>build(slides[n]),560);setTimeout(()=>{busy=false;avShown(n);afterBusy()},760)});
   }else show(n,false);
 }
 function toggleNotes(){notes.hidden=!notes.hidden;bn.setAttribute('aria-pressed',String(!notes.hidden))}
@@ -1627,6 +1689,7 @@ bn.addEventListener('click',toggleNotes);
 document.getElementById('b-fs').addEventListener('click',toggleFs);
 addEventListener('keydown',e=>{
   if(MODE==='presenter'||menuOpen||e.metaKey||e.ctrlKey||e.altKey)return;
+  if(e.target&&e.target.classList&&e.target.classList.contains('ap-r'))return;   /* the audio slider uses the arrow keys itself */
   const k=e.key,onBtn=e.target&&e.target.closest&&e.target.closest('button');
   if(onBtn&&(k===' '||k==='Enter'))return;
   if(k==='ArrowRight'||k==='ArrowDown'||k==='PageDown'||k===' '||k==='Enter'){e.preventDefault();go(cur+1)}
@@ -1679,6 +1742,187 @@ const h0=parseInt(location.hash.slice(1),10),start=h0>=1&&h0<=N?h0-1:0;
 let started=false;
 const isPhone=()=>innerWidth<=820||(innerHeight<=500&&innerWidth<=1100);
 const begin=()=>{if(started)return;started=true;if(isPhone()){notes.hidden=false;bn.setAttribute('aria-pressed','true')}go(start,true)};
+/* ======================================================================================================================
+   Audio of the speech (injected inside the deck IIFE by tools/build.py, in front of presenter.js; avInit() is called after it).
+   - a player in the speaker notes (deck window and presenter view) with the audio of the slide that is on screen
+   - the "more options" menu (three dots): automatic presentation and presenter view
+   - automatic presentation: plays the audio of each slide when it appears and moves to the next slide when the audio ends
+   AUDIO[i] is the file of slide i+1 (null when there is none). Uses: slides, N, cur, busy, go, MODE, menuOpen, toast, closeMenu, $.
+   ====================================================================================================================== */
+const HAS_AUDIO=Array.isArray(AUDIO)&&AUDIO.some(Boolean);
+const aud=new Audio();aud.preload='metadata';
+let audIdx=-1,audFailed=false,audPlayers=[],apOn=false,apPaused=false,apT=0,more=null,moreBtn=null;
+const GAP_SAME=900,GAP_CHANGE=1400,LEAD=450;       /* ms of silence after a clip, and before the first one on a new slide */
+const fmtT=s=>isFinite(s)&&s>=0?Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'):'0:00';
+const SVG_PLAY='<svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>';
+const SVG_PAUSE='<svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4.2" height="14" rx="1.2"/><rect x="13.8" y="5" width="4.2" height="14" rx="1.2"/></svg>';
+
+/* ---------- player in the notes ---------- */
+function mountPlayer(host){
+  if(!host)return;
+  host.classList.add('ap');
+  host.innerHTML='<button type="button" class="ap-b" aria-label="Play the audio of this slide">'+SVG_PLAY+SVG_PAUSE+'</button>'+
+    '<input type="range" class="ap-r" min="0" max="1000" value="0" step="1" aria-label="Position in the audio"><span class="ap-t">0:00 / 0:00</span>';
+  const p={host,b:host.querySelector('.ap-b'),r:host.querySelector('.ap-r'),t:host.querySelector('.ap-t'),drag:false};
+  p.b.addEventListener('click',playPause);
+  p.r.addEventListener('input',()=>{p.drag=true;if(aud.duration>0)aud.currentTime=p.r.value/1000*aud.duration;avPaint()});
+  p.r.addEventListener('change',()=>{p.drag=false});
+  audPlayers.push(p);avPaint();
+}
+function avPaint(){
+  const d=aud.duration,t=aud.currentTime,playing=!aud.paused&&!aud.ended,has=!!AUDIO[audIdx];
+  audPlayers.forEach(p=>{
+    p.host.hidden=!has;
+    p.host.dataset.s=audFailed?'err':playing?'play':'idle';
+    p.b.disabled=audFailed;
+    p.b.setAttribute('aria-label',(playing?'Pause':'Play')+' the audio of this slide');
+    if(!p.drag&&d>0)p.r.value=Math.round(t/d*1000);
+    p.t.textContent=audFailed?'Audio not available':fmtT(t)+' / '+fmtT(d);
+  });
+  if(MODE!=='deck')return;
+  const c=document.getElementById('ctrl');if(c)c.style.setProperty('--ap',d>0?Math.min(1,t/d):0);
+  const bp=document.getElementById('b-apause');
+  if(bp){const run=apOn&&!apPaused;bp.dataset.s=run?'play':'idle';bp.setAttribute('aria-label',run?'Pause the automatic presentation':'Resume the automatic presentation');bp.title=bp.getAttribute('aria-label')+' (Space)'}
+  const ba=document.getElementById('b-auto');
+  if(ba){ba.dataset.on=apOn?'1':'0';ba.querySelector('b').textContent=apOn?'Stop automatic presentation':'Present automatically';
+    ba.querySelector('small').textContent=apOn?'Back to manual control':'Plays the audio of each slide and moves on by itself'}
+}
+['timeupdate','durationchange','loadedmetadata','play','pause','ended','emptied','seeked'].forEach(ev=>aud.addEventListener(ev,avPaint));
+aud.addEventListener('error',()=>{
+  if(!AUDIO[audIdx])return;
+  audFailed=true;avPaint();
+  if(apOn){apStop();toast('The audio could not be loaded, so the automatic presentation stopped.',6500)}
+});
+/* a new slide is on screen (or selected in the presenter view): stop what was playing and get its audio ready */
+function avSlide(n){
+  clearTimeout(apT);
+  if(!aud.paused)aud.pause();
+  audIdx=n;audFailed=false;
+  const u=AUDIO[n];
+  if(u){if(aud.getAttribute('src')!==u)aud.src=u;else{try{aud.currentTime=0}catch(e){}}}
+  else{aud.removeAttribute('src');aud.load()}
+  avPaint();
+}
+/* play() was refused: the browser wants a click first, or the file is not there */
+function playFailed(e){
+  if(e&&e.name==='AbortError')return;                  /* the slide changed while the sound was starting */
+  if(e&&e.name==='NotAllowedError'){apPaused=apOn;avPaint();toast('The browser blocked the sound. Press Space or the play button to continue.',6500);return}
+  audFailed=true;avPaint();
+  if(apOn){apStop();toast('The audio could not be loaded, so the automatic presentation stopped.',6500)}
+  else toast('The audio could not be loaded.',4500);
+}
+function playPause(){
+  if(!AUDIO[audIdx])return;
+  if(apOn){apPaused?apResume():apPause();return}
+  if(aud.paused){
+    audFailed=false;
+    const p=aud.play();if(p&&p.catch)p.catch(playFailed);
+  }else aud.pause();
+}
+
+/* ---------- automatic presentation (deck window only) ---------- */
+function avShown(n){            /* the slide is fully on screen: in automatic mode its audio starts a moment later */
+  if(MODE!=='deck'||!apOn||apPaused||n!==cur||busy)return;
+  clearTimeout(apT);
+  apT=setTimeout(()=>apPlay(n),LEAD);
+}
+function apPlay(n){
+  if(!apOn||apPaused||n!==cur||busy)return;
+  if(!AUDIO[n]){apNext(n);return}
+  const p=aud.play();
+  if(p&&p.catch)p.catch(playFailed);
+}
+function apNext(n){
+  if(!apOn||apPaused||n!==cur)return;
+  if(busy){apT=setTimeout(()=>apNext(n),400);return}
+  if(n>=N-1){apStop(true);return}
+  go(n+1);
+}
+aud.addEventListener('ended',()=>{
+  if(!apOn||apPaused)return;
+  const n=audIdx,same=NOTES[n]&&NOTES[n+1]&&NOTES[n][0]===NOTES[n+1][0];
+  clearTimeout(apT);apT=setTimeout(()=>apNext(n),same?GAP_SAME:GAP_CHANGE);
+});
+function apStart(){
+  if(!HAS_AUDIO)return;
+  closeMore();
+  apOn=true;apPaused=false;audFailed=false;
+  document.body.classList.add('auto');
+  clearTimeout(apT);
+  if(cur>=N-1){go(0);toast('Automatic presentation from the first slide. Space pauses, A stops.',3600);avPaint();return}
+  if(!AUDIO[cur]){apNext(cur)}
+  else{
+    try{aud.currentTime=0}catch(e){}
+    const p=aud.play();           /* inside the click or key press, so the browser lets the sound start */
+    if(p&&p.catch)p.catch(playFailed);
+  }
+  toast('Automatic presentation. Space pauses, A stops.',3600);
+  avPaint();
+}
+function apPause(){apPaused=true;clearTimeout(apT);aud.pause();avPaint()}
+function apResume(){
+  apPaused=false;clearTimeout(apT);
+  if(!AUDIO[cur]){apNext(cur);avPaint();return}
+  if(aud.ended||(aud.duration>0&&aud.currentTime>=aud.duration-.05))apT=setTimeout(()=>apNext(cur),400);
+  else{const p=aud.play();if(p&&p.catch)p.catch(playFailed)}
+  avPaint();
+}
+function apStop(finished){
+  if(!apOn)return;
+  apOn=false;apPaused=false;clearTimeout(apT);aud.pause();
+  document.body.classList.remove('auto');
+  avPaint();
+  toast(finished?'Automatic presentation finished. Questions next.':'Automatic presentation stopped.',3200);
+}
+
+/* ---------- the "more options" menu ---------- */
+function moreKey(e){
+  if(e.key==='Escape'){e.preventDefault();e.stopPropagation();closeMore();if(moreBtn)moreBtn.focus();return}
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+    e.preventDefault();e.stopPropagation();
+    const b=[...more.querySelectorAll('button:not([hidden])')],i=b.indexOf(document.activeElement);
+    b[(i+(e.key==='ArrowDown'?1:-1)+b.length)%b.length].focus();
+  }
+}
+function moreOut(e){if(!e.target.closest('#more')&&!e.target.closest('#b-more'))closeMore()}
+function openMore(){
+  if(!more)return;
+  closeMenu();
+  more.hidden=false;moreBtn.setAttribute('aria-expanded','true');menuOpen=true;
+  const r=moreBtn.getBoundingClientRect(),w=more.offsetWidth;
+  more.style.left=Math.max(12,Math.min(innerWidth-w-12,r.right-w))+'px';
+  more.style.bottom=(innerHeight-r.top+12)+'px';
+  const f=more.querySelector('button:not([hidden])');if(f)f.focus();
+  document.addEventListener('keydown',moreKey,true);document.addEventListener('pointerdown',moreOut,true);
+}
+function closeMore(){
+  if(!more||more.hidden)return;
+  more.hidden=true;moreBtn.setAttribute('aria-expanded','false');menuOpen=false;
+  document.removeEventListener('keydown',moreKey,true);document.removeEventListener('pointerdown',moreOut,true);
+}
+
+/* ---------- start (called after presenter.js has been defined) ---------- */
+function avInit(){
+  if(MODE==='presenter'){mountPlayer(document.getElementById('pv-ap'));avSlide(pcur);return}
+  mountPlayer(document.getElementById('notes-a'));
+  more=document.getElementById('more');moreBtn=document.getElementById('b-more');
+  const ba=document.getElementById('b-auto');
+  if(!HAS_AUDIO){ba.hidden=true;const s=document.getElementById('b-apause'),t=document.getElementById('b-astop');if(s)s.hidden=true;if(t)t.hidden=true}
+  moreBtn.addEventListener('click',()=>{more.hidden?openMore():closeMore()});
+  ba.addEventListener('click',()=>{apOn?apStop():apStart();closeMore()});
+  document.getElementById('b-pv').addEventListener('click',closeMore);
+  document.getElementById('b-apause').addEventListener('click',playPause);
+  document.getElementById('b-astop').addEventListener('click',()=>apStop());
+  addEventListener('keydown',e=>{
+    if(e.metaKey||e.ctrlKey||e.altKey||menuOpen)return;
+    const t=e.target,tag=t&&t.tagName;
+    if(tag==='TEXTAREA'||(tag==='INPUT'&&t.type!=='range'))return;
+    if(HAS_AUDIO&&(e.key==='a'||e.key==='A')){e.preventDefault();e.stopPropagation();apOn?apStop():apStart()}
+    else if(apOn&&e.key===' '){e.preventDefault();e.stopPropagation();apPaused?apResume():apPause()}
+  },true);
+  avSlide(cur);
+}
+
 /* ======================================================================================================================
    Presenter mode: two windows (presentation for the projector, presenter view for the laptop) kept in step, plus a timer,
    a blank-screen switch and a full-screen picker that lets you choose the display.
@@ -1969,7 +2213,7 @@ function pvSet(n,fromAudience){
   els.cl.textContent=(n+1)+' / '+N;
   els.sec.textContent=sec?'Part '+sec+' of 6 · '+SECL[sec-1]:'';
   const no=NOTES[n];els.who.textContent=no[0]>=0?SPK[no[0]]:'';
-  els.nb.innerHTML=notesHtml(n);els.nb.scrollTop=0;spos=0;manualUntil=0;
+  els.nb.innerHTML=notesHtml(n);els.nb.scrollTop=0;spos=0;manualUntil=0;avSlide(n);
   els.cnt.textContent=(n+1)+' / '+N;
   els.th.forEach((b,i)=>b.setAttribute('aria-current',String(i===n)));
   if(!els.rail.matches(':hover')){const b=els.th[n];els.rail.scrollTo?els.rail.scrollTo({top:b.offsetTop-(els.rail.clientHeight-b.offsetHeight)/2,behavior:'smooth'}):0}
@@ -2067,7 +2311,7 @@ function buildPresenter(){
    '<div class="pv-tc"><button type="button" class="pv-btn pv-pri" id="pv-tt">Start</button><button type="button" class="pv-btn" id="pv-tr">Reset</button>'+
    '<label>Target <input type="text" id="pv-tg" size="5" inputmode="numeric" aria-label="Target time, minutes and seconds"></label>'+
    '<label title="Start the timer when you leave the first slide"><input type="checkbox" id="pv-as"> Auto-start</label></div><div class="pv-pace" id="pv-pace"></div></div></section>'+
-  '<section class="pv-right"><div class="pv-pane pv-notes"><div class="pv-label"><b>Speaker notes</b><span id="pv-who"></span><label class="pv-sw" id="pv-sw" title="Scrolls the notes slowly while the time planned for this slide goes by. Scrolling by hand pauses it for a few seconds."><input type="checkbox" id="pv-asc" role="switch"><i></i><span>Auto-scroll</span></label></div><div class="pv-nbody" id="pv-nb" tabindex="0"></div></div></section></main>'+
+  '<section class="pv-right"><div class="pv-pane pv-notes"><div class="pv-label"><b>Speaker notes</b><span id="pv-who"></span><label class="pv-sw" id="pv-sw" title="Scrolls the notes slowly while the time planned for this slide goes by. Scrolling by hand pauses it for a few seconds."><input type="checkbox" id="pv-asc" role="switch"><i></i><span>Auto-scroll</span></label></div><div id="pv-ap" hidden></div><div class="pv-nbody" id="pv-nb" tabindex="0"></div></div></section></main>'+
   '<footer class="pv-bar"><button type="button" class="pv-btn pv-lg" id="pv-prev">‹ Previous</button><button type="button" class="pv-btn pv-lg pv-pri" id="pv-nextb">Next ›</button>'+
    '<span class="pv-cnt" id="pv-cnt"></span><span class="pv-sp"></span>'+
    '<button type="button" class="pv-btn" id="pv-blank" aria-pressed="false" title="Black screen in the presentation window">Blank screen <kbd>B</kbd></button>'+
@@ -2164,6 +2408,7 @@ function pvHelp(){
   '<li>In Safari and Firefox the window opens here: drag it onto the projector.</li><li>Click once inside it to go full screen. <kbd>Esc</kbd> leaves full screen.</li></ol>'+
   '<h3>3. Present from this window</h3><ul><li><kbd>←</kbd> <kbd>→</kbd> <kbd>Space</kbd> move the projector; click the current slide for the next one, or any thumbnail on the left to jump there (point at the column to enlarge it and scroll).</li>'+
   '<li><kbd>T</kbd> starts or pauses the timer, <kbd>B</kbd> blanks the projector, <kbd>+</kbd> <kbd>−</kbd> change the notes size, <kbd>S</kbd> turns the notes auto-scroll on or off.</li>'+
+  '<li>Above the notes there is the audio of the slide (a voice for each speaker): play it to rehearse. In the presentation window, the three dots menu or <kbd>A</kbd> starts the automatic presentation, which plays each slide’s audio and moves on by itself.</li>'+
   '<li>The notes scroll slowly while the time planned for each slide goes by (switch at the top of the notes). Scroll by hand and it pauses for a few seconds; the slide with the questions is not scrolled.</li>'+
   '<li>The talk lasts 15 minutes by default; change the target under the timer. The pace follows the plan in the notes, stretched to that time.</li></ul>'+
   '<h3>If the screens are mirrored</h3><p>A mirrored projector shows exactly what is on your laptop screen, so the notes would be visible to the room. Switch to Extend. If you cannot, present from the presentation window alone: <kbd>N</kbd> shows the notes and <kbd>T</kbd> a discreet timer, and both are visible to the room.</p>'+
@@ -2177,6 +2422,7 @@ function pvHelp(){
 /* ---------- start ---------- */
 if(MODE==='presenter')buildPresenter();
 
+avInit();
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(begin);
 setTimeout(begin,700);
 })();
