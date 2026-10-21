@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lleida.net Financial Analysis</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="build" content="20261021-165359">
+<meta name="build" content="20261021-180108">
 <script>
 /* GitHub Pages lets a browser keep the page for ten minutes (cache-control: max-age=600). On Pages the deck therefore asks for a fresh
    copy of itself, skipping the cache, when it opens and when the tab comes back to the front, and reloads once if that copy is newer.
@@ -405,14 +405,62 @@ html:-webkit-full-screen body{background:#000}
 .dp-x{display:grid;place-items:center;justify-self:center;width:30px;height:30px;border-radius:50%;background:var(--mist);font:700 16px/1 var(--display);color:var(--slate)}
 .tr-up,.tr-dn{font-size:9px}
 .tr-up{color:var(--teal)}.tr-dn{color:var(--alert)}
+/* the DuPont tree sits in a sheet like the chart on the left; a slightly tighter tree leaves the leverage card its height */
+.dpx .ch{margin-bottom:14px}
+.dpx .dp{height:284px}
+.dpx .dp-row{top:156px}
+.dpx .dp-node{padding:13px 14px}
 .s8 .card{margin-top:auto}
-.s8 .card .dots{font-size:19px;gap:12px}
+/* financial leverage card, built as the formula: (ROCE − cost of debt) × net debt / equity = effect on ROE; each piece has its own small scale */
+.s8 .card.lv{padding:18px 20px 20px}
+.lv .ch{margin-bottom:12px}
+.lv-f{margin-left:auto;font:500 14.5px/1.2 var(--sans);letter-spacing:0;color:var(--slate)}
+.lv-g{flex:1;min-height:0;display:grid;grid-template-columns:1.2fr 38px 1fr 38px .8fr;align-items:stretch}
+.lv-g>.dp-x{align-self:center}
+.lv-p{display:flex;flex-direction:column;min-width:0;padding:14px 16px;border-radius:var(--r-md);background:var(--paper);box-shadow:var(--lift);border:1px solid rgba(24,28,50,.05)}
+.lv-p h4{font:700 15.5px/1.2 var(--display)}
+.lv-s{margin-top:3px;font-size:13.5px;line-height:1.2;color:var(--slate)}
+.lv-v{margin-top:auto}
+.lv-r{position:relative;height:12px;border-radius:999px;background:var(--rule)}
+.lv-seg,.lv-band,.lv-ln{position:absolute;left:var(--x);width:var(--w)}
+.lv-seg{top:0;bottom:0;background:var(--q2)}
+.lv-band{top:-6px;bottom:-6px;background:var(--t-teal);box-shadow:inset 0 0 0 2px var(--teal);border-radius:999px}
+.lv-ln{top:50%;height:2px;margin-top:-1px;background:var(--q3)}
+.lv-d{position:absolute;top:50%;left:var(--x);width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;border:4px solid var(--qualified);background:var(--paper)}
+.lv-d.kd{border-color:var(--slate)}
+.lv-d.y25{background:var(--qualified);border-color:var(--paper);box-shadow:0 0 0 2px var(--qualified)}
+.lv-d.y24{border-color:var(--q3)}
+.lv-gp{margin-left:16.7%;width:73.3%;margin-bottom:6px;text-align:center;font:700 15px/1 var(--display);color:var(--qualified)}
+.lv-gp::after{content:"";display:block;height:7px;margin-top:5px;border:2px solid var(--q2);border-bottom:0;border-radius:5px 5px 0 0}
+.lv-lb,.lv-yr{position:relative}
+.lv-lb{height:46px;margin-top:9px}
+.lv-yr{height:19px;margin-bottom:7px}
+.lv-lb>div,.lv-yr>div{position:absolute;top:0;left:var(--x);width:0;display:flex;justify-content:center}
+.lv-lb span,.lv-yr span{white-space:nowrap;text-align:center;font-size:14px;line-height:1.2;color:var(--slate)}
+.lv-lb b{display:block;margin-bottom:2px;font:700 21px/1.1 var(--display);color:var(--ink)}
+.lv-yr span{font-weight:600}
+.lv-n{display:flex;align-items:center;gap:8px;margin-top:8px}
+.lv-n .fig{font-size:34px}
+.lv-chip{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:14.5px;line-height:1.2;color:var(--slate);background:var(--mist);border-radius:999px;padding:4px 10px}
+.lv-ok{color:var(--teal)}
+.lv-bl{margin:12px 0 0 30%;width:60%;text-align:center;white-space:nowrap;font-weight:700;font-size:14px;line-height:1.2;color:var(--teal)}
+.lv-p.end{background:var(--qualified);color:var(--on-q);border:0;box-shadow:0 12px 24px -12px rgba(0,74,152,.6)}
+.lv-res{margin:auto 0;display:flex;flex-direction:column;align-items:flex-start;gap:7px}
+.lv-res .fig{font-size:50px}
+.lv-res .mk{color:var(--ink)}
+.lv-u{font-size:15.5px;line-height:1.2}
+.lv-p.end .lv-chip{background:rgba(255,255,255,.16);color:var(--on-q)}
 
 /* ---------- 9 value creation ---------- */
 .s9{display:grid;grid-template-columns:820px 1fr;gap:24px}
 .s9 .l{display:flex;flex-direction:column;gap:16px;min-width:0}
 .s9 .r{display:flex;flex-direction:column;gap:14px;min-width:0}
-.blk-h{font:700 15.5px/1.2 var(--display);margin-bottom:10px;color:var(--ink)}
+.blk-h{display:flex;align-items:center;gap:9px;font:700 15.5px/1.2 var(--display);margin-bottom:10px;color:var(--ink)}
+.ib.sm{width:26px;height:26px;border-radius:9px}
+.ib.sm svg.ic{width:15px;height:15px}
+/* left column of slide 9: every block sits in a sheet; CAPM and EVA share one because the WACC feeds the EVA row, the cushion and the market ratios stand alone */
+.s9 .l>.sheet{padding:16px 20px}
+.s9 .l>.sheet>div+div{margin-top:14px;padding-top:14px;border-top:1px solid var(--rule)}
 .eq{display:grid;grid-template-columns:1fr 30px 1fr 30px 1fr 30px 1fr 30px 1fr;align-items:center}
 .eq>.op{display:grid;place-items:center;justify-self:center;width:24px;height:24px;border-radius:50%;background:var(--mist);font:700 14px/1 var(--display);color:var(--slate)}
 .tile{background:var(--mist);border-radius:var(--r-md);padding:13px 10px 12px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:7px;min-width:0;min-height:76px}
@@ -428,8 +476,29 @@ html:-webkit-full-screen body{background:#000}
 .mkt div{background:var(--mist);border-radius:var(--r-md);padding:12px 16px}
 .mkt b{display:block;font-size:30px;color:var(--ink)}
 .mkt span{display:block;font-size:14.5px;color:var(--slate);margin-top:6px}
-.s9 .card .dots{font-size:17.5px;gap:10px}
 .s9 .card{padding:16px 20px;margin-top:auto}
+/* stress test and market read as two white panels in a blue card, the same pattern as the leverage card of slide 8 */
+.s9 .card.ev{padding:12px 14px}
+.ev .ch{margin-bottom:12px}
+.ev-g{flex:1;min-height:0;display:grid;grid-template-columns:1.4fr 1fr;gap:10px}
+.ev-g .lv-p{padding:12px 14px}
+.ev-rows{flex:1;display:flex;flex-direction:column;justify-content:space-between;margin-top:9px}
+.ev-row p{display:flex;justify-content:space-between;align-items:baseline;gap:8px;white-space:nowrap;font-size:14px;line-height:1.15;color:var(--slate)}
+.ev-row p b{font:700 14px/1.15 var(--display);font-variant-numeric:tabular-nums;color:var(--ink)}
+.ev-row p b.pos{color:var(--teal)}.ev-row p b.neg{color:var(--alert)}
+.ev-bar{position:relative;height:10px;margin-top:5px;border-radius:999px;background:var(--rule)}
+.ev-bar::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;margin-left:-1px;background:var(--ink);opacity:.4}
+.ev-bar i{position:absolute;top:0;bottom:0;left:var(--x);width:var(--w)}
+.ev-bar i.pos{background:var(--teal);border-radius:999px}
+.ev-bar i.neg{background:var(--alert);border-radius:999px 0 0 999px}
+.ev-bar i.ev-dot{left:50%;top:50%;bottom:auto;width:14px;height:14px;margin:-10px 0 0 -10px;border-radius:50%;background:var(--ink);border:3px solid var(--paper);box-sizing:content-box}
+.ev-m{padding-top:8px!important;padding-bottom:8px!important}
+.ev-s{flex:1;display:flex;flex-direction:column;justify-content:center;gap:3px;min-height:0}
+.ev-s+.ev-s{border-top:1px solid var(--rule)}
+.ev-l{font:600 14px/1.15 var(--sans);color:var(--slate)}
+.ev-n{display:flex;align-items:center;gap:8px}
+.ev-n .fig{font-size:28px}
+.ev-c{font-size:13.5px;line-height:1.2;text-wrap:balance}
 /* no dead space between stacked containers in the right-hand columns: the last container grows (or the table stretches) instead of being pinned to the bottom */
 .s7 .r>.sheet{flex:1;display:flex;flex-direction:column;min-height:0}
 .s7 .tbl{flex:1}
@@ -567,12 +636,14 @@ body.idle #ctrl{opacity:0;pointer-events:none}
   border:0;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.85),inset 3px 3px 6px -3px #fff,inset -3px -3px 6px -3px rgba(255,255,255,.9),0 0 0 1px rgba(105,148,212,.22),0 18px 30px -20px rgba(0,60,140,.42)}
 /* small panes */
-.gl .tile,.gl .mkt div,.gl .rk .chk li,.gl .dp-node small{
+.gl .tile,.gl .mkt div,.gl .rk .chk li,.gl .dp-node small,.gl .lv-p,.gl .lv-chip{
   background:rgba(255,255,255,.78);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.85),inset 2px 2px 4px -2px #fff,0 0 0 1px rgba(105,148,212,.18),0 8px 14px -10px rgba(0,60,140,.32)}
 
 /* tinted glass: one flat colour each */
 .gl .card.blue,.gl .st.fwd,.gl .tile.mid,.gl .qcard,.gl .eff{background:rgba(0,115,218,.14)}
+.gl .lv-p.end{background:var(--qualified);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 0 0 1px rgba(255,255,255,.22),0 10px 18px -10px rgba(0,60,140,.6)}
+.gl .lv-p.end .lv-chip{background:rgba(255,255,255,.2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);color:var(--on-q)}
 .gl .tile.end{background:var(--qualified);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 0 0 1px rgba(255,255,255,.22),0 10px 18px -10px rgba(0,60,140,.6)}
 .gl .card.gold,.gl .st.early{background:rgba(245,179,53,.26)}
 .gl .card.teal,.gl .st.ok{background:rgba(0,113,103,.15)}
@@ -1127,32 +1198,55 @@ body.auto #aprog{display:block}
       <div id="c-ret"></div>
     </div>
     <div class="r">
-      <h3 class="ch b" style="--d:300;margin-bottom:6px"><span class="ib teal"><svg class="ic"><use href="#i-pie"/></svg></span>DuPont breakdown of ROE (2025, with 2024)</h3>
-      <div class="dp">
-        <svg class="dp-lines" viewBox="0 0 788 172" width="788" height="172" aria-hidden="true">
-          <path class="dr s-q" pathLength="1" style="--d:750;stroke-width:2" d="M394 108C394 140 120 132 120 172"/>
-          <path class="dr s-q" pathLength="1" style="--d:750;stroke-width:2" d="M394 108V172"/>
-          <path class="dr s-q" pathLength="1" style="--d:750;stroke-width:2" d="M394 108C394 140 668 132 668 172"/>
-        </svg>
-        <div class="dp-node dp-top b" style="--d:450"><span>ROE</span><b class="fig cnt" style="--d:450">22.5%</b><small>2024: 21.7%</small></div>
-        <div class="dp-row">
-          <div class="dp-node b" style="--d:1000"><span>Net margin</span><b class="fig">6.4%</b><small>2024: 4.6%<i class="tr-up" aria-label="up">▲</i></small></div>
-          <span class="dp-x pop" style="--d:1050">×</span>
-          <div class="dp-node b" style="--d:1100"><span>Asset turnover</span><b class="fig">1.18x</b><small>2024: 1.09x<i class="tr-up" aria-label="up">▲</i></small></div>
-          <span class="dp-x pop" style="--d:1150">×</span>
-          <div class="dp-node b" style="--d:1200"><span>Equity multiplier</span><b class="fig">2.96x</b><small>2024: 4.31x<i class="tr-dn" aria-label="down">▼</i></small></div>
+      <div class="sheet dpx b" style="--d:240">
+        <h3 class="ch"><span class="ib teal"><svg class="ic"><use href="#i-pie"/></svg></span>DuPont breakdown of ROE (2025, with 2024)</h3>
+        <div class="dp">
+          <svg class="dp-lines" viewBox="0 0 788 172" width="788" height="172" aria-hidden="true">
+            <path class="dr s-q" pathLength="1" style="--d:750;stroke-width:2" d="M394 108C394 140 120 132 120 172"/>
+            <path class="dr s-q" pathLength="1" style="--d:750;stroke-width:2" d="M394 108V172"/>
+            <path class="dr s-q" pathLength="1" style="--d:750;stroke-width:2" d="M394 108C394 140 668 132 668 172"/>
+          </svg>
+          <div class="dp-node dp-top b" style="--d:450"><span>ROE</span><b class="fig cnt" style="--d:450">22.5%</b><small>2024: 21.7%</small></div>
+          <div class="dp-row">
+            <div class="dp-node b" style="--d:1000"><span>Net margin</span><b class="fig">6.4%</b><small>2024: 4.6%<i class="tr-up" aria-label="up">▲</i></small></div>
+            <span class="dp-x pop" style="--d:1050">×</span>
+            <div class="dp-node b" style="--d:1100"><span>Asset turnover</span><b class="fig">1.18x</b><small>2024: 1.09x<i class="tr-up" aria-label="up">▲</i></small></div>
+            <span class="dp-x pop" style="--d:1150">×</span>
+            <div class="dp-node b" style="--d:1200"><span>Equity multiplier</span><b class="fig">2.96x</b><small>2024: 4.31x<i class="tr-dn" aria-label="down">▼</i></small></div>
+          </div>
         </div>
       </div>
-      <div class="card blue b" style="--d:1400;--md:2100ms">
-        <h3 class="ch" style="margin-bottom:12px"><span class="ib solid"><svg class="ic"><use href="#i-scale"/></svg></span>Financial leverage</h3>
-        <ul class="dots">
-          <li>ROCE after tax 10.8% against a cost of debt of 2.0% after tax: <span class="mk">debt adds 9.3 points to ROE</span> (9.5 in 2024)</li>
-          <li>Net debt / equity down to 1.04x (1.83x in 2024), inside the 1 to 2x range</li>
-        </ul>
+      <div class="card blue lv b" style="--d:1400">
+        <h3 class="ch"><span class="ib solid"><svg class="ic"><use href="#i-scale"/></svg></span>Financial leverage<span class="lv-f">(ROCE − cost of debt) × net debt / equity</span></h3>
+        <div class="lv-g">
+          <div class="lv-p b" style="--d:1500" role="img" aria-label="ROCE after tax 10.8 percent against a cost of debt of 2.0 percent after tax: a gap of 8.8 points">
+            <h4>ROCE vs cost of debt</h4><p class="lv-s">both after tax, 2025</p>
+            <div class="lv-v">
+              <p class="lv-gp b" style="--d:2000">gap 8.8 pp</p>
+              <div class="lv-r"><i class="lv-seg gx" style="--d:1800;--x:16.7%;--w:73.3%"></i><i class="lv-d kd pop" style="--d:1700;--x:16.7%"></i><i class="lv-d rc pop" style="--d:1950;--x:90%"></i></div>
+              <div class="lv-lb"><div style="--x:16.7%"><span class="b" style="--d:1800"><b>2.0%</b>cost of debt</span></div><div style="--x:90%"><span class="b" style="--d:2050"><b>10.8%</b>ROCE</span></div></div>
+            </div>
+          </div>
+          <span class="dp-x pop" style="--d:1650">×</span>
+          <div class="lv-p b" style="--d:1600" role="img" aria-label="Net debt to equity 1.04x in 2025, down from 1.83x in 2024, inside the 1 to 2x range">
+            <h4>Net debt / equity</h4>
+            <div class="lv-n"><b class="fig">1.04x</b><span class="lv-chip">2024: 1.83x<i class="tr-dn lv-ok" aria-label="down">▼</i></span></div>
+            <div class="lv-v">
+              <div class="lv-yr"><div style="--x:41.6%"><span class="b" style="--d:2000">2025</span></div><div style="--x:73.2%"><span class="b" style="--d:1950">2024</span></div></div>
+              <div class="lv-r"><i class="lv-band gx" style="--d:1750;--x:40%;--w:40%"></i><i class="lv-ln gx" style="--d:2100;--x:41.6%;--w:31.6%"></i><i class="lv-d y24 pop" style="--d:1900;--x:73.2%"></i><i class="lv-d y25 pop" style="--d:2050;--x:41.6%"></i></div>
+              <p class="lv-bl b" style="--d:2100">1 to 2x range</p>
+            </div>
+          </div>
+          <span class="dp-x pop" style="--d:1750">=</span>
+          <div class="lv-p end b" style="--d:1700" role="img" aria-label="Debt adds 9.3 points to ROE in 2025, 9.5 in 2024">
+            <h4>Debt adds</h4>
+            <div class="lv-res"><b class="fig"><span class="mk" style="--md:2400ms">+9.3</span></b><span class="lv-u">points to ROE</span><span class="lv-chip">2024: +9.5</span></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <footer class="foot"><p class="src">Ratios are rounded. ROCE after tax = EBIT × (1 − 25%) / capital employed. Leverage effect = (ROCE − after-tax cost of debt) × net debt / equity. Source: consolidated accounts 2024 and 2025; team analysis.</p><span class="folio"><i class="lg lg-ll" style="width:63px;height:17px" role="img" aria-label="Lleida.net"></i><b>8</b></span></footer>
+  <footer class="foot"><p class="src">Ratios are rounded. ROCE after tax = EBIT × (1 − 25%) / capital employed. Leverage effect = (ROCE − after-tax cost of debt) × net debt / equity, on unrounded inputs. Source: consolidated accounts 2024 and 2025; team analysis.</p><span class="folio"><i class="lg lg-ll" style="width:63px;height:17px" role="img" aria-label="Lleida.net"></i><b>8</b></span></footer>
 </section>
 
 <!-- 9 VALUE CREATION -->
@@ -1161,8 +1255,9 @@ body.auto #aprog{display:block}
   <h2 class="title b" style="--d:0">Value was created in 2025, but the cushion is thin: at the H1 2026 run rate, EVA would turn negative</h2>
   <div class="body s9">
     <div class="l">
+      <div class="sheet b" style="--d:40">
       <div>
-        <h3 class="blk-h b" style="--d:80">Cost of equity (CAPM) and WACC, 2025</h3>
+        <h3 class="blk-h b" style="--d:80"><span class="ib sm"><svg class="ic"><use href="#i-coins"/></svg></span>Cost of equity (CAPM) and WACC, 2025</h3>
         <div class="eq">
           <div class="tile b" style="--d:150"><b class="fig">3.29%</b><span>risk-free rate</span></div><span class="op pop" style="--d:200">+</span>
           <div class="tile b" style="--d:250"><b class="fig">1.11</b><span>equity beta</span></div><span class="op pop" style="--d:300">×</span>
@@ -1172,7 +1267,7 @@ body.auto #aprog{display:block}
         </div>
       </div>
       <div>
-        <h3 class="blk-h b" style="--d:650">Value creation (EVA), 2025</h3>
+        <h3 class="blk-h b" style="--d:650"><span class="ib teal sm"><svg class="ic"><use href="#i-trend"/></svg></span>Value creation (EVA), 2025</h3>
         <div class="eq">
           <div class="tile b" style="--d:720"><b class="fig">10.8%</b><span>ROCE after tax</span></div><span class="op pop" style="--d:770">−</span>
           <div class="tile b" style="--d:820"><b class="fig">8.1%</b><span>WACC</span></div><span class="op pop" style="--d:870">=</span>
@@ -1182,12 +1277,13 @@ body.auto #aprog{display:block}
         </div>
         <p class="eq-note b" style="--d:1250"><span>2024: −€63k</span></p>
       </div>
-      <div>
-        <h3 class="blk-h b" style="--d:1300">How thin the cushion is: ROCE against the cost of capital</h3>
+      </div>
+      <div class="sheet b" style="--d:1250">
+        <h3 class="blk-h b" style="--d:1300"><span class="ib gold sm"><svg class="ic"><use href="#i-gauge"/></svg></span>How thin the cushion is: ROCE against the cost of capital</h3>
         <div id="c-cush"></div>
       </div>
-      <div>
-        <h3 class="blk-h b" style="--d:1500">Market ratios, end of 2025</h3>
+      <div class="sheet b" style="--d:1450">
+        <h3 class="blk-h b" style="--d:1500"><span class="ib sm"><svg class="ic"><use href="#i-chart"/></svg></span>Market ratios, end of 2025</h3>
         <div class="mkt">
           <div class="b" style="--d:1550"><b class="fig">15.6x</b><span>PER</span></div>
           <div class="b" style="--d:1600"><b class="fig">3.4x</b><span>PBR</span></div>
@@ -1201,11 +1297,31 @@ body.auto #aprog{display:block}
         <h3 class="ch"><span class="ib"><svg class="ic"><use href="#i-chart"/></svg></span>EV / EBITDA, FY2025 (peer median 8.8x)</h3>
         <div id="c-ev"></div>
       </div>
-      <div class="card b" style="--d:1500">
-        <ul class="dots">
-          <li>EVA positive in each market-based variant taken alone (€45k to €469k), about nil if the most prudent are combined; negative at management’s 14.99% WACC and at the H1 2026 run rate (−€146k)</li>
-          <li>Market rewards high returns on a small book (PBR 3.4x vs 2.2x) but doubts their durability: EV/EBITDA 6.3x vs 8.8x (8.5x on cash EBITDA)</li>
-        </ul>
+      <div class="card blue ev b" style="--d:1500">
+        <h3 class="ch"><span class="ib solid"><svg class="ic"><use href="#i-shield"/></svg></span>Stress test and market view</h3>
+        <div class="ev-g">
+          <div class="lv-p b" style="--d:1600" role="img" aria-label="EVA under other assumptions: positive in each market-based variant alone, from 45 to 469 thousand euros; about nil if the most prudent are combined; minus 146 thousand at the H1 2026 run rate; minus 471 thousand at management’s 14.99 percent WACC">
+            <h4>EVA under other assumptions</h4>
+            <div class="ev-rows">
+              <div class="ev-row b" style="--d:1700"><p><span>Each market variant alone</span><b class="pos">+€45k to +€469k</b></p><div class="ev-bar"><i class="gx pos" style="--d:1900;--x:54.5%;--w:42.4%"></i></div></div>
+              <div class="ev-row b" style="--d:1800"><p><span>Most prudent, combined</span><b>about nil</b></p><div class="ev-bar"><i class="ev-dot pop" style="--d:2000"></i></div></div>
+              <div class="ev-row b" style="--d:1900"><p><span>H1 2026 run rate</span><b class="neg">−€146k</b></p><div class="ev-bar"><i class="gxn neg" style="--d:2100;--x:35.4%;--w:14.6%"></i></div></div>
+              <div class="ev-row b" style="--d:2000"><p><span>Management WACC 14.99%</span><b class="neg">−€471k</b></p><div class="ev-bar"><i class="gxn neg" style="--d:2200;--x:2.9%;--w:47.1%"></i></div></div>
+            </div>
+          </div>
+          <div class="lv-p ev-m b" style="--d:1700" role="img" aria-label="Market against peers: price to book 3.4x against 2.2x, rewarding high returns on a small book; EV to EBITDA 6.3x against 8.8x, 8.5x on cash EBITDA, doubting their durability">
+            <div class="ev-s b" style="--d:2000">
+              <p class="ev-l">Price to book</p>
+              <div class="ev-n"><b class="fig">3.4x</b><span class="lv-chip"><i class="tr-up" aria-label="above">▲</i>vs 2.2x peers</span></div>
+              <p class="ev-c">Rewards high returns on a small book</p>
+            </div>
+            <div class="ev-s b" style="--d:2200">
+              <p class="ev-l">EV / EBITDA</p>
+              <div class="ev-n"><b class="fig">6.3x</b><span class="lv-chip"><i class="tr-dn" aria-label="below">▼</i>vs 8.8x peers</span></div>
+              <p class="ev-c">Doubts their durability (8.5x on cash EBITDA)</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1523,7 +1639,7 @@ document.querySelectorAll('.slide[data-sec]').forEach(sl=>{const c=+sl.dataset.s
 
 /* 9: EV / EBITDA vs peers with logos */
 (function(){
-  const W=560,H=314,px0=112,px1=520,sx=v=>px0+v/15*(px1-px0),top=40,rh=42,bh=22;
+  const W=560,H=266,px0=112,px1=520,sx=v=>px0+v/15*(px1-px0),top=40,rh=34,bh=20;
   const svg=box('c-ev',W,H,'EV to EBITDA FY2025: Lleida.net 6.3x, Facephi 7.0x, DocuSign 8.7x, Sinch 8.8x, Tinexta 9.0x, LINK Mobility 13.9x; peer median 8.8x; Lleida.net on cash EBITDA 8.5x');
   const D=[['Lleida.net',6.3,1],['Facephi',7.0],['DocuSign',8.7],['Sinch',8.8],['Tinexta',9.0],['LINK Mobility',13.9]];
   const yb=top+D.length*rh;
