@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lleida.net Financial Analysis</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="build" content="20261021-214712">
+<meta name="build" content="20261021-221137">
 <script>
 /* GitHub Pages lets a browser keep the page for ten minutes (cache-control: max-age=600). On Pages the deck therefore asks for a fresh
    copy of itself, skipping the cache, when it opens and when the tab comes back to the front, and reloads once if that copy is newer.
@@ -884,16 +884,17 @@ body.pv-dragging,body.pv-dragging *{cursor:grabbing!important}
 .pv-nbody p.q{margin:1.1em 0 .3em;font-weight:800}
 @container pn (max-width:720px){.pv-sw span{display:none}}
 @container pn (max-width:610px){.pv-who b{display:none}}
-@container pn (max-width:480px){.pv-who{display:none}}
-@container pn (max-width:410px){.pv-panel[data-id="notes"] .pv-ph h2{display:none}}
+@container pn (max-width:520px){.pv-who{display:none}}
+@container pn (max-width:440px){.pv-panel[data-id="notes"] .pv-sw{display:none}.pv-ph{gap:6px}.pv-fs{gap:4px}.pv-ib{min-width:40px;padding:0 8px}}
 
 /* timer: the digits scale with the panel; it turns amber in the last minute and red once the time is over */
 .pv-tb{padding:8px 22px 20px;gap:14px;container:tb/size}
-.pv-nums{flex:1;min-width:0;min-height:0;display:flex;align-items:center;justify-content:space-evenly;gap:3cqw;container:nums/size}
+.pv-nums{position:relative;flex:1;min-width:0;min-height:0;container:nums/size}
+.pv-ni{position:absolute;inset:0;display:flex;flex-wrap:wrap;align-content:space-evenly;align-items:center;justify-content:space-evenly;gap:0 3cqw;overflow:hidden}
 .pv-n{display:flex;flex-direction:column;align-items:center;min-width:0;text-align:center;line-height:1}
 .pv-n small{margin-bottom:.4em;font:700 18px/1 var(--sans);font-size:max(16px,min(2.3cqw,7cqh));color:var(--mu)}
 .pv-n b{font-family:var(--display);font-weight:700;font-size:56px;font-size:min(16cqw,72cqh);line-height:.95;letter-spacing:-.035em;font-variant-numeric:tabular-nums;white-space:nowrap}
-@container nums (max-aspect-ratio:3/2){.pv-nums{flex-direction:column}.pv-n b{font-size:min(30cqw,34cqh)}}
+@container nums (max-aspect-ratio:17/10){.pv-ni{flex-direction:column;flex-wrap:nowrap;align-content:normal;justify-content:space-evenly}.pv-n b{font-size:min(30cqw,34cqh)}}
 .pv-pbar{position:relative;flex:none;height:18px;border-radius:999px;background:var(--pn2);box-shadow:inset 0 0 0 1px var(--ln2);overflow:hidden}
 .pv-pbar i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:999px;background:var(--ac);transition:width .3s linear}
 .pv-pbar em{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--tx);opacity:.3}
@@ -904,7 +905,7 @@ body.pv-dragging,body.pv-dragging *{cursor:grabbing!important}
 .pv-pace span[data-s="ok"]{color:var(--ok);background:var(--okt)}
 .pv-pace span[data-s="warn"]{color:var(--wa);background:var(--wat)}
 .pv-pace span[data-s="over"]{color:var(--er);background:var(--ert)}
-@container tb (max-width:440px),(max-height:176px){.pv-pace{display:none}}
+@container tb (max-height:176px) or ((max-width:440px) and (max-height:400px)){.pv-pace{display:none}}
 @container pn (max-width:440px){.pv-hr .tt span{display:none}.pv-hr .tt{padding:0 13px}}
 .pv-timer[data-s="warn"]{--pn:#F5B335;--pn2:rgba(36,22,0,.13);--tx:#241600;--mu:#4D3300;--ln:#C98A12;--ln2:rgba(36,22,0,.25);--ac:#241600;--pri:#241600;--prif:#F5B335;
   --ok:#241600;--wa:#241600;--er:#241600;--okt:var(--pn2);--wat:var(--pn2);--ert:var(--pn2)}
@@ -994,10 +995,14 @@ body.pv-dragging,body.pv-dragging *{cursor:grabbing!important}
   .pv-seg button{padding:0 11px}
   #pv-help{padding:0 12px}
   .pv-presets{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .pv-top{flex-wrap:wrap}
+  .pv-link{padding:10px 14px}
+  .pv-link[data-s="off"] span{display:none}
 }
 @media (max-width:760px){
   .pv-top{flex-wrap:wrap;gap:8px;padding:10px 12px}
   .pv-top .pv-link{order:5;flex:1 1 100%}
+  .pv-link[data-s="off"] span{display:inline}
   .pv-wrap{padding:0 10px 10px}
   .pv-work{display:block;overflow:auto}
   .pv-work .pv-split{display:flex;flex-direction:column!important;flex:none!important}
@@ -2862,7 +2867,7 @@ const lyP=(id,w)=>({id:id,w:w||1});
 const lyX=(w,k)=>({d:'x',w:w||1,kids:k});
 const lyY=(w,k)=>({d:'y',w:w||1,kids:k});
 const lyClone=n=>n?JSON.parse(JSON.stringify(n)):null;
-/* drops empty splits, lets a split with one kid be that kid, and merges a split into a parent that runs the same way */
+/* drops empty splits, lets a split with one kid be that kid, merges a split into a parent that runs the same way, and evens out the weights */
 function lyTidy(n){
   if(!n)return null;
   if(isLeaf(n))return n;
@@ -2874,6 +2879,9 @@ function lyTidy(n){
   });
   if(!flat.length)return null;
   if(flat.length===1){flat[0].w=n.w;return flat[0]}
+  /* the weights of the kids add up to their number: a flex row whose weights add up to less than 1 would not fill its space */
+  const sum=flat.reduce((a,k)=>a+k.w,0);
+  if(Math.abs(sum-flat.length)>1e-9){const f=flat.length/sum;flat.forEach(k=>{k.w*=f})}
   n.kids=flat;return n;
 }
 function lyFind(n,id,parent,i){
@@ -3109,7 +3117,7 @@ function mkTimerP(){
     '<button type="button" class="pv-ib pv-cog" aria-haspopup="dialog" aria-expanded="false" aria-label="Timer settings" title="Timer settings: target time, auto-start, reset">'+IC.cog+'</button>';
   p.body.classList.add('pv-tb');
   p.body.innerHTML=
-    '<div class="pv-nums"><div class="pv-n"><small>Elapsed</small><b class="el">00:00</b></div><div class="pv-n"><small class="reml">Remaining</small><b class="rem">15:00</b></div></div>'+
+    '<div class="pv-nums"><div class="pv-ni"><div class="pv-n"><small>Elapsed</small><b class="el">00:00</b></div><div class="pv-n"><small class="reml">Remaining</small><b class="rem">15:00</b></div></div></div>'+
     '<div class="pv-pbar"><i></i></div><div class="pv-pace"></div>';
   return p;
 }
