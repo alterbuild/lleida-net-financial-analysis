@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lleida.net Financial Analysis</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="build" content="20261021-221137">
+<meta name="build" content="20261021-222303">
 <script>
 /* GitHub Pages lets a browser keep the page for ten minutes (cache-control: max-age=600). On Pages the deck therefore asks for a fresh
    copy of itself, skipping the cache, when it opens and when the tab comes back to the front, and reloads once if that copy is newer.
@@ -1794,7 +1794,7 @@ document.querySelectorAll('.slide[data-sec]').forEach(sl=>{const c=+sl.dataset.s
     S('tspan',{dx:6},t).textContent=cmp;
     const fit=()=>{const b=t.getBBox();if(b.width>0)pill.setAttribute('width',Math.round(b.width+28))};   /* same padding left and right */
     fit();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
-    TL(svg,x,142,lines,19,{class:'b f-ink',style:`font-size:14.5px;--d:${d+220}`});
+    TL(svg,x,142,lines,20,{class:'b f-ink',style:`font-size:16.5px;font-weight:600;--d:${d+220}`});
   };
   call(xa,'Price to book (PBR)','3.4x','vs 2.2x peers',true,['Rewards high returns','on a small book'],150);
   call(xb,'EV / EBITDA','6.3x','vs 8.8x peers',false,['Doubts their durability','(8.5x on cash EBITDA)'],250);
