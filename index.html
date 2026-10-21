@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lleida.net Financial Analysis</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="build" content="20261021-204810">
+<meta name="build" content="20261021-214712">
 <script>
 /* GitHub Pages lets a browser keep the page for ten minutes (cache-control: max-age=600). On Pages the deck therefore asks for a fresh
    copy of itself, skipping the cache, when it opens and when the tab comes back to the front, and reloads once if that copy is newer.
@@ -711,118 +711,304 @@ body.blank #blank{display:block}
 #fsm .fm-n{margin:10px 4px 2px;font-size:12.5px;opacity:.7}
 #fsm .fm-x{margin:10px 0 0;grid-template-columns:1fr;text-align:center;opacity:.8}
 
-/* ---------- presenter view (laptop window) ---------- */
-body.pv{background:#0E1322;overflow:hidden;padding:0}
+/* ---------- presenter view (laptop window) ----------
+   Made to be read from a distance: big type, strong contrast, few small labels. Light or dark (html[data-theme], set by presenter.js).
+   Panels are flex children of a tree of splits; a number on a node is its flex-grow. */
+body.pv{background:#E8ECF3;overflow:hidden;padding:0}
+:root[data-theme="dark"] body.pv{background:#0A0F1E}
 body.pv #stage,body.pv #ctrl,body.pv #notes,body.pv #prog,body.pv #tip,body.pv #curtain{display:none!important}
-.pv-root{--bg:#0E1322;--pn:#161D33;--pn2:#1D2640;--ln:#2A3556;--tx:#E8ECF5;--mu:#98A2BD;--ok:#2BC48A;--wa:#F5B335;--er:#FF6B86;--ac:#4DA3FF;
-  position:fixed;inset:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;background:var(--bg);color:var(--tx);font-family:var(--sans);font-size:15px;line-height:1.4}
+body.pv #toast{bottom:96px;max-width:min(680px,calc(100% - 32px));padding:14px 24px;border:1px solid rgba(255,255,255,.22);font-size:17px}
+body.pv #fsm{bottom:92px}
+
+.pv-root{--bg:#E8ECF3;--pn:#FFFFFF;--pn2:#F0F3F9;--ln:#C5CDDD;--ln2:#DCE2EE;--tx:#0F1330;--mu:#434C6D;
+  --ac:#0057B8;--act:#DCE9FA;--aca:rgba(0,87,184,.16);--pri:#0057B8;--prif:#FFFFFF;
+  --ok:#00695E;--okt:#DAF0EC;--wa:#8A5A00;--wat:#FCEFCF;--er:#B3002A;--ert:#FBE3E9;
+  --sh:0 1px 2px rgba(15,19,48,.06),0 10px 26px -16px rgba(15,19,48,.32);
+  position:fixed;inset:0;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;background:var(--bg);color:var(--tx);
+  font:500 17px/1.4 var(--sans);-webkit-font-smoothing:antialiased}
+:root[data-theme="dark"] .pv-root{--bg:#0A0F1E;--pn:#141B30;--pn2:#1C2542;--ln:#34416B;--ln2:#252F52;--tx:#F4F6FC;--mu:#B8C2DD;
+  --ac:#6CB3FF;--act:#1B3358;--aca:rgba(108,179,255,.22);--pri:#5BA8FF;--prif:#05122B;
+  --ok:#3DD6A3;--okt:#123B35;--wa:#FFC857;--wat:#3A2D0C;--er:#FF8099;--ert:#451424;--sh:none}
 .pv-root *{box-sizing:border-box}
-.pv-top,.pv-bar{display:flex;align-items:center;gap:12px;padding:12px 18px}
-.pv-top{padding-bottom:10px}
-.pv-brand{display:flex;align-items:center;gap:12px;font:700 17px/1 var(--display)}
-.pv-brand .lg{width:112px;height:30px}
-.pv-brand span{padding-left:12px;border-left:1px solid var(--ln);color:var(--mu);font-weight:600}
+.pv-root button,.pv-root input{font-family:inherit}
+.pv-root button{touch-action:manipulation}
 .pv-sp{flex:1}
-.pv-link{display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:var(--pn);border:1px solid var(--ln);font-weight:600;font-size:14px;white-space:nowrap}
-.pv-link i{width:9px;height:9px;border-radius:50%;background:var(--wa)}
-.pv-link[data-s="on"] i{background:var(--ok);box-shadow:0 0 0 4px rgba(43,196,138,.2)}
-.pv-clock{font:700 20px/1 var(--display);font-variant-numeric:tabular-nums;color:var(--mu);min-width:64px;text-align:right}
-.pv-btn{appearance:none;border:1px solid var(--ln);background:var(--pn2);color:var(--tx);font:600 14.5px/1 var(--sans);height:38px;padding:0 16px;border-radius:999px;cursor:pointer;white-space:nowrap}
-.pv-btn:hover{background:#27335A}
-.pv-btn:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
-.pv-btn[aria-pressed="true"]{background:#fff;color:#0E1322;border-color:#fff}
-.pv-pri{background:#0073DA;border-color:#0073DA;color:#fff}.pv-pri:hover{background:#1583EA}
-.pv-lg{height:46px;padding:0 24px;font-size:16.5px}
-.pv-btn kbd{margin-left:6px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.14);font:600 11.5px/1 var(--sans)}
-.pv-main{display:grid;grid-template-columns:164px minmax(0,1.3fr) minmax(0,.95fr);gap:14px;padding:0 18px 12px;min-height:0}
-.pv-center{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:14px;min-height:0;min-width:0}
-.pv-right{display:grid;grid-template-rows:minmax(0,1fr);min-height:0;min-width:0}
-/* slide selector (like the sidebar of Preview on the Mac): it widens and enlarges its thumbnails under the pointer */
-.pv-railw{position:relative;min-height:0}
-.pv-rail{--tw:128px;--ts:.08;position:absolute;left:0;top:0;bottom:0;width:calc(var(--tw) + 28px);overflow-x:hidden;overflow-y:auto;padding:12px 14px 2px;border-radius:18px;background:var(--pn);
-  border:1px solid var(--ln);z-index:6;transition:width .26s cubic-bezier(.2,.75,.2,1),box-shadow .26s;scrollbar-width:thin;scrollbar-color:#3A4770 transparent;overscroll-behavior:contain}
-.pv-rail:hover{--tw:300px;--ts:.1875;box-shadow:0 28px 64px -18px #000}
-.pv-th{display:block;width:100%;margin:0 0 14px;padding:0;border:0;background:none;text-align:left;color:var(--mu);cursor:pointer;font:inherit}
-.pv-th .tb{position:relative;display:block;width:var(--tw);height:calc(var(--tw) * .5625);overflow:hidden;border-radius:7px;background:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.14);
-  transition:width .26s cubic-bezier(.2,.75,.2,1),height .26s cubic-bezier(.2,.75,.2,1),box-shadow .2s}
-.pv-th .pvs{transform:scale(var(--ts));transition:transform .26s cubic-bezier(.2,.75,.2,1)}
-.pv-th:hover .tb{box-shadow:0 0 0 2px #6C7FB0}
-.pv-th[aria-current="true"] .tb{box-shadow:0 0 0 3px var(--ac)}
-.pv-th:focus-visible{outline:none}.pv-th:focus-visible .tb{box-shadow:0 0 0 3px #fff}
-.pv-th .tl{display:flex;align-items:baseline;gap:8px;margin-top:6px;font:600 13px/1.2 var(--sans);min-width:0}
-.pv-th .tl b{flex:none;min-width:18px;font:700 13px/1.2 var(--display);font-variant-numeric:tabular-nums}
-.pv-th .tl span{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;opacity:0;transition:opacity .2s}
-.pv-rail:hover .tl span{opacity:1}
-.pv-th[aria-current="true"] .tl{color:var(--tx)}
-.pv-pane{display:flex;flex-direction:column;min-height:0;min-width:0;padding:12px 14px;border-radius:18px;background:var(--pn);border:1px solid var(--ln)}
-.pv-label{display:flex;align-items:baseline;gap:10px;margin-bottom:9px;font-size:13px;color:var(--mu)}
-.pv-label b{font:700 12.5px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--tx)}
-.pv-label em{margin-left:auto;font-style:normal}
-.pv-area{flex:1;min-height:0;display:grid;place-items:center}
-.pv-box{position:relative;overflow:hidden;border-radius:10px;background:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.1),0 18px 40px -22px #000}
+.pv-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pv-i{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pv-i[data-f]{fill:currentColor;stroke:none}
+
+/* buttons */
+.pv-btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:9px;height:44px;padding:0 18px;border:1.5px solid var(--ln);border-radius:999px;background:var(--pn);color:var(--tx);
+  font:700 16px/1 var(--sans);cursor:pointer;white-space:nowrap}
+.pv-btn:hover:not(:disabled){background:var(--pn2);border-color:var(--mu)}
+.pv-btn:disabled{opacity:.45;cursor:default}
+.pv-btn .pv-i{width:20px;height:20px}
+.pv-pri{background:var(--pri);border-color:var(--pri);color:var(--prif)}
+.pv-pri:hover:not(:disabled){background:var(--pri);border-color:var(--pri);filter:brightness(1.1)}
+.pv-lg{height:54px;padding:0 26px;font-size:19px}
+.pv-btn kbd{padding:3px 7px;border-radius:6px;background:var(--pn2);border:1px solid var(--ln);font:700 13px/1 var(--sans);color:var(--mu)}
+.pv-root :is(.pv-btn,.pv-grip,.pv-hide,.pv-ib,.pv-seg button,.pv-preset,.pv-th,.pv-box,.pv-gut):focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+
+/* top bar */
+.pv-top,.pv-bar{display:flex;align-items:center;gap:12px;padding:12px 18px}
+.pv-top{min-height:68px}
+.pv-brand{display:flex;align-items:center;gap:14px;font:700 19px/1 var(--display);white-space:nowrap}
+.pv-brand .lg{width:122px;height:32px}
+.pv-brand .lg-llw{display:none}
+:root[data-theme="dark"] .pv-brand .lg-ll{display:none}
+:root[data-theme="dark"] .pv-brand .lg-llw{display:block}
+.pv-brand span{padding-left:14px;border-left:2px solid var(--ln);color:var(--mu);font-weight:600}
+.pv-link{display:flex;flex:0 1 auto;align-items:center;gap:10px;min-width:0;padding:10px 18px;border-radius:999px;background:var(--pn);border:1.5px solid var(--ln);font:600 16px/1.2 var(--sans);white-space:nowrap}
+.pv-link span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.pv-link i{flex:none;width:12px;height:12px;border-radius:50%;background:var(--wa);box-shadow:0 0 0 4px var(--wat)}
+.pv-link[data-s="on"] i{background:var(--ok);box-shadow:0 0 0 4px var(--okt)}
+.pv-seg{display:inline-flex;padding:4px;border-radius:999px;background:var(--pn);border:1.5px solid var(--ln)}
+.pv-seg button{appearance:none;display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 15px;border:0;border-radius:999px;background:transparent;color:var(--mu);font:700 16px/1 var(--sans);cursor:pointer}
+.pv-seg button .pv-i{width:19px;height:19px}
+.pv-seg button[aria-pressed="true"]{background:var(--pri);color:var(--prif)}
+.pv-clock{min-width:78px;text-align:right;font:700 26px/1 var(--display);font-variant-numeric:tabular-nums;color:var(--mu)}
+
+/* the workspace */
+.pv-wrap{position:relative;display:flex;min-width:0;min-height:0;padding:0 16px 14px}
+.pv-work{flex:1;min-width:0;min-height:0;display:flex}
+.pv-split{display:flex;min-width:0;min-height:0}
+.pv-split[data-d="x"]{flex-direction:row}
+.pv-split[data-d="y"]{flex-direction:column}
+.pv-park{display:none}
+.pv-nopanel{flex:1;display:grid;place-content:center;justify-items:center;gap:14px;text-align:center;color:var(--mu);border:2px dashed var(--ln);border-radius:22px}
+.pv-nopanel b{font:700 30px/1.2 var(--display);color:var(--tx)}
+.pv-nopanel span{font:500 20px/1.4 var(--sans)}
+
+/* gutters: a short handle in the gap between two panels */
+.pv-gut{position:relative;flex:none;z-index:3;outline:none;touch-action:none}
+.pv-gut[data-d="x"]{width:12px;cursor:col-resize}
+.pv-gut[data-d="y"]{height:12px;cursor:row-resize}
+.pv-gut::before{content:"";position:absolute}
+.pv-gut[data-d="x"]::before{inset:0 -4px}
+.pv-gut[data-d="y"]::before{inset:-4px 0}
+.pv-gut::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:4px;background:var(--ln);opacity:.8;transition:background .15s,opacity .15s}
+.pv-gut[data-d="x"]::after{width:5px;height:64px}
+.pv-gut[data-d="y"]::after{width:64px;height:5px}
+.pv-gut:hover::after,.pv-gut:focus-visible::after,.pv-gut.on::after{background:var(--ac);opacity:1}
+.pv-gut:focus-visible{outline:none}
+body.pv-sizing,body.pv-dragging{user-select:none;-webkit-user-select:none}
+body.pv-sizing.pv-ew,body.pv-sizing.pv-ew *{cursor:col-resize!important}
+body.pv-sizing.pv-ns,body.pv-sizing.pv-ns *{cursor:row-resize!important}
+body.pv-dragging,body.pv-dragging *{cursor:grabbing!important}
+
+/* drag and drop: where the panel would land, the strip that hides it, the panel following the pointer */
+.pv-drop{position:absolute;z-index:6;pointer-events:none;border-radius:16px;background:var(--aca);box-shadow:inset 0 0 0 4px var(--ac);opacity:0;transition:left .09s,top .09s,width .09s,height .09s,opacity .12s}
+.pv-drop.on{opacity:1}
+.pv-drop[data-k="swap"]{display:grid;place-items:center}
+.pv-drop[data-k="swap"]::after{content:"Swap places";padding:11px 22px;border-radius:999px;background:var(--pri);color:var(--prif);font:700 20px/1 var(--display)}
+.pv-tray{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:7;display:flex;align-items:center;gap:12px;height:62px;padding:0 30px;border-radius:999px;border:3px dashed var(--er);background:var(--pn);color:var(--er);
+  font:700 19px/1 var(--display);box-shadow:0 18px 40px -14px rgba(0,0,0,.45);white-space:nowrap}
+.pv-tray .pv-i{width:26px;height:26px}
+.pv-tray.hot{background:var(--er);color:#fff;border-style:solid}
+:root[data-theme="dark"] .pv-tray.hot{color:#2A0510}
+.pv-ghost{position:fixed;left:0;top:0;z-index:60;pointer-events:none;display:flex;align-items:center;gap:10px;height:48px;padding:0 20px 0 14px;border-radius:14px;background:var(--pn);color:var(--tx);border:3px solid var(--ac);
+  box-shadow:0 18px 44px -10px rgba(0,0,0,.5);font:700 18px/1 var(--display);white-space:nowrap}
+.pv-ghost .pv-i{color:var(--ac)}
+
+/* a panel: title bar (grab it to move the panel) and body */
+.pv-panel{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;background:var(--pn);border:1px solid var(--ln);border-radius:18px;box-shadow:var(--sh);
+  container:pn/inline-size;transition:opacity .15s}
+.pv-panel.is-drag{opacity:.38}
+.pv-panel.flash{animation:pvflash 1.3s ease-out}
+@keyframes pvflash{0%{box-shadow:0 0 0 0 var(--ac)}25%{box-shadow:0 0 0 6px var(--ac)}100%{box-shadow:0 0 0 0 transparent}}
+.pv-ph{flex:none;display:flex;align-items:center;gap:10px;height:54px;padding:0 8px 0 6px;border-bottom:1px solid var(--ln2);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.pv-ph h2{min-width:0;margin:0;overflow:hidden;text-overflow:ellipsis;font:700 19px/1 var(--display);letter-spacing:-.005em;white-space:nowrap}
+.pv-grip,.pv-hide{appearance:none;flex:none;display:grid;place-items:center;width:40px;height:40px;padding:0;border:0;border-radius:12px;background:transparent;color:var(--mu);cursor:pointer}
+.pv-grip{cursor:grab}
+.pv-grip:hover,.pv-hide:hover{background:var(--pn2);color:var(--tx)}
+.pv-grip .pv-i,.pv-hide .pv-i{width:21px;height:21px}
+.pv-hx{flex:none;padding:7px 12px;border-radius:999px;background:var(--pn2);font:700 17px/1 var(--display);font-variant-numeric:tabular-nums}
+.pv-ht{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--mu);font:600 18px/1.2 var(--sans)}
+.pv-hr{flex:none;display:flex;align-items:center;gap:10px}
+.pv-hx:empty,.pv-ht:empty,.pv-hr:empty{display:none}
+.pv-pb{position:relative;flex:1;min-width:0;min-height:0;display:flex;flex-direction:column}
+@container pn (max-width:470px){.pv-ht{display:none}}
+@container pn (max-width:350px){.pv-hx{display:none}}
+
+/* slide panels (current, next, previous) */
+.pv-sl{padding:12px 14px 14px}
+.pv-area{flex:1;min-width:0;min-height:0;display:grid;place-items:center}
+.pv-box{position:relative;overflow:hidden;border-radius:10px;background:#fff;box-shadow:0 0 0 1px var(--ln),0 12px 28px -18px rgba(0,0,0,.6);cursor:pointer;outline:none}
+.pv-box[aria-label^="No "]{cursor:default}
 .pv-layer{position:absolute;inset:0;will-change:transform}
 .pv-box .pvs{transform:scale(var(--s,.5))}
-#pv-cur{cursor:pointer}
+.pv-none{display:grid;place-items:center;width:100%;height:100%;padding:8%;background:var(--pn2);color:var(--mu);font:700 max(16px,calc(var(--s,.3)*60px))/1.25 var(--sans);text-align:center}
 .pvs{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--sans);
   -webkit-font-smoothing:antialiased;pointer-events:none}
 .pvs .slide{position:absolute;inset:0;opacity:1;visibility:visible}
 .pvs *{animation:none!important;transition:none!important}
-.pv-timer{gap:10px;padding:12px 22px 14px}
-.pv-tm{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
-.pv-tm small{display:block;margin-bottom:2px;font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);font-weight:600}
-.pv-tm b{display:block;font:700 clamp(76px,12.5vh,168px)/.95 var(--display);letter-spacing:-.035em;font-variant-numeric:tabular-nums}
-.pv-tm .pv-rem{text-align:right}
-.pv-tm .pv-rem b{font-size:clamp(42px,7vh,92px);color:var(--mu)}
-.pv-pb{position:relative;height:10px;border-radius:999px;background:var(--pn2);overflow:hidden}
-.pv-pb i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:999px;background:var(--ac);transition:width .3s linear}
-.pv-pb em{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:rgba(255,255,255,.3)}
-.pv-timer[data-s="warn"] .pv-pb i{background:var(--wa)}.pv-timer[data-s="over"] .pv-pb i{background:var(--er)}
-.pv-timer[data-s="warn"] #pv-rem{color:var(--wa)}.pv-timer[data-s="over"] #pv-rem{color:var(--er)}
-.pv-timer[data-s="over"] #pv-el{color:var(--er)}
-.pv-tc{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
-.pv-tc label{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--mu)}
-.pv-tc input[type=text]{width:66px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);font:700 15px/1 var(--display);text-align:center}
-.pv-tc input[type=checkbox]{width:16px;height:16px;accent-color:#0073DA}
-.pv-pace{display:flex;flex-wrap:wrap;gap:8px;font-size:14px}
-.pv-pace span{padding:4px 12px;border-radius:999px;background:var(--pn2);border:1px solid var(--ln);font-weight:600;font-size:13.5px}
-.pv-pace span[data-s="ok"]{color:var(--ok)}.pv-pace span[data-s="warn"]{color:var(--wa)}.pv-pace span[data-s="over"]{color:var(--er)}
-.pv-notes{min-height:0}
-.pv-notes .pv-label span{font-weight:600;color:var(--tx)}
-.pv-sw{position:relative;margin-left:auto;align-self:center;display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+
+/* all slides: the thumbnails grow with the panel (resize it for bigger ones) */
+.pv-rl{overflow:auto;padding:14px;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:var(--ln) transparent;overscroll-behavior:contain}
+.pv-grid{display:grid;grid-template-columns:repeat(var(--cols,1),var(--tw,160px));justify-content:center;gap:16px 14px;align-content:start}
+.pv-th{appearance:none;display:block;min-width:0;padding:0;border:0;background:none;color:var(--tx);text-align:left;cursor:pointer;font:inherit}
+.pv-th .tb{position:relative;display:block;width:var(--tw);height:calc(var(--tw) * .5625);overflow:hidden;border-radius:9px;background:#fff;box-shadow:0 0 0 1px var(--ln)}
+.pv-th .pvs{transform:scale(var(--ts))}
+.pv-th .nm{position:absolute;left:6px;top:6px;z-index:1;min-width:30px;height:30px;padding:0 9px;border-radius:9px;background:rgba(15,19,48,.88);color:#fff;font:700 17px/30px var(--display);text-align:center}
+.pv-th .tl{display:none;margin-top:7px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--mu);font:600 16px/1.25 var(--sans)}
+.pv-grid.ttl .tl{display:block}
+.pv-th:hover .tb{box-shadow:0 0 0 3px var(--mu)}
+.pv-th[aria-current="true"] .tb{box-shadow:0 0 0 5px var(--ac)}
+.pv-th[aria-current="true"] .nm{background:var(--pri);color:var(--prif)}
+.pv-th[aria-current="true"] .tl{color:var(--tx);font-weight:800}
+
+/* speaker notes */
+.pv-who{display:flex;align-items:center;gap:10px;min-width:0}
+.pv-who .av{width:36px;height:36px;font-size:14px}
+.pv-who b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 18px/1.1 var(--display)}
+.pv-fs{display:flex;gap:6px}
+.pv-ib{appearance:none;display:inline-flex;align-items:baseline;justify-content:center;min-width:46px;height:42px;padding:0 11px;border:1.5px solid var(--ln);border-radius:12px;background:var(--pn);color:var(--tx);font:800 20px/42px var(--display);cursor:pointer}
+.pv-ib small{font-size:.74em;margin-left:1px}
+.pv-ib:hover{background:var(--pn2);border-color:var(--mu)}
+.pv-ib.pv-cog{align-items:center;min-width:42px;padding:0}
+.pv-ib.pv-cog .pv-i{width:21px;height:21px}
+.pv-sw{position:relative;display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font:700 16px/1 var(--sans);color:var(--tx);white-space:nowrap}
 .pv-sw input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
-.pv-sw i{position:relative;flex:none;width:34px;height:20px;border-radius:999px;background:#3A4770;transition:background .2s}
-.pv-sw i::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s}
-.pv-sw input:checked+i{background:var(--ac)}
-.pv-sw input:checked+i::after{transform:translateX(14px)}
-.pv-sw input:focus-visible+i{outline:2px solid #fff;outline-offset:2px}
-.pv-notes .pv-label .pv-sw span{font-weight:500;color:var(--mu)}
+.pv-sw i{position:relative;flex:none;width:50px;height:30px;border-radius:999px;background:var(--pn2);box-shadow:inset 0 0 0 2px var(--mu);transition:background .2s}
+.pv-sw i::after{content:"";position:absolute;top:6px;left:6px;width:18px;height:18px;border-radius:50%;background:var(--mu);transition:transform .2s,background .2s}
+.pv-sw input:checked+i{background:var(--pri);box-shadow:none}
+.pv-sw input:checked+i::after{transform:translateX(20px);background:var(--prif)}
+.pv-sw input:focus-visible+i{outline:3px solid var(--ac);outline-offset:2px}
 .pv-sw[data-p="1"] span::after{content:" · paused";color:var(--wa)}
-.pv-nbody{flex:1;min-height:0;overflow:auto;padding-right:8px;font-size:var(--nf,22px);line-height:1.5;scrollbar-color:#3A4770 transparent}
-.pv-nbody p{margin:0 0 .75em}
-.pv-nbody h4{margin:0 0 .6em;font:600 .62em/1.35 var(--sans);color:var(--mu)}
-.pv-nbody h5{margin:1.3em 0 .45em;padding-top:.7em;border-top:1px solid var(--ln);font:700 .6em/1.3 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ac)}
+.pv-nbody{flex:1;min-height:0;overflow:auto;padding:14px 26px 34px 24px;font-size:var(--nf,30px);line-height:1.45;font-weight:500;scrollbar-width:thin;scrollbar-color:var(--ln) transparent;outline:none}
+.pv-nbody:focus-visible{box-shadow:inset 0 0 0 3px var(--ac)}
+.pv-nbody p{margin:0 0 .8em}
+.pv-nbody h4{margin:0 0 .75em;font:600 max(17px,.58em)/1.35 var(--sans);color:var(--mu)}
+.pv-nbody h5{margin:1.4em 0 .5em;padding-top:.7em;border-top:2px solid var(--ln2);font:800 max(16px,.56em)/1.3 var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--ac)}
 .pv-nbody h5:first-of-type{margin-top:.2em;padding-top:0;border-top:0}
-.pv-nbody p.q{margin:1em 0 .3em;font-weight:700;color:#fff}
-.pv-bar{border-top:1px solid var(--ln);background:#0B101E}
-.pv-dots{display:flex;align-items:center;gap:6px;padding:0 8px}
-.pv-dots button{appearance:none;border:0;padding:0;width:10px;height:10px;border-radius:999px;background:#3A4770;cursor:pointer;transition:width .25s,background .25s}
-.pv-dots button[aria-current="true"]{width:28px;background:var(--ac)}
-.pv-cnt{font:700 15px/1 var(--display);font-variant-numeric:tabular-nums;color:var(--mu);min-width:54px}
-.pv-help{position:fixed;inset:0;z-index:5;display:grid;place-items:center;background:rgba(5,8,18,.72);padding:20px}
-.pv-help>div{width:min(760px,100%);max-height:100%;overflow:auto;padding:26px 30px;border-radius:22px;background:var(--pn);border:1px solid var(--ln);box-shadow:0 30px 80px -20px #000}
-.pv-help h2{margin:0 0 14px;font:700 24px/1.2 var(--display)}
-.pv-help h3{margin:18px 0 6px;font:700 15px/1.3 var(--display);color:var(--ac)}
-.pv-help p,.pv-help li{margin:0 0 6px;color:var(--tx);font-size:15.5px;line-height:1.55}
-.pv-help ol,.pv-help ul{margin:0;padding-left:22px}
-.pv-help kbd{padding:2px 7px;border-radius:6px;background:var(--pn2);border:1px solid var(--ln);font:600 13px/1 var(--sans)}
-.pv-help .pv-btn{margin-top:18px}
-@media (max-width:1000px){
-  .pv-main{grid-template-columns:150px minmax(0,1fr)}
-  .pv-right{grid-column:1/-1;min-height:260px}
-  .pv-brand span,.pv-clock{display:none}
+.pv-nbody p.q{margin:1.1em 0 .3em;font-weight:800}
+@container pn (max-width:720px){.pv-sw span{display:none}}
+@container pn (max-width:610px){.pv-who b{display:none}}
+@container pn (max-width:480px){.pv-who{display:none}}
+@container pn (max-width:410px){.pv-panel[data-id="notes"] .pv-ph h2{display:none}}
+
+/* timer: the digits scale with the panel; it turns amber in the last minute and red once the time is over */
+.pv-tb{padding:8px 22px 20px;gap:14px;container:tb/size}
+.pv-nums{flex:1;min-width:0;min-height:0;display:flex;align-items:center;justify-content:space-evenly;gap:3cqw;container:nums/size}
+.pv-n{display:flex;flex-direction:column;align-items:center;min-width:0;text-align:center;line-height:1}
+.pv-n small{margin-bottom:.4em;font:700 18px/1 var(--sans);font-size:max(16px,min(2.3cqw,7cqh));color:var(--mu)}
+.pv-n b{font-family:var(--display);font-weight:700;font-size:56px;font-size:min(16cqw,72cqh);line-height:.95;letter-spacing:-.035em;font-variant-numeric:tabular-nums;white-space:nowrap}
+@container nums (max-aspect-ratio:3/2){.pv-nums{flex-direction:column}.pv-n b{font-size:min(30cqw,34cqh)}}
+.pv-pbar{position:relative;flex:none;height:18px;border-radius:999px;background:var(--pn2);box-shadow:inset 0 0 0 1px var(--ln2);overflow:hidden}
+.pv-pbar i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:999px;background:var(--ac);transition:width .3s linear}
+.pv-pbar em{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--tx);opacity:.3}
+.pv-pace{flex:none;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;min-width:0}
+.pv-hr .tt{height:42px;padding:0 18px;font-size:17px}
+.pv-hr .tt .pv-i{width:18px;height:18px}
+.pv-pace span{padding:10px 16px;border-radius:999px;background:var(--pn2);color:var(--tx);font:700 17px/1 var(--sans);white-space:nowrap}
+.pv-pace span[data-s="ok"]{color:var(--ok);background:var(--okt)}
+.pv-pace span[data-s="warn"]{color:var(--wa);background:var(--wat)}
+.pv-pace span[data-s="over"]{color:var(--er);background:var(--ert)}
+@container tb (max-width:440px),(max-height:176px){.pv-pace{display:none}}
+@container pn (max-width:440px){.pv-hr .tt span{display:none}.pv-hr .tt{padding:0 13px}}
+.pv-timer[data-s="warn"]{--pn:#F5B335;--pn2:rgba(36,22,0,.13);--tx:#241600;--mu:#4D3300;--ln:#C98A12;--ln2:rgba(36,22,0,.25);--ac:#241600;--pri:#241600;--prif:#F5B335;
+  --ok:#241600;--wa:#241600;--er:#241600;--okt:var(--pn2);--wat:var(--pn2);--ert:var(--pn2)}
+.pv-timer[data-s="over"]{--pn:#B3002A;--pn2:rgba(255,255,255,.17);--tx:#FFFFFF;--mu:#FFDDE4;--ln:#8E0021;--ln2:rgba(255,255,255,.3);--ac:#FFFFFF;--pri:#FFFFFF;--prif:#B3002A;
+  --ok:#FFFFFF;--wa:#FFFFFF;--er:#FFFFFF;--okt:var(--pn2);--wat:var(--pn2);--ert:var(--pn2)}
+.pv-timer[data-s="warn"] .pv-hide:hover,.pv-timer[data-s="over"] .pv-hide:hover,.pv-timer[data-s="warn"] .pv-grip:hover,.pv-timer[data-s="over"] .pv-grip:hover{background:var(--pn2)}
+
+/* timer settings (under the cog) */
+.pv-pop{position:fixed;z-index:21;width:min(400px,calc(100vw - 24px));display:grid;gap:16px;padding:20px;border-radius:20px;background:var(--pn);color:var(--tx);border:1px solid var(--ln);box-shadow:0 26px 64px -18px rgba(0,0,0,.5)}
+.pv-pop .tgl{display:flex;align-items:center;justify-content:space-between;gap:14px;font:700 18px/1.2 var(--sans)}
+.pv-pop input[type=text]{width:116px;height:52px;padding:0 12px;border:2px solid var(--ln);border-radius:14px;background:var(--pn2);color:var(--tx);font:700 26px/1 var(--display);text-align:center;font-variant-numeric:tabular-nums}
+.pv-pop input[type=text]:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.pv-pop .ck{display:flex;align-items:center;gap:12px;font:600 17px/1.35 var(--sans);cursor:pointer}
+.pv-pop .ck input{flex:none;width:24px;height:24px;margin:0;accent-color:var(--pri)}
+
+/* bottom bar */
+.pv-bar{padding:6px 18px 16px}
+.pv-cnt{display:flex;align-items:baseline;gap:16px;min-width:0;margin-left:10px}
+.pv-cnt b{font:700 30px/1 var(--display);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pv-cnt span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 20px/1.2 var(--sans);color:var(--mu)}
+#pv-blank .b{display:none}
+#pv-blank[aria-pressed="true"]{background:var(--er);border-color:var(--er);color:#fff}
+#pv-blank[aria-pressed="true"] .a{display:none}
+#pv-blank[aria-pressed="true"] .b{display:inline}
+#pv-blank[aria-pressed="true"] kbd{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.4);color:#fff}
+:root[data-theme="dark"] #pv-blank[aria-pressed="true"]{color:#2A0510}
+:root[data-theme="dark"] #pv-blank[aria-pressed="true"] kbd{color:#2A0510;background:rgba(0,0,0,.14);border-color:rgba(0,0,0,.3)}
+
+/* the Panels menu */
+.pv-menu{position:fixed;z-index:20;width:min(720px,calc(100vw - 24px));max-height:calc(100vh - 96px);overflow:auto;padding:18px 22px 18px;border-radius:24px;background:var(--pn);color:var(--tx);border:1px solid var(--ln);
+  box-shadow:0 30px 80px -22px rgba(0,0,0,.55);transition:opacity .12s}
+.pv-menu.away{opacity:0;pointer-events:none}
+.pv-mh{display:flex;align-items:center;justify-content:space-between}
+.pv-mh h2{margin:0;font:700 24px/1.2 var(--display)}
+.pv-menu h3{margin:18px 0 10px;font:700 17px/1.2 var(--display);color:var(--mu)}
+.pv-menu h3 em{margin-left:6px;font-style:normal;font-weight:700;color:var(--wa)}
+.pv-presets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pv-preset{appearance:none;display:flex;flex-direction:column;gap:9px;min-width:0;padding:8px 8px 11px;border:2px solid var(--ln2);border-radius:16px;background:var(--pn);color:var(--tx);text-align:left;font:inherit;cursor:pointer}
+.pv-preset:hover:not(:disabled){border-color:var(--mu);background:var(--pn2)}
+.pv-preset[aria-pressed="true"]{border-color:var(--ac);background:var(--act)}
+.pv-preset:disabled{opacity:.55;cursor:default}
+.pv-preset .pn{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 4px}
+.pv-preset .pn b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 17px/1.1 var(--display)}
+.pv-preset kbd{flex:none;min-width:24px;padding:3px 6px;border-radius:6px;border:1px solid var(--ln);background:var(--pn);font:700 13px/1 var(--sans);color:var(--mu);text-align:center}
+.pv-mini{display:flex;height:78px;padding:5px;border-radius:10px;background:var(--bg);border:1px solid var(--ln2)}
+.pv-mini>.ms,.pv-mini>.mc{flex:1}
+.pv-minin{flex:1;display:grid;place-items:center;border:2px dashed var(--ln);border-radius:7px;color:var(--mu);font:600 14px/1.2 var(--sans);text-align:center}
+.ms{display:flex;gap:3px;min-width:0;min-height:0}
+.ms[data-d="x"]{flex-direction:row}
+.ms[data-d="y"]{flex-direction:column}
+.mc{display:grid;place-items:center;min-width:0;min-height:0;overflow:hidden;border-radius:5px;background:var(--act);color:var(--ac)}
+.mc .pv-i{width:17px;height:17px}
+.mc[data-k="notes"],.ic[data-k="notes"]{background:var(--okt);color:var(--ok)}
+.mc[data-k="timer"],.ic[data-k="timer"]{background:var(--wat);color:var(--wa)}
+.mc[data-k="rail"],.ic[data-k="rail"]{background:var(--pn2);color:var(--mu)}
+.pv-plist{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0;padding:0}
+.pv-plist li{display:flex;align-items:center;min-width:0;border:2px solid var(--ln2);border-radius:16px;background:var(--pn)}
+.pv-plist li[data-on="false"]{background:var(--pn2)}
+.pv-pg{flex:none;display:grid;place-items:center;width:34px;height:54px;color:var(--mu);cursor:grab;touch-action:none}
+.pv-pg .pv-i{width:20px;height:20px}
+.pv-plist label{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:10px;height:54px;padding-right:12px;cursor:pointer}
+.pv-plist input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.pv-plist .ic{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:var(--act);color:var(--ac)}
+.pv-plist .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 17px/1.2 var(--display)}
+.pv-plist .sw{position:relative;flex:none;width:50px;height:30px;border-radius:999px;background:var(--pn2);box-shadow:inset 0 0 0 2px var(--mu);transition:background .2s}
+.pv-plist .sw::after{content:"";position:absolute;top:6px;left:6px;width:18px;height:18px;border-radius:50%;background:var(--mu);transition:transform .2s,background .2s}
+.pv-plist input:checked~.sw{background:var(--pri);box-shadow:none}
+.pv-plist input:checked~.sw::after{transform:translateX(20px);background:var(--prif)}
+.pv-plist input:focus-visible~.sw{outline:3px solid var(--ac);outline-offset:2px}
+.pv-mf{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.pv-mn{margin:14px 0 0;color:var(--mu);font:500 16px/1.5 var(--sans)}
+
+/* help */
+.pv-help{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:20px;background:rgba(10,14,30,.66)}
+.pv-help>div{width:min(840px,100%);max-height:100%;overflow:auto;padding:30px 36px;border-radius:26px;background:var(--pn);border:1px solid var(--ln);box-shadow:0 30px 80px -20px #000}
+.pv-help h2{margin:0 0 14px;font:700 30px/1.2 var(--display)}
+.pv-help h3{margin:22px 0 8px;font:700 19px/1.3 var(--display);color:var(--ac)}
+.pv-help p,.pv-help li{margin:0 0 7px;color:var(--tx);font-size:17px;line-height:1.55}
+.pv-help ol,.pv-help ul{margin:0;padding-left:24px}
+.pv-help kbd{padding:3px 8px;border-radius:7px;background:var(--pn2);border:1px solid var(--ln);font:700 14px/1 var(--sans)}
+.pv-help .pv-btn{margin-top:20px}
+
+@media (prefers-reduced-motion:reduce){.pv-root *{transition:none!important;animation:none!important}}
+@media (max-width:1360px){.pv-brand span{display:none}}
+@media (max-width:1040px){
+  .pv-clock,#pv-panels kbd,.pv-seg button span,#pv-help span{display:none}
+  .pv-seg button{padding:0 11px}
+  #pv-help{padding:0 12px}
+  .pv-presets{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
-@media (max-height:620px){.pv-tm b{font-size:56px}.pv-tm .pv-rem b{font-size:30px}}
-@media (max-width:640px){#b-pv{display:none}}
+@media (max-width:760px){
+  .pv-top{flex-wrap:wrap;gap:8px;padding:10px 12px}
+  .pv-top .pv-link{order:5;flex:1 1 100%}
+  .pv-wrap{padding:0 10px 10px}
+  .pv-work{display:block;overflow:auto}
+  .pv-work .pv-split{display:flex;flex-direction:column!important;flex:none!important}
+  .pv-work .pv-panel{flex:none!important;height:min(76vh,560px);margin-bottom:12px}
+  .pv-work>.pv-panel{margin-bottom:0}
+  .pv-gut{display:none}
+  .pv-bar{flex-wrap:wrap;gap:8px;padding:6px 12px 12px}
+  .pv-cnt{order:9;flex:1 1 100%;margin:0}
+  .pv-plist{grid-template-columns:1fr}
+  .pv-presets{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 
 /* ---------- audio of the speech: player in the notes, "more options" menu, automatic presentation ---------- */
 .ap{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:6px 14px 6px 6px;border-radius:999px;background:var(--apbg,var(--chrome-line));color:var(--apfg,var(--chrome-fg))}
@@ -2203,7 +2389,7 @@ hosts.forEach(player);
 
 /* ======================================================================================================================
    Audio of the speech (injected inside the deck IIFE by tools/build.py, in front of presenter.js; avInit() is called after it).
-   - a player in the speaker notes (deck window and presenter view) with the audio of the slide that is on screen
+   - a player in the speaker notes (deck window only: the presenter view stays silent) with the audio of the slide that is on screen
    - the "more options" menu (three dots): automatic presentation and presenter view
    - automatic presentation: plays the audio of each slide when it appears and moves to the next slide when the audio ends
    AUDIO[i] is the file of slide i+1 (null when there is none). Uses: slides, N, cur, busy, go, MODE, menuOpen, toast, closeMenu, $.
@@ -2362,7 +2548,7 @@ function closeMore(){
 
 /* ---------- start (called after presenter.js has been defined) ---------- */
 function avInit(){
-  if(MODE==='presenter'){mountPlayer(document.getElementById('pv-ap'));avSlide(pcur);return}
+  if(MODE==='presenter')return;   /* no player and no sound in the presenter view: the audio belongs to the presentation window */
   mountPlayer(document.getElementById('notes-a'));
   more=document.getElementById('more');moreBtn=document.getElementById('b-more');
   const ba=document.getElementById('b-auto');
@@ -2618,8 +2804,14 @@ if(MODE==='deck'){
 
 /* ======================================================================================================================
    Presenter view (the window that stays on the laptop)
+   Panels (current, next and previous slide, speaker notes, timer, all slides) sit in a tree of splits. Drag a panel by its
+   title bar to move it (beside another panel = put it there, middle = swap, strip at the bottom = hide), drag the lines
+   between panels to resize, or use the Panels menu (P) to show hidden panels and pick a preset. The arrangement and the
+   colour theme are kept in localStorage.
    ====================================================================================================================== */
-let pcur=0,want=-1,wantAt=0,entryAt=0,autoStart=store.get('lleida-autostart')!=='0',nfont=+store.get('lleida-nfont')||22,autoScroll=store.get('lleida-autoscroll')!=='0',manualUntil=0,spos=0,flowT=0,pristine=null,els={},mountSeq=0,tickT=-1;
+let pcur=0,want=-1,wantAt=0,entryAt=0,autoStart=store.get('lleida-autostart')!=='0',autoScroll=store.get('lleida-autoscroll')!=='0',manualUntil=0,spos=0,flowT=0,pristine=null,els={},mountSeq=0,tickT=-1;
+const NSIZE=[16,18,20,22,24,26,28,30,32,36,40,44,48,54,60,66,72];
+let nfont=clamp(+store.get('lleida-nfont')||30,16,72);
 const TOPIC=slides.map(s=>{const t=(s.getAttribute('aria-label')||'').replace(/^Slide \d+,\s*/,'');return t.charAt(0).toUpperCase()+t.slice(1)});
 /* a clone must not share ids (clip paths, patterns) with the slide it came from */
 function uniq(root,tag){
@@ -2636,24 +2828,598 @@ function makePvs(i,kind){
   const c=pristine[i].cloneNode(true);c.classList.add('on');c.removeAttribute('aria-label');uniq(c,kind+(++mountSeq));
   w.appendChild(c);return w;
 }
-function fitBox(){
-  const area=els.ac,box=els.cur;if(!area||!box)return;
-  const aw=area.clientWidth,ah=area.clientHeight;if(!aw||!ah)return;
-  const s=Math.min(aw/1600,ah/900);
-  box.style.width=Math.floor(1600*s)+'px';box.style.height=Math.floor(900*s)+'px';box.style.setProperty('--s',s);
+
+/* ---------- icons ---------- */
+const ico=(d,f)=>'<svg class="pv-i" viewBox="0 0 24 24" aria-hidden="true"'+(f?' data-f="1"':'')+'>'+d+'</svg>';
+const SCR='<rect x="3" y="4" width="18" height="12.5" rx="2.5"/><path d="M8.5 20.5h7M12 16.5v4"/>';
+const IC={
+  grip:ico('<circle cx="9" cy="5.5" r="1.8"/><circle cx="15" cy="5.5" r="1.8"/><circle cx="9" cy="12" r="1.8"/><circle cx="15" cy="12" r="1.8"/><circle cx="9" cy="18.5" r="1.8"/><circle cx="15" cy="18.5" r="1.8"/>',1),
+  x:ico('<path d="M6 6l12 12M18 6L6 18"/>'),
+  cur:ico(SCR+'<path d="M10.3 7.4v5.7l4.7-2.85z" fill="currentColor" stroke="none"/>'),
+  next:ico(SCR+'<path d="M8.5 10.25H15M12.6 7.6l2.9 2.65-2.9 2.65"/>'),
+  prev:ico(SCR+'<path d="M15.5 10.25H9M11.4 7.6L8.5 10.25l2.9 2.65"/>'),
+  notes:ico('<rect x="4" y="3" width="16" height="18" rx="2.8"/><path d="M8 8h8M8 12h8M8 16h5"/>'),
+  timer:ico('<circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4.3l2.7 1.6M9.5 2.8h5M12 2.8V6"/>'),
+  rail:ico('<rect x="3" y="3.5" width="8" height="6" rx="1.6"/><rect x="3" y="14.5" width="8" height="6" rx="1.6"/><path d="M15 6.5h6M15 17.5h6"/>'),
+  panels:ico('<rect x="3" y="3.5" width="18" height="17" rx="3"/><path d="M3 9.5h18M10 9.5v11"/>'),
+  sun:ico('<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3L7 7M17 17l1.7 1.7M5.3 18.7L7 17M17 7l1.7-1.7"/>'),
+  moon:ico('<path d="M20 14.6A8.4 8.4 0 1 1 9.4 4a6.9 6.9 0 0 0 10.6 10.6z"/>'),
+  help:ico('<circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1.1 1-1.1 1.7M12 17h.01"/>'),
+  eyeoff:ico('<path d="M3 3l18 18M10.6 6.1A9.6 9.6 0 0 1 12 6c5 0 8.5 4 9.5 6-.4.8-1.1 1.9-2.2 3M6.6 7.6C4.9 8.8 3.6 10.6 2.5 12c1 2 4.5 6 9.5 6 1.4 0 2.7-.3 3.8-.8M9.9 9.9a3 3 0 0 0 4.2 4.2"/>'),
+  play:ico('<path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/>',1),
+  pause:ico('<rect x="6" y="5" width="4.2" height="14" rx="1.2"/><rect x="13.8" y="5" width="4.2" height="14" rx="1.2"/>',1),
+  chl:ico('<path d="M14.5 5.5l-6.5 6.5 6.5 6.5"/>'),
+  chr:ico('<path d="M9.5 5.5l6.5 6.5-6.5 6.5"/>'),
+  cog:ico('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'),
+  blank:ico('<rect x="3" y="4" width="18" height="12.5" rx="2.5"/><path d="M8.5 20.5h7M12 16.5v4"/>')
+};
+
+/* @tree */
+/* The layout is a tree: a leaf is {id,w} (a panel), a split is {d:'x'|'y',w,kids} ('x' puts the kids side by side, 'y' stacks them).
+   w is the weight of the node inside its parent, so sizes stay proportional when the window changes. */
+const isLeaf=n=>typeof n.id==='string';
+const lyP=(id,w)=>({id:id,w:w||1});
+const lyX=(w,k)=>({d:'x',w:w||1,kids:k});
+const lyY=(w,k)=>({d:'y',w:w||1,kids:k});
+const lyClone=n=>n?JSON.parse(JSON.stringify(n)):null;
+/* drops empty splits, lets a split with one kid be that kid, and merges a split into a parent that runs the same way */
+function lyTidy(n){
+  if(!n)return null;
+  if(isLeaf(n))return n;
+  const flat=[];
+  n.kids.forEach(k=>{
+    k=lyTidy(k);if(!k)return;
+    if(!isLeaf(k)&&k.d===n.d){const s=k.kids.reduce((a,c)=>a+c.w,0)||1;k.kids.forEach(c=>{c.w=c.w/s*k.w;flat.push(c)})}
+    else flat.push(k);
+  });
+  if(!flat.length)return null;
+  if(flat.length===1){flat[0].w=n.w;return flat[0]}
+  n.kids=flat;return n;
 }
-/* the current slide slides in from the right when going forward and from the left when going back */
-function swapSlide(n,dir){
-  const box=els.cur;
+function lyFind(n,id,parent,i){
+  if(!n)return null;
+  if(isLeaf(n))return n.id===id?{n:n,parent:parent||null,i:i||0}:null;
+  for(let j=0;j<n.kids.length;j++){const r=lyFind(n.kids[j],id,n,j);if(r)return r}
+  return null;
+}
+function lyIds(n,out){
+  out=out||[];if(!n)return out;
+  if(isLeaf(n))out.push(n.id);else n.kids.forEach(k=>lyIds(k,out));
+  return out;
+}
+/* takes a panel out of the tree (the others share its room) */
+function lyDrop(n,id){
+  if(!n)return null;
+  if(isLeaf(n))return n.id===id?null:n;
+  (function rm(x){if(isLeaf(x))return;x.kids=x.kids.filter(k=>!(isLeaf(k)&&k.id===id));x.kids.forEach(rm)})(n);
+  return lyTidy(n);
+}
+/* puts panel `id` beside panel `tid`, on the side `zone` (left, right, top, bottom); `share` is the part of tid's room it takes */
+function lyBeside(root,tid,id,zone,share){
+  const f=lyFind(root,tid);if(!f)return root;
+  const d=(zone==='left'||zone==='right')?'x':'y',first=zone==='left'||zone==='top',sh=share||.5,neu=lyP(id,1);
+  if(f.parent&&f.parent.d===d){
+    const w=f.n.w;neu.w=w*sh;f.n.w=w*(1-sh);
+    f.parent.kids.splice(f.i+(first?0:1),0,neu);
+    return root;
+  }
+  const w=f.n.w;neu.w=sh;f.n.w=1-sh;
+  const s={d:d,w:w,kids:first?[neu,f.n]:[f.n,neu]};
+  if(!f.parent)return s;
+  f.parent.kids[f.i]=s;return root;
+}
+/* puts panel `id` along an outer edge of the whole workspace */
+function lyEdge(root,id,side){
+  const d=(side==='left'||side==='right')?'x':'y',first=side==='left'||side==='top',neu=lyP(id,1);
+  if(!root)return neu;
+  if(!isLeaf(root)&&root.d===d){
+    neu.w=root.kids.reduce((a,k)=>a+k.w,0)*.4;
+    if(first)root.kids.unshift(neu);else root.kids.push(neu);
+    return root;
+  }
+  root.w=1;neu.w=.42;
+  return {d:d,w:1,kids:first?[neu,root]:[root,neu]};
+}
+function lySwap(root,a,b){
+  const A=lyFind(root,a),B=lyFind(root,b);if(!A||!B)return;
+  const t=A.n.id;A.n.id=B.n.id;B.n.id=t;
+}
+/* where a panel goes when it is shown from the menu: next to its relatives (the timer goes below, the notes at the side, the slide list at the left), else it splits the biggest panel along its long side */
+function lyAuto(root,id,size){
+  if(!root)return lyP(id,1);
+  const vis=lyIds(root),rel={prev:[['cur','left'],['next','left']],next:[['cur','right'],['prev','right']],cur:[['next','left'],['prev','right']]}[id]||[];
+  for(let i=0;i<rel.length;i++)if(vis.indexOf(rel[i][0])>-1)return lyBeside(root,rel[i][0],id,rel[i][1],.4);
+  let best=vis[0],area=-1;
+  vis.forEach(v=>{const s=size(v),a=s[0]*s[1];if(a>area){area=a;best=v}});
+  const s=size(best),home={rail:'left',notes:'right',timer:'bottom'};
+  return lyBeside(root,best,id,home[id]||(s[0]>=s[1]*.9?'right':'bottom'),.4);
+}
+/* smallest room (width 0, height 1) a node needs; panels declare theirs, gaps between them are `gap` pixels */
+function lyMin(n,ax,mins,gap){
+  if(isLeaf(n))return mins[n.id][ax];
+  if((n.d==='x')===(ax===0))return n.kids.reduce((a,k)=>a+lyMin(k,ax,mins,gap),0)+gap*(n.kids.length-1);
+  return Math.max.apply(null,n.kids.map(k=>lyMin(k,ax,mins,gap)));
+}
+/* reads a saved tree: unknown or repeated panels and bad weights are dropped */
+function lySane(n,known,seen){
+  if(!n||typeof n!=='object')return null;
+  const w=isFinite(n.w)&&n.w>0&&n.w<1e4?+n.w:1;
+  if(typeof n.id==='string'){
+    if(!known[n.id]||seen[n.id])return null;
+    seen[n.id]=1;return {id:n.id,w:w};
+  }
+  if((n.d!=='x'&&n.d!=='y')||!Array.isArray(n.kids))return null;
+  return {d:n.d,w:w,kids:n.kids.map(k=>lySane(k,known,seen)).filter(Boolean)};
+}
+/* @end-tree */
+
+/* ---------- panels, presets and what is remembered ---------- */
+const PANEL={
+  cur:{t:'Current slide',ic:'cur',min:[260,200]},
+  next:{t:'Next slide',ic:'next',min:[220,180]},
+  prev:{t:'Previous slide',ic:'prev',min:[220,180]},
+  notes:{t:'Speaker notes',ic:'notes',min:[320,240]},
+  timer:{t:'Timer',ic:'timer',min:[270,230]},
+  rail:{t:'All slides',ic:'rail',min:[200,170]}
+};
+const PIDS=['cur','next','prev','notes','timer','rail'],MINS={};
+PIDS.forEach(i=>{MINS[i]=PANEL[i].min});
+const GUT=12,LKEY='lleida-pv-layout-v1',THKEY='lleida-pv-theme';
+const PRESETS=[
+  {id:'balanced',name:'Balanced',make:()=>lyX(1,[lyY(1.25,[lyP('cur',1.6),lyP('timer',1)]),lyY(1,[lyP('notes',1.7),lyP('next',1)])])},
+  {id:'notes',name:'Notes',make:()=>lyX(1,[lyP('notes',1.75),lyY(1,[lyP('cur',1.2),lyP('timer',1)])])},
+  {id:'slides',name:'Slides',make:()=>lyY(1,[lyX(2.6,[lyP('prev',1),lyP('cur',2.2),lyP('next',1)]),lyP('timer',1)])},
+  {id:'time',name:'Time',make:()=>lyY(1,[lyP('timer',1.5),lyX(1,[lyP('cur',1),lyP('next',1)])])},
+  {id:'qa',name:'Questions',make:()=>lyX(1,[lyP('rail',1.15),lyP('notes',1.75),lyY(1,[lyP('cur',1),lyP('timer',.8)])])},
+  {id:'minimal',name:'Minimal',make:()=>lyX(1,[lyP('notes',2),lyP('timer',1)])},
+  {id:'all',name:'Everything',make:()=>lyX(1,[lyP('rail',.8),lyY(2.6,[lyX(1.55,[lyP('prev',1),lyP('cur',1.7),lyP('next',1)]),lyX(1,[lyP('timer',1),lyP('notes',2.1)])])])}
+];
+let pvTree=null,pvPreset='balanced',pvDirty=false,pvMine=null,pvMenuOn=false,drag=null;
+const PN={};
+const pvPresetTree=id=>{if(id==='mine')return pvMine?lyClone(pvMine):null;const p=PRESETS.find(x=>x.id===id);return p?lyTidy(p.make()):null};
+const pvVisible=()=>PIDS.filter(id=>PN[id]&&PN[id].vis);
+function pvPersist(){store.set(LKEY,JSON.stringify({p:pvPreset,d:pvDirty,t:pvTree,m:pvMine}))}
+function pvRestore(){
+  const known={};PIDS.forEach(i=>{known[i]=1});
+  let s=null;try{s=JSON.parse(store.get(LKEY)||'null')}catch(e){}
+  if(s&&typeof s==='object'){
+    pvMine=s.m?lyTidy(lySane(s.m,known,{})):null;
+    const t=s.t?lyTidy(lySane(s.t,known,{})):null,okP=s.p==='mine'?!!pvMine:PRESETS.some(p=>p.id===s.p);
+    if(okP&&(t||s.t===null)){pvTree=t;pvPreset=s.p;pvDirty=!!s.d;return}
+  }
+  pvTree=pvPresetTree('balanced');pvPreset='balanced';pvDirty=false;
+}
+let sayT=0;
+function pvSay(msg){const s=els.say;if(!s)return;s.textContent='';clearTimeout(sayT);sayT=setTimeout(()=>{s.textContent=msg},30)}
+
+/* ---------- panels ---------- */
+const mkEl=(tag,cls,html)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e};
+const roFns=[];
+function watch(el,fn){if(window.ResizeObserver)new ResizeObserver(()=>fn()).observe(el);else roFns.push(fn)}
+if(!window.ResizeObserver)addEventListener('resize',()=>roFns.forEach(f=>f()));
+/* what every panel shares: a title bar with a grip (drag it to move the panel), room for extras and a hide button */
+function mkPanel(id){
+  const t=PANEL[id].t,el=mkEl('section','pv-panel');
+  el.dataset.id=id;el.setAttribute('aria-label',t);
+  el.innerHTML='<header class="pv-ph"><button type="button" class="pv-grip" title="Drag to move" aria-label="Move '+t+'. Drag it, or use the arrow keys to swap it with a neighbour">'+IC.grip+'</button>'+
+    '<h2>'+t+'</h2><span class="pv-hx"></span><span class="pv-ht"></span><span class="pv-sp"></span><span class="pv-hr"></span>'+
+    '<button type="button" class="pv-hide" title="Hide this panel" aria-label="Hide '+t+'">'+IC.x+'</button></header><div class="pv-pb"></div>';
+  const q=s=>el.querySelector(s),p={id:id,el:el,vis:false,grip:q('.pv-grip'),hx:q('.pv-hx'),ht:q('.pv-ht'),hr:q('.pv-hr'),body:q('.pv-pb')};
+  PN[id]=p;
+  q('.pv-hide').addEventListener('click',()=>pvHide(id));
+  q('.pv-ph').addEventListener('pointerdown',e=>{if(e.target.closest('.pv-hide,.pv-hr button,.pv-hr label'))return;dragWatch(e,id,'panel')});
+  p.grip.addEventListener('keydown',e=>gripKey(e,id));
+  return p;
+}
+
+/* current, next and previous slide: the same slide clone as the thumbnails, scaled to fit, with the sliding transition */
+function fitSlide(p){
+  const aw=p.area.clientWidth,ah=p.area.clientHeight;if(!aw||!ah)return;
+  const s=Math.min(aw/1600,ah/900);
+  p.box.style.width=Math.floor(1600*s)+'px';p.box.style.height=Math.floor(900*s)+'px';p.box.style.setProperty('--s',s);
+}
+function swapLayer(p,k,dir){
+  const box=p.box;
   [...box.querySelectorAll('.pv-layer.out')].forEach(l=>l.remove());
   const old=[...box.querySelectorAll('.pv-layer')];
   old.forEach(l=>{try{l.getAnimations().forEach(a=>a.finish())}catch(e){}});
-  const layer=document.createElement('div');layer.className='pv-layer';layer.appendChild(makePvs(n,'c'));box.appendChild(layer);
+  const layer=mkEl('div','pv-layer');
+  if(k>=0)layer.appendChild(makePvs(k,'c'));
+  else layer.innerHTML='<div class="pv-none"><span>'+(p.off<0?'This is the first slide':'This is the last slide')+'</span></div>';
+  box.appendChild(layer);
   const still=!dir||!old.length||!layer.animate||(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   if(still){old.forEach(l=>l.remove());return}
   const o={duration:340,easing:'cubic-bezier(.22,.8,.24,1)',fill:'both'};
   old.forEach(l=>{l.classList.add('out');const a=l.animate([{transform:'translateX(0)'},{transform:'translateX('+(-100*dir)+'%)'}],o);a.onfinish=()=>l.remove()});
   layer.animate([{transform:'translateX('+(100*dir)+'%)'},{transform:'translateX(0)'}],o);
+}
+/* n is the slide on the projector; a hidden panel is left alone and catches up when it comes back */
+function slideUpd(p,n,dir){
+  if(!p.vis)return;
+  const t=n+p.off,ok=t>=0&&t<N,k=ok?t:-1;
+  if(p.idx===k)return;
+  const first=p.idx===-9;p.idx=k;
+  swapLayer(p,k,first?0:dir);
+  p.hx.textContent=ok?(t+1)+' / '+N:'';
+  p.ht.textContent=ok?TOPIC[t]:'';
+  p.box.setAttribute('aria-label',!ok?(p.off<0?'No previous slide':'No next slide'):p.off<0?'Go back to slide '+(t+1)+': '+TOPIC[t]:p.off>0?'Go to slide '+(t+1)+': '+TOPIC[t]:'Current slide, '+(t+1)+': '+TOPIC[t]+(n<N-1?'. Click for the next slide':''));
+}
+function mkSlideP(id,off){
+  const p=mkPanel(id);p.off=off;p.idx=-9;
+  p.body.classList.add('pv-sl');
+  p.body.innerHTML='<div class="pv-area"><div class="pv-box" role="button" tabindex="0"></div></div>';
+  p.area=p.body.firstChild;p.box=p.area.firstChild;
+  const act=()=>{if(p.idx>=0)pvGo(off<0?pcur-1:pcur+1)};
+  p.box.addEventListener('click',act);
+  p.box.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();act()}});
+  watch(p.area,()=>fitSlide(p));
+  p.on=()=>{slideUpd(p,pcur,0);fitSlide(p)};
+  return p;
+}
+
+/* all slides: a grid of thumbnails whose size follows the width of the panel (no hover zoom: resize the panel instead) */
+function railFit(p){
+  const W=p.body.clientWidth;if(!W)return;
+  const pad=14,gap=14,aim=172,inner=W-pad*2;
+  const cols=Math.max(1,Math.floor((inner+gap)/(aim+gap))),tw=Math.max(60,Math.floor((inner-gap*(cols-1))/cols));
+  p.grid.style.setProperty('--cols',cols);p.grid.style.setProperty('--tw',tw+'px');p.grid.style.setProperty('--ts',(tw/1600).toFixed(5));
+  p.grid.classList.toggle('ttl',tw>=120);
+}
+function railEnsure(p){
+  if(p.built)return;p.built=true;
+  p.grid.innerHTML=slides.map((s,i)=>'<button type="button" class="pv-th" aria-label="Go to slide '+(i+1)+': '+esc(TOPIC[i])+'"><span class="tb"><span class="nm">'+(i+1)+'</span></span><span class="tl">'+esc(TOPIC[i])+'</span></button>').join('');
+  p.th=[...p.grid.children];
+  p.th.forEach((b,i)=>b.addEventListener('click',()=>{pvGo(i);b.blur()}));
+  let i=0;   /* thumbnails are filled in one by one so the window appears at once */
+  (function step(){if(i>=N)return;p.th[i].firstChild.appendChild(makePvs(i,'t'));i++;setTimeout(step,28)})();
+}
+function railMark(n,instant){
+  const p=PN.rail;if(!p||!p.th)return;
+  p.th.forEach((b,i)=>b.setAttribute('aria-current',String(i===n)));
+  if(!p.vis||(!instant&&p.body.matches(':hover')))return;
+  const sc=p.body,rb=sc.getBoundingClientRect(),bb=p.th[n].getBoundingClientRect();
+  const to=sc.scrollTop+(bb.top-rb.top)-(rb.height-bb.height)/2;
+  if(sc.scrollTo&&!instant)sc.scrollTo({top:to,behavior:'smooth'});else sc.scrollTop=to;
+}
+function mkRailP(){
+  const p=mkPanel('rail');
+  p.body.classList.add('pv-rl');
+  p.grid=mkEl('div','pv-grid');p.body.appendChild(p.grid);
+  p.th=null;p.built=false;
+  watch(p.body,()=>railFit(p));
+  p.on=()=>{railEnsure(p);railFit(p);railMark(pcur,true)};
+  return p;
+}
+
+/* speaker notes (silent: the audio is only played from the presentation window) */
+function mkNotesP(){
+  const p=mkPanel('notes');
+  p.hr.innerHTML='<span class="pv-who" hidden><span class="av"></span><b></b></span>'+
+    '<span class="pv-fs"><button type="button" class="pv-ib" data-fs="-1" aria-label="Smaller notes text" title="Smaller text (−)">A<small>−</small></button><button type="button" class="pv-ib" data-fs="1" aria-label="Larger notes text" title="Larger text (+)">A<small>+</small></button></span>'+
+    '<label class="pv-sw" title="Scrolls the notes slowly while the time planned for this slide goes by. Scrolling by hand pauses it for a few seconds."><input type="checkbox" role="switch"><i></i><span>Auto-scroll</span></label>';
+  p.body.classList.add('pv-nt');
+  p.body.innerHTML='<div class="pv-nbody" tabindex="0"></div>';
+  return p;
+}
+
+/* timer: Start/Pause sits in the title bar, the digits fill the body and scale with the panel; target, auto-start and reset live in the cog menu */
+function mkTimerP(){
+  const p=mkPanel('timer');p.el.classList.add('pv-timer');
+  p.hr.innerHTML='<button type="button" class="pv-btn pv-pri tt"></button>'+
+    '<button type="button" class="pv-ib pv-cog" aria-haspopup="dialog" aria-expanded="false" aria-label="Timer settings" title="Timer settings: target time, auto-start, reset">'+IC.cog+'</button>';
+  p.body.classList.add('pv-tb');
+  p.body.innerHTML=
+    '<div class="pv-nums"><div class="pv-n"><small>Elapsed</small><b class="el">00:00</b></div><div class="pv-n"><small class="reml">Remaining</small><b class="rem">15:00</b></div></div>'+
+    '<div class="pv-pbar"><i></i></div><div class="pv-pace"></div>';
+  return p;
+}
+
+/* ---------- the workspace: a tree of splits, with a gutter between neighbours ---------- */
+function pvNode(n){
+  if(isLeaf(n)){const e=PN[n.id].el;e.style.flex=n.w+' 1 0px';return e}
+  const s=mkEl('div','pv-split');s.dataset.d=n.d;s.style.flex=n.w+' 1 0px';
+  n.kids.forEach((k,i)=>{if(i)s.appendChild(mkGutter(n,i-1));s.appendChild(pvNode(k))});
+  return s;
+}
+function pvRender(){
+  pvPopClose(false);
+  const keep=[els.nb.scrollTop,PN.rail.body.scrollTop],on=pvTree?lyIds(pvTree):[];
+  PIDS.forEach(id=>{const p=PN[id];p.vis=on.indexOf(id)>-1;if(!p.vis)els.park.appendChild(p.el)});
+  els.work.textContent='';
+  if(pvTree){const r=pvNode(pvTree);r.style.flex='1 1 0px';els.work.appendChild(r)}
+  else els.work.appendChild(els.none);
+  els.nb.scrollTop=keep[0];PN.rail.body.scrollTop=keep[1];   /* moving a panel in the page resets its scroll */
+  PIDS.forEach(id=>{const p=PN[id];if(p.vis&&p.on)p.on()});
+}
+/* something changed in the arrangement: keep it, redraw, and tell the menu */
+function pvCommit(root,flash){
+  pvTree=lyTidy(root);pvDirty=true;pvPersist();pvRender();pvSync();
+  if(flash&&PN[flash]&&PN[flash].vis){const el=PN[flash].el;el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),1300)}
+}
+function pvTouched(){pvDirty=true;pvPersist();pvSync()}
+function pvApply(id,quiet){
+  const t=pvPresetTree(id);if(!t)return;
+  pvTree=t;pvPreset=id;pvDirty=false;pvPersist();pvRender();pvSync();
+  const nm=id==='mine'?'My layout':PRESETS.find(p=>p.id===id).name;
+  if(!quiet)toast('Layout: '+nm,1700);
+  pvSay('Layout '+nm);
+}
+function pvHide(id){
+  if(!pvTree||!lyFind(pvTree,id))return;
+  pvCommit(lyDrop(pvTree,id));
+  pvSay(PANEL[id].t+' hidden. Show it again from the Panels menu.');
+}
+function pvAdd(id){
+  if(pvTree&&lyFind(pvTree,id))return;
+  const size=v=>{const r=PN[v].el.getBoundingClientRect();return [r.width,r.height]};
+  pvCommit(lyAuto(pvTree,id,size),id);
+  pvSay(PANEL[id].t+' shown.');
+}
+function pvSaveMine(){
+  if(!pvTree)return;
+  pvMine=lyClone(pvTree);pvPreset='mine';pvDirty=false;pvPersist();pvSync();
+  toast('Saved as My layout (key '+(PRESETS.length+1)+')',2200);
+}
+
+/* resizing: drag the line between two neighbours (or focus it and use the arrow keys; double-click evens them out) */
+function mkGutter(split,i){
+  const g=mkEl('div','pv-gut'),a=split.kids[i].w,b=split.kids[i+1].w;
+  g.dataset.d=split.d;g.tabIndex=0;g.setAttribute('role','separator');
+  g.setAttribute('aria-orientation',split.d==='x'?'vertical':'horizontal');
+  g.setAttribute('aria-label','Resize the panels on either side. Drag, use the arrow keys, or double-click to even them out');
+  g.setAttribute('aria-valuemin','0');g.setAttribute('aria-valuemax','100');g.setAttribute('aria-valuenow',String(Math.round(a/(a+b)*100)));
+  g.addEventListener('pointerdown',e=>startResize(e,split,i,g));
+  g.addEventListener('keydown',e=>keyResize(e,split,i,g));
+  g.addEventListener('dblclick',()=>{const c=gutCtx(split,i,g);gutSet(c,c.tot/2,g);pvTouched()});
+  return g;
+}
+function gutCtx(split,i,g){
+  const ax=split.d==='x'?0:1,A=g.previousElementSibling,B=g.nextElementSibling,na=split.kids[i],nb=split.kids[i+1];
+  const rA=A.getBoundingClientRect(),rB=B.getBoundingClientRect(),a0=ax?rA.height:rA.width,tot=a0+(ax?rB.height:rB.width);
+  return {ax:ax,A:A,B:B,na:na,nb:nb,a0:a0,tot:tot,W:na.w+nb.w,minA:Math.min(lyMin(na,ax,MINS,GUT),tot/2),minB:Math.min(lyMin(nb,ax,MINS,GUT),tot/2)};
+}
+function gutSet(c,a,g){
+  a=clamp(a,c.minA,c.tot-c.minB);
+  c.na.w=c.W*a/c.tot;c.nb.w=c.W-c.na.w;               /* weights stay in proportion with the pixels */
+  c.A.style.flexGrow=c.na.w;c.B.style.flexGrow=c.nb.w;
+  g.setAttribute('aria-valuenow',String(Math.round(a/c.tot*100)));
+}
+function startResize(e,split,i,g){
+  if(e.button!==undefined&&e.button!==0)return;
+  e.preventDefault();
+  const c=gutCtx(split,i,g),p0=c.ax?e.clientY:e.clientX;let moved=false;
+  try{g.setPointerCapture(e.pointerId)}catch(x){}
+  g.classList.add('on');document.body.classList.add('pv-sizing',c.ax?'pv-ns':'pv-ew');
+  const mv=ev=>{if(ev.pointerId!==e.pointerId)return;const d=(c.ax?ev.clientY:ev.clientX)-p0;if(d)moved=true;gutSet(c,c.a0+d,g)};
+  const up=ev=>{
+    if(ev.pointerId!==e.pointerId)return;
+    g.removeEventListener('pointermove',mv);g.removeEventListener('pointerup',up);g.removeEventListener('pointercancel',up);
+    g.classList.remove('on');document.body.classList.remove('pv-sizing','pv-ns','pv-ew');
+    try{g.releasePointerCapture(ev.pointerId)}catch(x){}
+    g.blur();if(moved)pvTouched();
+  };
+  g.addEventListener('pointermove',mv);g.addEventListener('pointerup',up);g.addEventListener('pointercancel',up);
+}
+function keyResize(e,split,i,g){
+  if(!g.matches(':focus-visible'))return;   /* after a mouse drag the arrow keys go back to the slides */
+  const k=e.key,v=split.d==='x',less=v?'ArrowLeft':'ArrowUp',more=v?'ArrowRight':'ArrowDown';
+  if(k!==less&&k!==more&&k!=='Home'&&k!=='End')return;
+  e.preventDefault();e.stopPropagation();
+  const c=gutCtx(split,i,g);
+  gutSet(c,k==='Home'?c.minA:k==='End'?c.tot-c.minB:c.a0+(e.shiftKey?96:24)*(k===less?-1:1),g);
+  pvTouched();
+}
+
+/* moving: drag a panel by its title bar (or its row in the Panels menu) */
+const inR=(r,x,y,m)=>x>=r.left-m&&x<=r.right+m&&y>=r.top-m&&y<=r.bottom+m;
+const rectOf=(l,t,w,h)=>({left:l,top:t,width:w,height:h});
+function halfOf(r,z){
+  const w=r.width,h=r.height;
+  return z==='left'?rectOf(r.left,r.top,w/2,h):z==='right'?rectOf(r.left+w/2,r.top,w/2,h):z==='top'?rectOf(r.left,r.top,w,h/2):rectOf(r.left,r.top+h/2,w,h/2);
+}
+function dragWatch(e,id,from){
+  if(drag||(e.button!==undefined&&e.button!==0))return;
+  drag={id:id,from:from,x0:e.clientX,y0:e.clientY,pid:e.pointerId,on:false,tgt:null,vis:!!PN[id].vis};
+  document.addEventListener('pointermove',dragMove,true);document.addEventListener('pointerup',dragEnd,true);
+  document.addEventListener('pointercancel',dragCancel,true);document.addEventListener('keydown',dragKey,true);
+  addEventListener('blur',dragCancel);
+}
+function dragStop(){
+  const d=drag;drag=null;
+  document.removeEventListener('pointermove',dragMove,true);document.removeEventListener('pointerup',dragEnd,true);
+  document.removeEventListener('pointercancel',dragCancel,true);document.removeEventListener('keydown',dragKey,true);
+  removeEventListener('blur',dragCancel);
+  document.body.classList.remove('pv-dragging');
+  els.ghost.hidden=true;els.tray.hidden=true;els.tray.classList.remove('hot');els.drop.classList.remove('on');els.menu.classList.remove('away');
+  if(d&&d.vis)PN[d.id].el.classList.remove('is-drag');
+  const a=document.activeElement;if(a&&a.classList&&(a.classList.contains('pv-grip')||a.classList.contains('pv-gut')))a.blur();
+  return d;
+}
+function dragBegin(d){
+  d.on=true;document.body.classList.add('pv-dragging');
+  d.work=els.work.getBoundingClientRect();d.wrap=els.wrap.getBoundingClientRect();
+  d.rects=pvVisible().map(id=>({id:id,r:PN[id].el.getBoundingClientRect()}));
+  els.ghost.innerHTML=IC[PANEL[d.id].ic]+'<b>'+PANEL[d.id].t+'</b>';els.ghost.hidden=false;
+  if(d.vis){PN[d.id].el.classList.add('is-drag');els.tray.hidden=false;d.tray=els.tray.getBoundingClientRect()}
+  if(d.from==='menu')els.menu.classList.add('away');   /* get the list out of the way so the whole workspace can be seen */
+}
+function dragMove(e){
+  const d=drag;if(!d||e.pointerId!==d.pid)return;
+  if(!d.on){if(Math.hypot(e.clientX-d.x0,e.clientY-d.y0)<6)return;dragBegin(d)}
+  e.preventDefault();
+  els.ghost.style.transform='translate('+(e.clientX+16)+'px,'+(e.clientY+12)+'px)';
+  d.tgt=pvTarget(d,e.clientX,e.clientY);pvIndicate(d.tgt);
+}
+/* where would the panel land if it were dropped here? */
+function pvTarget(d,x,y){
+  if(d.tray&&inR(d.tray,x,y,8))return {t:'hide'};
+  const w=d.work;if(!inR(w,x,y,0))return null;
+  if(!d.rects.length)return {t:'root',r:w};
+  if(d.rects.length===1&&d.rects[0].id===d.id)return {t:'none'};
+  const E=30;   /* the outer edges of the workspace: a new strip along the whole side */
+  if(x-w.left<E)return {t:'edge',side:'left',r:rectOf(w.left,w.top,w.width*.3,w.height)};
+  if(w.right-x<E)return {t:'edge',side:'right',r:rectOf(w.right-w.width*.3,w.top,w.width*.3,w.height)};
+  if(y-w.top<E)return {t:'edge',side:'top',r:rectOf(w.left,w.top,w.width,w.height*.3)};
+  if(w.bottom-y<E)return {t:'edge',side:'bottom',r:rectOf(w.left,w.bottom-w.height*.3,w.width,w.height*.3)};
+  let best=null,bd=1e12;
+  d.rects.forEach(o=>{const r=o.r,dx=Math.max(r.left-x,0,x-r.right),dy=Math.max(r.top-y,0,y-r.bottom),dd=dx*dx+dy*dy;if(dd<bd){bd=dd;best=o}});
+  if(best.id===d.id)return {t:'none'};
+  const r=best.r,fx=clamp((x-r.left)/r.width,0,1),fy=clamp((y-r.top)/r.height,0,1),dist={left:fx,right:1-fx,top:fy,bottom:1-fy};
+  let z='left',m=dist.left;['right','top','bottom'].forEach(k=>{if(dist[k]<m){m=dist[k];z=k}});
+  if(d.vis&&m>=.3)return {t:'swap',id:best.id,r:r};   /* the middle of a panel swaps the two */
+  return {t:'beside',id:best.id,zone:z,r:halfOf(r,z)};
+}
+function pvIndicate(t){
+  const dp=els.drop;
+  els.tray.classList.toggle('hot',!!t&&t.t==='hide');
+  if(!t||!t.r){dp.classList.remove('on');return}
+  const b=drag.wrap;
+  dp.style.left=(t.r.left-b.left)+'px';dp.style.top=(t.r.top-b.top)+'px';dp.style.width=t.r.width+'px';dp.style.height=t.r.height+'px';
+  dp.dataset.k=t.t;dp.classList.add('on');
+}
+function dragEnd(e){
+  const d=drag;if(!d||e.pointerId!==d.pid)return;
+  const was=dragStop();
+  if(!was.on)return;
+  e.preventDefault();
+  if(was.tgt){pvMove(was.id,was.tgt);if(was.from==='menu')pvMenuClose(false)}
+}
+function dragCancel(){if(drag)dragStop()}
+function dragKey(e){if(e.key==='Escape'&&drag){e.preventDefault();e.stopPropagation();dragStop()}}
+function pvMove(id,t){
+  let root=pvTree;const had=!!(root&&lyFind(root,id));
+  if(t.t==='none')return;
+  if(t.t==='hide'){if(!had)return;pvHide(id);return}
+  if(t.t==='swap'){if(!had)return;lySwap(root,id,t.id);pvCommit(root,id);pvSay(PANEL[id].t+' swapped with '+PANEL[t.id].t);return}
+  if(had)root=lyDrop(root,id);
+  if(t.t==='root'||!root)root=lyP(id,1);
+  else if(t.t==='edge')root=lyEdge(root,id,t.side);
+  else if(t.t==='beside')root=lyBeside(root,t.id,id,t.zone);
+  pvCommit(root,id);
+  pvSay(PANEL[id].t+' moved.');
+}
+/* keyboard: with a grip focused, the arrow keys swap the panel with its neighbour on that side */
+function gripKey(e,id){
+  const k=e.key;
+  if(!/^Arrow(Left|Right|Up|Down)$/.test(k)||!e.target.matches(':focus-visible'))return;
+  e.preventDefault();e.stopPropagation();
+  const me=PN[id].el.getBoundingClientRect();let best=null,bd=1e9;
+  pvVisible().forEach(o=>{
+    if(o===id)return;
+    const r=PN[o].el.getBoundingClientRect(),ox=Math.min(me.right,r.right)-Math.max(me.left,r.left),oy=Math.min(me.bottom,r.bottom)-Math.max(me.top,r.top);let d=-1;
+    if(k==='ArrowRight'&&r.left>=me.right-2&&oy>0)d=r.left-me.right;
+    else if(k==='ArrowLeft'&&r.right<=me.left+2&&oy>0)d=me.left-r.right;
+    else if(k==='ArrowDown'&&r.top>=me.bottom-2&&ox>0)d=r.top-me.bottom;
+    else if(k==='ArrowUp'&&r.bottom<=me.top+2&&ox>0)d=me.top-r.bottom;
+    if(d>=0&&d<bd){bd=d;best=o}
+  });
+  if(!best){pvSay('No panel on that side.');return}
+  lySwap(pvTree,id,best);pvCommit(pvTree,id);PN[id].grip.focus();
+  pvSay(PANEL[id].t+' swapped with '+PANEL[best].t+'.');
+}
+
+/* ---------- the Panels menu: presets, show or hide each panel, save your own layout ---------- */
+function pvMini(n){
+  if(isLeaf(n))return '<span class="mc" data-k="'+n.id+'" style="flex:'+n.w+' 1 0">'+IC[PANEL[n.id].ic]+'</span>';
+  return '<span class="ms" data-d="'+n.d+'" style="flex:'+n.w+' 1 0">'+n.kids.map(pvMini).join('')+'</span>';
+}
+function pvTile(id,name,key,tree){
+  const on=!pvDirty&&pvPreset===id;
+  return '<button type="button" class="pv-preset" data-p="'+id+'" aria-pressed="'+on+'"'+(tree?'':' disabled')+'><span class="pv-mini">'+
+    (tree?pvMini(tree):'<span class="pv-minin">Not saved yet</span>')+'</span><span class="pn"><b>'+name+'</b><kbd>'+key+'</kbd></span></button>';
+}
+function pvSync(){
+  const m=els.menu;if(!m)return;
+  const ae=document.activeElement;let keep=null;
+  if(ae&&m.contains(ae)){const d=ae.dataset;keep=d.p?'.pv-preset[data-p="'+d.p+'"]':d.id?'input[data-id="'+d.id+'"]':d.a?'[data-a="'+d.a+'"]':null}
+  const on=pvTree?lyIds(pvTree):[];
+  m.querySelector('.pv-presets').innerHTML=PRESETS.map((p,i)=>pvTile(p.id,p.name,i+1,p.make())).join('')+pvTile('mine','My layout',PRESETS.length+1,pvMine);
+  m.querySelector('.pv-plist').innerHTML=PIDS.map(id=>'<li data-id="'+id+'" data-on="'+(on.indexOf(id)>-1)+'"><span class="pv-pg" title="Drag it into the workspace" aria-hidden="true">'+IC.grip+'</span>'+
+    '<label><input type="checkbox" role="switch" data-id="'+id+'"'+(on.indexOf(id)>-1?' checked':'')+'><span class="ic" data-k="'+id+'">'+IC[PANEL[id].ic]+'</span><span class="nm">'+PANEL[id].t+'</span><i class="sw"></i></label></li>').join('');
+  m.querySelector('.pv-mc').textContent=pvDirty?'· custom arrangement':'';
+  m.querySelector('[data-a="reset"]').disabled=!pvDirty;
+  m.querySelector('[data-a="save"]').disabled=!pvTree;
+  if(keep){const f=m.querySelector(keep);if(f)f.focus()}
+}
+function mkMenu(){
+  const m=mkEl('div','pv-menu');m.id='pv-menu';m.setAttribute('role','dialog');m.setAttribute('aria-label','Panels and layouts');m.hidden=true;
+  m.innerHTML=
+    '<div class="pv-mh"><h2>Panels</h2><button type="button" class="pv-hide pv-mx" aria-label="Close the Panels menu" title="Close (Esc)">'+IC.x+'</button></div>'+
+    '<h3>Presets <em class="pv-mc"></em></h3><div class="pv-presets"></div>'+
+    '<h3>Show or hide</h3><ul class="pv-plist"></ul>'+
+    '<div class="pv-mf"><button type="button" class="pv-btn" data-a="reset" title="Back to the preset you chose">Reset layout</button><button type="button" class="pv-btn" data-a="save" title="Keep this arrangement as a preset of your own">Save as My layout</button></div>'+
+    '<p class="pv-mn">Drag a panel by its title bar to move it, drag the lines between panels to resize them, or drop a panel on the strip that appears at the bottom to hide it. Panels can also be dragged from this list.</p>';
+  m.addEventListener('click',e=>{
+    if(e.target.closest('.pv-mx')){pvMenuClose(true);return}
+    const pr=e.target.closest('.pv-preset');if(pr){if(!pr.disabled)pvApply(pr.dataset.p);return}
+    const a=e.target.closest('[data-a]');
+    if(a&&!a.disabled){if(a.dataset.a==='reset')pvApply(pvPreset);else if(a.dataset.a==='save')pvSaveMine()}
+  });
+  m.addEventListener('change',e=>{const c=e.target.closest('input[data-id]');if(c){if(c.checked)pvAdd(c.dataset.id);else pvHide(c.dataset.id)}});
+  m.addEventListener('pointerdown',e=>{const g=e.target.closest('.pv-pg');if(g){e.preventDefault();dragWatch(e,g.closest('li').dataset.id,'menu')}});
+  return m;
+}
+function pvMenuPlace(){
+  const r=els.pbtn.getBoundingClientRect(),m=els.menu;
+  m.style.top=Math.round(r.bottom+10)+'px';m.style.right=Math.max(12,Math.round(innerWidth-r.right))+'px';
+}
+function pvMenuOpen(){
+  if(pvMenuOn)return;
+  closeMenu();pvPopClose(false);pvSync();
+  els.menu.hidden=false;pvMenuOn=true;els.pbtn.setAttribute('aria-expanded','true');pvMenuPlace();
+  const f=els.menu.querySelector('.pv-preset[aria-pressed="true"]')||els.menu.querySelector('.pv-preset:not(:disabled)');if(f)f.focus();
+  document.addEventListener('pointerdown',pvMenuOut,true);document.addEventListener('keydown',pvMenuKey,true);
+}
+function pvMenuClose(refocus){
+  if(!pvMenuOn)return;
+  els.menu.hidden=true;pvMenuOn=false;els.pbtn.setAttribute('aria-expanded','false');
+  document.removeEventListener('pointerdown',pvMenuOut,true);document.removeEventListener('keydown',pvMenuKey,true);
+  if(refocus)els.pbtn.focus();
+}
+function pvMenuOut(e){if(!e.target.closest('#pv-menu')&&!e.target.closest('#pv-panels'))pvMenuClose(false)}
+function pvMenuKey(e){
+  if(drag)return;
+  if(e.key==='Escape'&&!document.querySelector('.pv-help')){e.preventDefault();e.stopPropagation();pvMenuClose(true);return}
+  const t=e.target;if(!t||!t.classList||!t.classList.contains('pv-preset')||!/^Arrow/.test(e.key))return;
+  const all=[...els.menu.querySelectorAll('.pv-preset:not(:disabled)')],i=all.indexOf(t),
+        cols=getComputedStyle(els.menu.querySelector('.pv-presets')).gridTemplateColumns.split(' ').length,
+        d=e.key==='ArrowLeft'?-1:e.key==='ArrowRight'?1:e.key==='ArrowUp'?-cols:cols;
+  e.preventDefault();e.stopPropagation();
+  if(all[i+d])all[i+d].focus();
+}
+
+/* ---------- colour theme: light or dark, the system's choice until you pick one ---------- */
+const sysDark=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+function pvTheme(t,keep){
+  document.documentElement.dataset.theme=t;
+  if(els.seg)els.seg.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.th===t)));
+  if(keep)store.set(THKEY,t);
+}
+function pvThemeInit(){
+  const s=store.get(THKEY);
+  pvTheme(s==='light'||s==='dark'?s:(sysDark&&sysDark.matches?'dark':'light'));
+  if(sysDark&&sysDark.addEventListener)sysDark.addEventListener('change',()=>{const v=store.get(THKEY);if(v!=='light'&&v!=='dark')pvTheme(sysDark.matches?'dark':'light')});
+}
+
+/* ---------- following the talk ---------- */
+function pvSet(n,fromAudience){
+  const prev=pcur;pcur=n;
+  if(!fromAudience){want=n;wantAt=Date.now()}
+  if(prev===0&&n>0&&autoStart&&!timer.run&&elapsed()===0)timerToggle();
+  entryAt=elapsed();
+  const dir=n>prev?1:n<prev?-1:0,sec=+slides[n].dataset.sec,no=NOTES[n],sp=no[0]>=0?SPK[no[0]]:'';
+  ['cur','next','prev'].forEach(id=>slideUpd(PN[id],n,dir));
+  els.who.hidden=!sp;
+  if(sp){els.whoAv.className='av p'+(no[0]+1);els.whoAv.textContent=sp.split(' ').map(w=>w[0]).join('');els.whoN.textContent=sp}
+  els.nb.innerHTML=notesHtml(n);els.nb.scrollTop=0;spos=0;manualUntil=0;
+  els.cnt.textContent=(n+1)+' / '+N;els.ftt.textContent=TOPIC[n]+(sec?' · Part '+sec+' of 6':'');
+  els.prev.disabled=n===0;els.nextb.disabled=n===N-1;
+  railMark(n);
+  renderTimer();
+}
+function pvGo(n){
+  n=clamp(n,0,N-1);if(n===pcur)return;
+  pvSet(n,false);post({type:'go',n:n});
 }
 function notesHtml(i){
   const no=NOTES[i];
@@ -2662,32 +3428,12 @@ function notesHtml(i){
   for(let k=0;k<sent.length;k+=2)ps.push(sent.slice(k,k+2).join(' '));
   return '<h4>'+esc(no[1])+'</h4>'+ps.map(p=>'<p>'+esc(p)+'</p>').join('');
 }
-function pvSet(n,fromAudience){
-  const prev=pcur;pcur=n;
-  if(!fromAudience){want=n;wantAt=Date.now()}
-  if(prev===0&&n>0&&autoStart&&!timer.run&&elapsed()===0)timerToggle();
-  entryAt=elapsed();
-  swapSlide(n,n>prev?1:n<prev?-1:0);
-  const sec=+slides[n].dataset.sec;
-  els.cl.textContent=(n+1)+' / '+N;
-  els.sec.textContent=sec?'Part '+sec+' of 6 · '+SECL[sec-1]:'';
-  const no=NOTES[n];els.who.textContent=no[0]>=0?SPK[no[0]]:'';
-  els.nb.innerHTML=notesHtml(n);els.nb.scrollTop=0;spos=0;manualUntil=0;avSlide(n);
-  els.cnt.textContent=(n+1)+' / '+N;
-  els.th.forEach((b,i)=>b.setAttribute('aria-current',String(i===n)));
-  if(!els.rail.matches(':hover')){const b=els.th[n];els.rail.scrollTo?els.rail.scrollTo({top:b.offsetTop-(els.rail.clientHeight-b.offsetHeight)/2,behavior:'smooth'}):0}
-  els.prev.disabled=n===0;els.nextb.disabled=n===N-1;
-  renderTimer();
-}
-function pvGo(n){
-  n=clamp(n,0,N-1);if(n===pcur)return;
-  pvSet(n,false);post({type:'go',n:n});
-}
 function renderLink(){
   if(MODE!=='presenter'||!els.link)return;
   const on=audienceAlive();
   els.link.dataset.s=on?'on':'off';
-  els.linkT.textContent=on?('Presentation window connected'+(audInfo&&audInfo.fs?' · full screen':'')+(audInfo&&audInfo.w?' · '+audInfo.w+' × '+audInfo.h:'')):'No presentation window yet';
+  els.link.title=on&&audInfo&&audInfo.w?'Presentation window: '+audInfo.w+' × '+audInfo.h+(audInfo.fs?', full screen':''):'';
+  els.linkT.textContent=on?'Presentation window connected'+(audInfo&&audInfo.fs?' · full screen':''):'No presentation window yet';
   els.aud.hidden=on;
 }
 function buildTicks(){
@@ -2701,12 +3447,12 @@ function buildTicks(){
 function renderTimer(){
   if(MODE==='deck'){hudRender();return}
   if(!els.el)return;
-  const e=elapsed()/1000,rem=timer.target/1000-e,st=timerState();
+  const e=elapsed()/1000,rem=timer.target/1000-e,st=timerState(),lab=timer.run?'Pause':(e>0?'Resume':'Start');
   els.timer.dataset.s=st;
   els.el.textContent=mmss(e);
   els.rem.textContent=timer.target>0?(rem<0?'−':'')+mmss(Math.abs(rem)):'—';
   els.remL.textContent=timer.target>0?(rem<0?'Over time':'Remaining'):'No target';
-  els.tt.textContent=timer.run?'Pause':(e>0?'Resume':'Start');
+  if(els.tt.dataset.l!==lab){els.tt.dataset.l=lab;els.tt.innerHTML=(timer.run?IC.pause:IC.play)+'<span>'+lab+'</span>';els.tt.setAttribute('aria-label',lab+' the timer (T)');els.tt.title=lab+' (T)'}
   if(document.activeElement!==els.tg)els.tg.value=timer.target>0?mmss(timer.target/1000):'';
   buildTicks();
   els.pbi.style.width=timer.target>0?Math.min(100,e/(timer.target/1000)*100)+'%':'0%';
@@ -2715,9 +3461,9 @@ function renderTimer(){
   let h='';
   if(!timer.run&&e===0)h='<span data-s="">Timer not started</span>';
   else{
-    const ds=Math.abs(delta)<=15?'on plan':mmss(Math.abs(delta))+(delta>0?' behind':' ahead');
-    h+='<span data-s="'+(Math.abs(delta)<=15?'ok':delta>0?'warn':'ok')+'" title="Compared with the plan in the notes, stretched to the target time">Pace: '+ds+'</span>';
-    if(dur>0)h+='<span data-s="'+(spent>dur+10?'over':'')+'" title="Time on this slide, and the time the plan gives it">Slide '+mmss(Math.max(0,spent))+' / '+mmss(dur)+'</span>';
+    const ds=Math.abs(delta)<=15?'On plan':mmss(Math.abs(delta))+(delta>0?' behind':' ahead');
+    h+='<span data-s="'+(Math.abs(delta)<=15?'ok':delta>0?'warn':'ok')+'" title="Compared with the plan in the notes, stretched to the target time">'+ds+'</span>';
+    if(dur>0)h+='<span data-s="'+(spent>dur+10?'over':'')+'" title="Time on this slide, and the time the plan gives it">This slide '+mmss(Math.max(0,spent))+' / '+mmss(dur)+'</span>';
     if(!timer.run)h+='<span data-s="warn">Paused</span>';
   }
   els.pace.innerHTML=h;
@@ -2731,6 +3477,7 @@ function parseTarget(v){
   return -1;
 }
 function pvOpenAudience(){
+  pvMenuClose(false);pvPopClose(false);
   const open=(s)=>{
     const f=s?'popup=yes,left='+Math.round(s.availLeft!=null?s.availLeft:s.left)+',top='+Math.round(s.availTop!=null?s.availTop:s.top)+',width='+Math.round(s.availWidth||s.width)+',height='+Math.round(s.availHeight||s.height)
             :'popup=yes,width=1100,height=640,left=80,top=80';
@@ -2745,42 +3492,76 @@ function pvOpenAudience(){
     else open(null);
   });
 }
-function buildRail(){
-  els.rail.innerHTML=slides.map((s,i)=>'<button type="button" class="pv-th" aria-label="Go to slide '+(i+1)+': '+esc(TOPIC[i])+'"><span class="tb"></span><span class="tl"><b>'+(i+1)+'</b><span>'+esc(TOPIC[i])+'</span></span></button>').join('');
-  els.th=[...els.rail.children];
-  els.th.forEach((b,i)=>b.addEventListener('click',()=>{pvGo(i);b.blur()}));
-  let i=0;   /* thumbnails are filled in one by one so the window appears at once */
-  (function step(){if(i>=N)return;els.th[i].firstChild.appendChild(makePvs(i,'t'));i++;setTimeout(step,28)})();
+
+/* ---------- timer settings: target time, auto-start and reset, in a small popover under the cog ---------- */
+let popOn=false;
+function mkPop(){
+  const e=mkEl('div','pv-pop');e.hidden=true;e.setAttribute('role','dialog');e.setAttribute('aria-label','Timer settings');
+  e.innerHTML='<label class="tgl">Target time<input type="text" class="tg" size="5" inputmode="numeric" aria-label="Target time, minutes and seconds"></label>'+
+    '<label class="ck"><input type="checkbox" class="as"><span>Start the timer when I leave the first slide</span></label>'+
+    '<button type="button" class="pv-btn tr">Reset timer</button>';
+  return e;
 }
+function pvPopOpen(){
+  if(popOn)return;
+  pvMenuClose(false);
+  const b=els.cog.getBoundingClientRect(),p=els.pop;
+  p.hidden=false;popOn=true;els.cog.setAttribute('aria-expanded','true');
+  p.style.top=Math.round(b.bottom+8)+'px';p.style.left=Math.round(clamp(b.right-p.offsetWidth,12,innerWidth-p.offsetWidth-12))+'px';
+  els.tg.focus();els.tg.select();
+  document.addEventListener('pointerdown',pvPopOut,true);document.addEventListener('keydown',pvPopKey,true);
+}
+function pvPopClose(refocus){
+  if(!popOn)return;
+  els.pop.hidden=true;popOn=false;els.cog.setAttribute('aria-expanded','false');
+  document.removeEventListener('pointerdown',pvPopOut,true);document.removeEventListener('keydown',pvPopKey,true);
+  if(refocus&&els.cog.isConnected)els.cog.focus();
+}
+function pvPopOut(e){if(!e.target.closest('.pv-pop')&&!e.target.closest('.pv-cog'))pvPopClose(false)}
+function pvPopKey(e){if(e.key==='Escape'&&!drag&&!document.querySelector('.pv-help')){e.preventDefault();e.stopPropagation();pvPopClose(true)}}
+
+/* ---------- the window ---------- */
 function buildPresenter(){
   started=true;pristine=slides.map(s=>s.cloneNode(true));
   document.body.classList.add('pv');
   document.title='Presenter view · '+document.title;
-  const r=document.createElement('div');r.id='pv';r.className='pv-root';
+  const r=mkEl('div','pv-root');r.id='pv';
   r.innerHTML=
-  '<header class="pv-top"><div class="pv-brand"><i class="lg lg-llw"></i><span>Presenter view</span></div>'+
-  '<div class="pv-link" id="pv-link" data-s="off"><i></i><span id="pv-linkt"></span></div>'+
-  '<button type="button" class="pv-btn pv-pri" id="pv-aud">Open presentation window</button><span class="pv-sp"></span>'+
-  '<div class="pv-clock" id="pv-clock" title="Time of day"></div><button type="button" class="pv-btn" id="pv-help">Help <kbd>?</kbd></button></header>'+
-  '<main class="pv-main"><aside class="pv-railw"><nav class="pv-rail" id="pv-rail" aria-label="Slides"></nav></aside>'+
-  '<section class="pv-center">'+
-   '<div class="pv-pane pv-curp"><div class="pv-label"><b>Current</b><span id="pv-cl"></span><em id="pv-sec"></em></div><div class="pv-area" id="pv-ac"><div class="pv-box" id="pv-cur" role="button" tabindex="0" aria-label="Current slide. Click for the next slide"></div></div></div>'+
-   '<div class="pv-pane pv-timer" id="pv-timer"><div class="pv-tm"><div><small>Elapsed</small><b id="pv-el">00:00</b></div><div class="pv-rem"><small id="pv-reml">Remaining</small><b id="pv-rem"></b></div></div>'+
-   '<div class="pv-pb" id="pv-pb"><i id="pv-pbi"></i></div>'+
-   '<div class="pv-tc"><button type="button" class="pv-btn pv-pri" id="pv-tt">Start</button><button type="button" class="pv-btn" id="pv-tr">Reset</button>'+
-   '<label>Target <input type="text" id="pv-tg" size="5" inputmode="numeric" aria-label="Target time, minutes and seconds"></label>'+
-   '<label title="Start the timer when you leave the first slide"><input type="checkbox" id="pv-as"> Auto-start</label></div><div class="pv-pace" id="pv-pace"></div></div></section>'+
-  '<section class="pv-right"><div class="pv-pane pv-notes"><div class="pv-label"><b>Speaker notes</b><span id="pv-who"></span><label class="pv-sw" id="pv-sw" title="Scrolls the notes slowly while the time planned for this slide goes by. Scrolling by hand pauses it for a few seconds."><input type="checkbox" id="pv-asc" role="switch"><i></i><span>Auto-scroll</span></label></div><div id="pv-ap" hidden></div><div class="pv-nbody" id="pv-nb" tabindex="0"></div></div></section></main>'+
-  '<footer class="pv-bar"><button type="button" class="pv-btn pv-lg" id="pv-prev">‹ Previous</button><button type="button" class="pv-btn pv-lg pv-pri" id="pv-nextb">Next ›</button>'+
-   '<span class="pv-cnt" id="pv-cnt"></span><span class="pv-sp"></span>'+
-   '<button type="button" class="pv-btn" id="pv-blank" aria-pressed="false" title="Black screen in the presentation window">Blank screen <kbd>B</kbd></button>'+
-   '<button type="button" class="pv-btn" id="pv-fm" aria-label="Smaller notes text">A−</button><button type="button" class="pv-btn" id="pv-fp" aria-label="Larger notes text">A+</button></footer>';
+    '<header class="pv-top"><div class="pv-brand"><i class="lg lg-ll"></i><i class="lg lg-llw"></i><span>Presenter view</span></div>'+
+    '<div class="pv-link" id="pv-link" data-s="off"><i></i><span id="pv-linkt"></span></div>'+
+    '<button type="button" class="pv-btn pv-pri" id="pv-aud">Open presentation window</button><span class="pv-sp"></span>'+
+    '<button type="button" class="pv-btn" id="pv-panels" aria-haspopup="dialog" aria-expanded="false" aria-controls="pv-menu" title="Panels and layouts (P)">'+IC.panels+'<span>Panels</span><kbd>P</kbd></button>'+
+    '<div class="pv-seg" role="group" aria-label="Colour theme"><button type="button" data-th="light" aria-pressed="false">'+IC.sun+'<span>Light</span></button><button type="button" data-th="dark" aria-pressed="false">'+IC.moon+'<span>Dark</span></button></div>'+
+    '<button type="button" class="pv-btn" id="pv-help" title="How it works (?)">'+IC.help+'<span>Help</span></button>'+
+    '<div class="pv-clock" id="pv-clock" title="Time of day"></div></header>'+
+    '<main class="pv-wrap"></main>'+
+    '<footer class="pv-bar"><button type="button" class="pv-btn pv-lg" id="pv-prev">'+IC.chl+'<span>Previous</span></button>'+
+    '<button type="button" class="pv-btn pv-lg pv-pri" id="pv-nextb"><span>Next</span>'+IC.chr+'</button>'+
+    '<div class="pv-cnt"><b id="pv-cnt"></b><span id="pv-ftt"></span></div><span class="pv-sp"></span>'+
+    '<button type="button" class="pv-btn pv-lg" id="pv-blank" aria-pressed="false" title="Black screen in the presentation window (B)">'+IC.blank+'<span class="a">Blank screen</span><span class="b">Show screen</span><kbd>B</kbd></button></footer>';
   document.body.appendChild(r);
-  const g=i=>$(i);
-  els={link:g('pv-link'),linkT:g('pv-linkt'),aud:g('pv-aud'),clock:g('pv-clock'),cur:g('pv-cur'),ac:g('pv-ac'),cl:g('pv-cl'),sec:g('pv-sec'),rail:g('pv-rail'),
-       timer:g('pv-timer'),el:g('pv-el'),rem:g('pv-rem'),remL:g('pv-reml'),pb:g('pv-pb'),pbi:g('pv-pbi'),tt:g('pv-tt'),tr:g('pv-tr'),tg:g('pv-tg'),as:g('pv-as'),pace:g('pv-pace'),
-       who:g('pv-who'),sw:g('pv-sw'),asc:g('pv-asc'),nb:g('pv-nb'),cnt:g('pv-cnt'),prev:g('pv-prev'),nextb:g('pv-nextb')};
-  buildRail();
+  const q=s=>r.querySelector(s);
+  els.wrap=q('.pv-wrap');els.work=mkEl('div','pv-work');els.drop=mkEl('div','pv-drop');
+  els.tray=mkEl('div','pv-tray',IC.eyeoff+'<span>Drop here to hide this panel</span>');els.tray.hidden=true;
+  els.wrap.append(els.work,els.drop,els.tray);
+  els.none=mkEl('div','pv-nopanel','<b>No panels on screen</b><span>Pick a preset, or switch a panel on.</span><button type="button" class="pv-btn pv-pri pv-lg">Open the Panels menu</button>');
+  els.none.querySelector('button').addEventListener('click',pvMenuOpen);
+  els.park=mkEl('div','pv-park');els.park.hidden=true;
+  els.ghost=mkEl('div','pv-ghost');els.ghost.hidden=true;
+  els.say=mkEl('div','pv-sr');els.say.setAttribute('role','status');els.say.setAttribute('aria-live','polite');
+  els.menu=mkMenu();els.pop=mkPop();
+  r.append(els.park,els.ghost,els.say,els.menu,els.pop);
+  mkSlideP('cur',0);mkSlideP('next',1);mkSlideP('prev',-1);mkNotesP();mkTimerP();mkRailP();
+  PIDS.forEach(id=>els.park.appendChild(PN[id].el));
+  const T=PN.timer.el,NT=PN.notes.el;
+  els={link:q('#pv-link'),linkT:q('#pv-linkt'),aud:q('#pv-aud'),pbtn:q('#pv-panels'),seg:[...r.querySelectorAll('.pv-seg button')],clock:q('#pv-clock'),
+       cnt:q('#pv-cnt'),ftt:q('#pv-ftt'),prev:q('#pv-prev'),nextb:q('#pv-nextb'),
+       wrap:els.wrap,work:els.work,drop:els.drop,tray:els.tray,none:els.none,park:els.park,ghost:els.ghost,say:els.say,menu:els.menu,pop:els.pop,
+       timer:T,el:T.querySelector('.el'),rem:T.querySelector('.rem'),remL:T.querySelector('.reml'),pb:T.querySelector('.pv-pbar'),pbi:T.querySelector('.pv-pbar i'),
+       tt:T.querySelector('.tt'),cog:T.querySelector('.pv-cog'),tr:els.pop.querySelector('.tr'),tg:els.pop.querySelector('.tg'),as:els.pop.querySelector('.as'),pace:T.querySelector('.pv-pace'),
+       nb:NT.querySelector('.pv-nbody'),sw:NT.querySelector('.pv-sw'),asc:NT.querySelector('.pv-sw input'),who:NT.querySelector('.pv-who')};
+  els.whoAv=els.who.firstChild;els.whoN=els.who.lastChild;
+  pvThemeInit();pvRestore();
   r.style.setProperty('--nf',nfont+'px');
   els.as.checked=autoStart;
   els.asc.checked=autoScroll;
@@ -2790,30 +3571,37 @@ function buildPresenter(){
   els.tt.addEventListener('click',timerToggle);
   let rt=0;
   els.tr.addEventListener('click',()=>{
-    if(els.tr.dataset.c){clearTimeout(rt);delete els.tr.dataset.c;els.tr.textContent='Reset';timerReset();return}
-    els.tr.dataset.c='1';els.tr.textContent='Sure? Click again';rt=setTimeout(()=>{delete els.tr.dataset.c;els.tr.textContent='Reset'},3000);
+    if(els.tr.dataset.c){clearTimeout(rt);delete els.tr.dataset.c;els.tr.textContent='Reset timer';timerReset();return}
+    els.tr.dataset.c='1';els.tr.textContent='Sure? Click again';rt=setTimeout(()=>{delete els.tr.dataset.c;els.tr.textContent='Reset timer'},3000);
   });
   const applyTarget=()=>{const v=parseTarget(els.tg.value);if(v>=0)setTimer(Object.assign({},timer,{target:v}),true);else renderTimer()};
   els.tg.addEventListener('change',applyTarget);
   els.tg.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter'){applyTarget();els.tg.blur()}});
   els.prev.addEventListener('click',()=>pvGo(pcur-1));
   els.nextb.addEventListener('click',()=>pvGo(pcur+1));
-  els.cur.addEventListener('click',()=>pvGo(pcur+1));
   els.aud.addEventListener('click',pvOpenAudience);
-  g('pv-blank').addEventListener('click',()=>setBlank(!blank,true));
-  const setFont=v=>{nfont=clamp(v,15,44);store.set('lleida-nfont',nfont);r.style.setProperty('--nf',nfont+'px')};
-  g('pv-fm').addEventListener('click',()=>setFont(nfont-2));g('pv-fp').addEventListener('click',()=>setFont(nfont+2));
-  g('pv-help').addEventListener('click',pvHelp);
+  els.cog.addEventListener('click',()=>{if(popOn)pvPopClose(false);else pvPopOpen()});
+  addEventListener('resize',()=>{pvPopClose(false);if(pvMenuOn)pvMenuPlace()});
+  els.pbtn.addEventListener('click',()=>{if(pvMenuOn)pvMenuClose(false);else pvMenuOpen()});
+  els.seg.forEach(b=>b.addEventListener('click',()=>pvTheme(b.dataset.th,true)));
+  q('#pv-blank').addEventListener('click',()=>setBlank(!blank,true));
+  NT.querySelectorAll('[data-fs]').forEach(b=>b.addEventListener('click',()=>stepFont(+b.dataset.fs)));
+  q('#pv-help').addEventListener('click',pvHelp);
   addEventListener('keydown',pvKey);
-  if(window.ResizeObserver){new ResizeObserver(fitBox).observe(els.ac)}else addEventListener('resize',fitBox);
-  fitBox();
+  pvRender();pvSync();
   pvSet(0,true);entryAt=elapsed();
   setInterval(renderTimer,250);
   requestAnimationFrame(notesFlow);
   setInterval(()=>{post({type:'ping'});renderLink()},2000);
   renderLink();renderTimer();
   post({type:'hello'});post({type:'ping'});
-  if(!store.get('lleida-pv-seen')){store.set('lleida-pv-seen','1');setTimeout(pvHelp,400)}
+  if(!store.get('lleida-pv-seen')){store.set('lleida-pv-seen','1');store.set('lleida-pv-panels','1');setTimeout(pvHelp,400)}
+  else if(!store.get('lleida-pv-panels')){store.set('lleida-pv-panels','1');setTimeout(()=>toast('New: drag panels by their title bar, resize them, and press P for layouts and light mode.',9000),900)}
+}
+function setFont(v){nfont=clamp(v,16,72);store.set('lleida-nfont',nfont);$('pv').style.setProperty('--nf',nfont+'px')}
+function stepFont(d){
+  let i=0;NSIZE.forEach((v,k)=>{if(Math.abs(v-nfont)<Math.abs(NSIZE[i]-nfont))i=k});
+  setFont(NSIZE[clamp(i+d,0,NSIZE.length-1)]);
 }
 /* the notes follow the plan: the line being read stays about a third of the way down while the slide's planned time passes */
 function setAutoScroll(on){
@@ -2843,7 +3631,14 @@ function pvKey(e){
   if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
   const k=e.key,helpOpen=!!document.querySelector('.pv-help');
   if(helpOpen){e.preventDefault();pvHelp();return}   /* any key closes the help */
-  if(menuOpen)return;
+  if(menuOpen||drag)return;
+  if(/^[1-9]$/.test(k)&&!e.shiftKey){   /* number keys pick a preset: 1 to 7, and 8 for My layout */
+    const n=+k-1;
+    if(n<PRESETS.length){e.preventDefault();pvApply(PRESETS[n].id)}
+    else if(n===PRESETS.length&&pvMine){e.preventDefault();pvApply('mine')}
+    return;
+  }
+  if(t&&t.closest&&t.closest('#pv-menu'))return;      /* the Panels menu has its own keys */
   const onBtn=t&&t.closest&&t.closest('button');
   if(onBtn&&(k===' '||k==='Enter'))return;
   if(k==='ArrowRight'||k==='ArrowDown'||k==='PageDown'||k===' '||k==='Enter'){e.preventDefault();pvGo(pcur+1)}
@@ -2852,30 +3647,36 @@ function pvKey(e){
   else if(k==='End'){e.preventDefault();pvGo(N-1)}
   else if(k==='t'||k==='T'){e.preventDefault();timerToggle()}
   else if(k==='b'||k==='B'||k==='.'){e.preventDefault();setBlank(!blank,true)}
-  else if(k==='+'||k==='='){nfont=clamp(nfont+2,15,44);store.set('lleida-nfont',nfont);$('pv').style.setProperty('--nf',nfont+'px')}
-  else if(k==='-'||k==='_'){nfont=clamp(nfont-2,15,44);store.set('lleida-nfont',nfont);$('pv').style.setProperty('--nf',nfont+'px')}
+  else if(k==='p'||k==='P'){e.preventDefault();if(pvMenuOn)pvMenuClose(false);else pvMenuOpen()}
+  else if(k==='+'||k==='='){stepFont(1)}
+  else if(k==='-'||k==='_'){stepFont(-1)}
   else if(k==='s'||k==='S'){e.preventDefault();setAutoScroll(!autoScroll)}
   else if(k==='?'){e.preventDefault();pvHelp()}
 }
 function pvHelp(){
   const old=document.querySelector('.pv-help');if(old){old.remove();return}
+  pvMenuClose(false);pvPopClose(false);
   const h=document.createElement('div');h.className='pv-help';
   h.innerHTML='<div role="dialog" aria-label="How to present with two screens"><h2>Presenting with a projector</h2>'+
   '<h3>1. Extend the screens</h3><ul><li><b>Mac:</b> System Settings › Displays › your projector › Use as: <b>Extended display</b> (not “Mirror”).</li>'+
   '<li><b>Windows:</b> press <kbd>Win</kbd> + <kbd>P</kbd> and choose <b>Extend</b>.</li></ul>'+
   '<h3>2. Open the presentation window</h3><ol><li>Click <b>Open presentation window</b>. In Chrome or Edge you can pick the projector from a list (allow “window management” once).</li>'+
   '<li>In Safari and Firefox the window opens here: drag it onto the projector.</li><li>Click once inside it to go full screen. <kbd>Esc</kbd> leaves full screen.</li></ol>'+
-  '<h3>3. Present from this window</h3><ul><li><kbd>←</kbd> <kbd>→</kbd> <kbd>Space</kbd> move the projector; click the current slide for the next one, or any thumbnail on the left to jump there (point at the column to enlarge it and scroll).</li>'+
+  '<h3>3. Present from this window</h3><ul><li><kbd>←</kbd> <kbd>→</kbd> <kbd>Space</kbd> move the projector. You can also click the current slide for the next one, the previous or next slide to go there, or any thumbnail in All slides.</li>'+
   '<li><kbd>T</kbd> starts or pauses the timer, <kbd>B</kbd> blanks the projector, <kbd>+</kbd> <kbd>−</kbd> change the notes size, <kbd>S</kbd> turns the notes auto-scroll on or off.</li>'+
-  '<li>Above the notes there is the audio of the slide (a voice for each speaker): play it to rehearse. In the presentation window, the three dots menu or <kbd>A</kbd> starts the automatic presentation, which plays each slide’s audio and moves on by itself.</li>'+
-  '<li>The notes scroll slowly while the time planned for each slide goes by (switch at the top of the notes). Scroll by hand and it pauses for a few seconds; the slide with the questions is not scrolled.</li>'+
-  '<li>The talk lasts 15 minutes by default; change the target under the timer. The pace follows the plan in the notes, stretched to that time.</li></ul>'+
+  '<li>This view is silent. The audio of each speaker is played from the presentation window: the three dots menu or <kbd>A</kbd> starts the automatic presentation, which plays each slide’s audio and moves on by itself.</li>'+
+  '<li>The notes scroll slowly while the time planned for each slide goes by. Scroll by hand and it pauses for a few seconds; the slide with the questions is not scrolled.</li>'+
+  '<li>The talk lasts 15 minutes by default; change the target in the timer. The pace follows the plan in the notes, stretched to that time.</li></ul>'+
+  '<h3>Arrange the panels</h3><ul><li><b>Move:</b> drag a panel by its title bar. Drop it on the side, top or bottom of another panel to put it there, in the middle to swap the two, or on the strip that appears at the bottom to hide it.</li>'+
+  '<li><b>Resize:</b> drag the line between two panels. Double-click it to even them out, or Tab to it and use the arrow keys.</li>'+
+  '<li><b>Panels menu</b> (<kbd>P</kbd>): switch panels on or off, including the previous slide, drag them from the list to where you want them, and pick a preset with <kbd>1</kbd> to <kbd>'+PRESETS.length+'</kbd>. <b>Save as My layout</b> keeps your own (<kbd>'+(PRESETS.length+1)+'</kbd>).</li>'+
+  '<li>Light or dark colours: the switch at the top right. Everything is remembered on this computer. To make everything bigger, zoom the browser (<kbd>Ctrl</kbd> or <kbd>⌘</kbd> and <kbd>+</kbd>).</li></ul>'+
   '<h3>If the screens are mirrored</h3><p>A mirrored projector shows exactly what is on your laptop screen, so the notes would be visible to the room. Switch to Extend. If you cannot, present from the presentation window alone: <kbd>N</kbd> shows the notes and <kbd>T</kbd> a discreet timer, and both are visible to the room.</p>'+
-  '<button type="button" class="pv-btn pv-pri" id="pv-hx">Got it</button></div>';
+  '<button type="button" class="pv-btn pv-pri pv-lg" id="pv-hx">Got it</button></div>';
   $('pv').appendChild(h);
   h.addEventListener('click',e=>{if(e.target===h)h.remove()});
   h.querySelector('#pv-hx').addEventListener('click',()=>h.remove());
-  h.querySelector('#pv-hx').focus();
+  h.querySelector('#pv-hx').focus({preventScroll:true});
 }
 
 /* ---------- start ---------- */
