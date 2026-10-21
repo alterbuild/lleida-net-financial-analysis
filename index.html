@@ -700,6 +700,15 @@ body.pv #stage,body.pv #ctrl,body.pv #notes,body.pv #prog,body.pv #tip,body.pv #
 .pv-pace span[data-s="ok"]{color:var(--ok)}.pv-pace span[data-s="warn"]{color:var(--wa)}.pv-pace span[data-s="over"]{color:var(--er)}
 .pv-notes{min-height:0}
 .pv-notes .pv-label span{font-weight:600;color:var(--tx)}
+.pv-sw{position:relative;margin-left:auto;align-self:center;display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.pv-sw input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.pv-sw i{position:relative;flex:none;width:34px;height:20px;border-radius:999px;background:#3A4770;transition:background .2s}
+.pv-sw i::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s}
+.pv-sw input:checked+i{background:var(--ac)}
+.pv-sw input:checked+i::after{transform:translateX(14px)}
+.pv-sw input:focus-visible+i{outline:2px solid #fff;outline-offset:2px}
+.pv-notes .pv-label .pv-sw span{font-weight:500;color:var(--mu)}
+.pv-sw[data-p="1"] span::after{content:" · paused";color:var(--wa)}
 .pv-nbody{flex:1;min-height:0;overflow:auto;padding-right:8px;font-size:var(--nf,22px);line-height:1.5;scrollbar-color:#3A4770 transparent}
 .pv-nbody p{margin:0 0 .75em}
 .pv-nbody h4{margin:0 0 .6em;font:600 .62em/1.35 var(--sans);color:var(--mu)}
@@ -1882,7 +1891,7 @@ if(MODE==='deck'){
 /* ======================================================================================================================
    Presenter view (the window that stays on the laptop)
    ====================================================================================================================== */
-let pcur=0,want=-1,wantAt=0,entryAt=0,autoStart=store.get('lleida-autostart')!=='0',nfont=+store.get('lleida-nfont')||22,pristine=null,els={},mountSeq=0,tickT=-1;
+let pcur=0,want=-1,wantAt=0,entryAt=0,autoStart=store.get('lleida-autostart')!=='0',nfont=+store.get('lleida-nfont')||22,autoScroll=store.get('lleida-autoscroll')!=='0',manualUntil=0,spos=0,flowT=0,pristine=null,els={},mountSeq=0,tickT=-1;
 const TOPIC=slides.map(s=>{const t=(s.getAttribute('aria-label')||'').replace(/^Slide \d+,\s*/,'');return t.charAt(0).toUpperCase()+t.slice(1)});
 /* a clone must not share ids (clip paths, patterns) with the slide it came from */
 function uniq(root,tag){
@@ -1935,7 +1944,7 @@ function pvSet(n,fromAudience){
   els.cl.textContent=(n+1)+' / '+N;
   els.sec.textContent=sec?'Part '+sec+' of 6 · '+SECL[sec-1]:'';
   const no=NOTES[n];els.who.textContent=no[0]>=0?SPK[no[0]]:'';
-  els.nb.innerHTML=notesHtml(n);els.nb.scrollTop=0;
+  els.nb.innerHTML=notesHtml(n);els.nb.scrollTop=0;spos=0;manualUntil=0;
   els.cnt.textContent=(n+1)+' / '+N;
   els.th.forEach((b,i)=>b.setAttribute('aria-current',String(i===n)));
   if(!els.rail.matches(':hover')){const b=els.th[n];els.rail.scrollTo?els.rail.scrollTo({top:b.offsetTop-(els.rail.clientHeight-b.offsetHeight)/2,behavior:'smooth'}):0}
@@ -2033,7 +2042,7 @@ function buildPresenter(){
    '<div class="pv-tc"><button type="button" class="pv-btn pv-pri" id="pv-tt">Start</button><button type="button" class="pv-btn" id="pv-tr">Reset</button>'+
    '<label>Target <input type="text" id="pv-tg" size="5" inputmode="numeric" aria-label="Target time, minutes and seconds"></label>'+
    '<label title="Start the timer when you leave the first slide"><input type="checkbox" id="pv-as"> Auto-start</label></div><div class="pv-pace" id="pv-pace"></div></div></section>'+
-  '<section class="pv-right"><div class="pv-pane pv-notes"><div class="pv-label"><b>Speaker notes</b><span id="pv-who"></span></div><div class="pv-nbody" id="pv-nb" tabindex="0"></div></div></section></main>'+
+  '<section class="pv-right"><div class="pv-pane pv-notes"><div class="pv-label"><b>Speaker notes</b><span id="pv-who"></span><label class="pv-sw" id="pv-sw" title="Scrolls the notes slowly while the time planned for this slide goes by. Scrolling by hand pauses it for a few seconds."><input type="checkbox" id="pv-asc" role="switch"><i></i><span>Auto-scroll</span></label></div><div class="pv-nbody" id="pv-nb" tabindex="0"></div></div></section></main>'+
   '<footer class="pv-bar"><button type="button" class="pv-btn pv-lg" id="pv-prev">‹ Previous</button><button type="button" class="pv-btn pv-lg pv-pri" id="pv-nextb">Next ›</button>'+
    '<span class="pv-cnt" id="pv-cnt"></span><span class="pv-sp"></span>'+
    '<button type="button" class="pv-btn" id="pv-blank" aria-pressed="false" title="Black screen in the presentation window">Blank screen <kbd>B</kbd></button>'+
@@ -2042,10 +2051,13 @@ function buildPresenter(){
   const g=i=>$(i);
   els={link:g('pv-link'),linkT:g('pv-linkt'),aud:g('pv-aud'),clock:g('pv-clock'),cur:g('pv-cur'),ac:g('pv-ac'),cl:g('pv-cl'),sec:g('pv-sec'),rail:g('pv-rail'),
        timer:g('pv-timer'),el:g('pv-el'),rem:g('pv-rem'),remL:g('pv-reml'),pb:g('pv-pb'),pbi:g('pv-pbi'),tt:g('pv-tt'),tr:g('pv-tr'),tg:g('pv-tg'),as:g('pv-as'),pace:g('pv-pace'),
-       who:g('pv-who'),nb:g('pv-nb'),cnt:g('pv-cnt'),prev:g('pv-prev'),nextb:g('pv-nextb')};
+       who:g('pv-who'),sw:g('pv-sw'),asc:g('pv-asc'),nb:g('pv-nb'),cnt:g('pv-cnt'),prev:g('pv-prev'),nextb:g('pv-nextb')};
   buildRail();
   r.style.setProperty('--nf',nfont+'px');
   els.as.checked=autoStart;
+  els.asc.checked=autoScroll;
+  els.asc.addEventListener('change',()=>setAutoScroll(els.asc.checked));
+  ['wheel','touchstart','pointerdown'].forEach(t=>els.nb.addEventListener(t,()=>{manualUntil=Date.now()+8000},{passive:true}));
   els.as.addEventListener('change',()=>{autoStart=els.as.checked;store.set('lleida-autostart',autoStart?'1':'0')});
   els.tt.addEventListener('click',timerToggle);
   let rt=0;
@@ -2069,10 +2081,33 @@ function buildPresenter(){
   fitBox();
   pvSet(0,true);entryAt=elapsed();
   setInterval(renderTimer,250);
+  requestAnimationFrame(notesFlow);
   setInterval(()=>{post({type:'ping'});renderLink()},2000);
   renderLink();renderTimer();
   post({type:'hello'});post({type:'ping'});
   if(!store.get('lleida-pv-seen')){store.set('lleida-pv-seen','1');setTimeout(pvHelp,400)}
+}
+/* the notes follow the plan: the line being read stays about a third of the way down while the slide's planned time passes */
+function setAutoScroll(on){
+  autoScroll=!!on;store.set('lleida-autoscroll',autoScroll?'1':'0');
+  if(els.asc)els.asc.checked=autoScroll;
+  manualUntil=0;if(els.nb)spos=els.nb.scrollTop;
+}
+function notesFlow(ts){
+  requestAnimationFrame(notesFlow);
+  const nb=els.nb;if(!nb)return;
+  const dt=Math.min(.1,(ts-flowT)/1000||.016);flowT=ts;
+  const held=autoScroll&&Date.now()<manualUntil,p=held?'1':'';
+  if(els.sw.dataset.p!==p)els.sw.dataset.p=p;
+  if(!autoScroll||held)return;
+  const max=nb.scrollHeight-nb.clientHeight,dur=DUR[pcur]*planK();
+  if(max<=0||!(dur>0))return;
+  if(Math.abs(nb.scrollTop-spos)>2)spos=nb.scrollTop;   /* moved by hand, by the reset on a new slide, or by a resize */
+  const f=clamp((elapsed()-entryAt)/1000/dur,0,1);
+  const to=clamp(f*nb.scrollHeight-nb.clientHeight*.3,0,max),d=to-spos;
+  if(Math.abs(d)<.05)return;
+  spos+=clamp(d*Math.min(1,dt*3),-900*dt,900*dt);
+  nb.scrollTop=spos;
 }
 function pvKey(e){
   if(e.metaKey||e.ctrlKey||e.altKey)return;
@@ -2091,6 +2126,7 @@ function pvKey(e){
   else if(k==='b'||k==='B'||k==='.'){e.preventDefault();setBlank(!blank,true)}
   else if(k==='+'||k==='='){nfont=clamp(nfont+2,15,44);store.set('lleida-nfont',nfont);$('pv').style.setProperty('--nf',nfont+'px')}
   else if(k==='-'||k==='_'){nfont=clamp(nfont-2,15,44);store.set('lleida-nfont',nfont);$('pv').style.setProperty('--nf',nfont+'px')}
+  else if(k==='s'||k==='S'){e.preventDefault();setAutoScroll(!autoScroll)}
   else if(k==='?'){e.preventDefault();pvHelp()}
 }
 function pvHelp(){
@@ -2102,7 +2138,8 @@ function pvHelp(){
   '<h3>2. Open the presentation window</h3><ol><li>Click <b>Open presentation window</b>. In Chrome or Edge you can pick the projector from a list (allow “window management” once).</li>'+
   '<li>In Safari and Firefox the window opens here: drag it onto the projector.</li><li>Click once inside it to go full screen. <kbd>Esc</kbd> leaves full screen.</li></ol>'+
   '<h3>3. Present from this window</h3><ul><li><kbd>←</kbd> <kbd>→</kbd> <kbd>Space</kbd> move the projector; click the current slide for the next one, or any thumbnail on the left to jump there (point at the column to enlarge it and scroll).</li>'+
-  '<li><kbd>T</kbd> starts or pauses the timer, <kbd>B</kbd> blanks the projector, <kbd>+</kbd> <kbd>−</kbd> change the notes size.</li>'+
+  '<li><kbd>T</kbd> starts or pauses the timer, <kbd>B</kbd> blanks the projector, <kbd>+</kbd> <kbd>−</kbd> change the notes size, <kbd>S</kbd> turns the notes auto-scroll on or off.</li>'+
+  '<li>The notes scroll slowly while the time planned for each slide goes by (switch at the top of the notes). Scroll by hand and it pauses for a few seconds; the slide with the questions is not scrolled.</li>'+
   '<li>The talk lasts 15 minutes by default; change the target under the timer. The pace follows the plan in the notes, stretched to that time.</li></ul>'+
   '<h3>If the screens are mirrored</h3><p>A mirrored projector shows exactly what is on your laptop screen, so the notes would be visible to the room. Switch to Extend. If you cannot, present from the presentation window alone: <kbd>N</kbd> shows the notes and <kbd>T</kbd> a discreet timer, and both are visible to the room.</p>'+
   '<button type="button" class="pv-btn pv-pri" id="pv-hx">Got it</button></div>';
