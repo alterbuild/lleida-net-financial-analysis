@@ -530,7 +530,10 @@ body.idle #ctrl{opacity:0;pointer-events:none}
 @media (max-width:640px){#dots,#b-fs{display:none}}
 #notes h2{display:flex;align-items:center;gap:10px;font:600 13px/1.3 var(--sans);margin:0 0 10px}
 #notes h2 small{opacity:.7;font-weight:500}
-#notes p{font:15.5px/1.6 var(--sans);margin:0}
+#notes-t{font:15.5px/1.6 var(--sans);margin:0}
+#notes-t p{margin:0}
+#notes-t h5{margin:14px 0 4px;font:700 12.5px/1.3 var(--sans);letter-spacing:.04em;text-transform:uppercase;opacity:.65}
+#notes-t p.q{margin-top:12px;font-weight:700}
 /* Liquid glass theme.
    Every card becomes a frosted pane: translucent flat fill (no colour gradients), saturated blur, a lit bevel (bright top-left
    and bottom-right), a hairline blue edge and a soft tinted shadow. Slide ground stays plain white. */
@@ -700,6 +703,9 @@ body.pv #stage,body.pv #ctrl,body.pv #notes,body.pv #prog,body.pv #tip,body.pv #
 .pv-nbody{flex:1;min-height:0;overflow:auto;padding-right:8px;font-size:var(--nf,22px);line-height:1.5;scrollbar-color:#3A4770 transparent}
 .pv-nbody p{margin:0 0 .75em}
 .pv-nbody h4{margin:0 0 .6em;font:600 .62em/1.35 var(--sans);color:var(--mu)}
+.pv-nbody h5{margin:1.3em 0 .45em;padding-top:.7em;border-top:1px solid var(--ln);font:700 .6em/1.3 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ac)}
+.pv-nbody h5:first-of-type{margin-top:.2em;padding-top:0;border-top:0}
+.pv-nbody p.q{margin:1em 0 .3em;font-weight:700;color:#fff}
 .pv-bar{border-top:1px solid var(--ln);background:#0B101E}
 .pv-dots{display:flex;align-items:center;gap:6px;padding:0 8px}
 .pv-dots button{appearance:none;border:0;padding:0;width:10px;height:10px;border-radius:999px;background:#3A4770;cursor:pointer;transition:width .25s,background .25s}
@@ -1217,7 +1223,7 @@ body.pv #stage,body.pv #ctrl,body.pv #notes,body.pv #prog,body.pv #tip,body.pv #
   <button id="b-notes" type="button" aria-pressed="false" title="Speaker notes (N)">Notes</button>
   <button id="b-fs" type="button" title="Full screen, choose the display (F)">Full screen</button>
 </nav>
-<aside id="notes" hidden><h2 id="notes-h"></h2><p id="notes-t"></p></aside>
+<aside id="notes" hidden><h2 id="notes-h"></h2><div id="notes-t"></div></aside>
 
 <script>
 (function(){
@@ -1469,6 +1475,12 @@ document.querySelectorAll('.slide[data-sec]').forEach(sl=>{const c=+sl.dataset.s
 /* ---------- deck engine ---------- */
 const NOTES=[[-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""], [-1, "", ""]];
 
+/* a note with several lines is a Q&A bank: '# ' starts a group, 'Q: ' a question, any other line is its answer */
+function noteHtml(t){
+  const e=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  return t.split('\n').map(l=>l.startsWith('# ')?'<h5>'+e(l.slice(2))+'</h5>':l.startsWith('Q: ')?'<p class="q">'+e(l.slice(3))+'</p>':'<p>'+e(l)+'</p>').join('');
+}
+
 const stage=document.getElementById('stage'),slides=[...stage.querySelectorAll('.slide')],N=slides.length;
 const prog=document.getElementById('prog'),count=document.getElementById('count'),dotsEl=document.getElementById('dots');
 const notes=document.getElementById('notes'),nh=document.getElementById('notes-h'),nt=document.getElementById('notes-t'),bn=document.getElementById('b-notes');
@@ -1517,7 +1529,7 @@ function ui(){
   try{history.replaceState(null,'','#'+(cur+1))}catch(e){}
   const no=NOTES[cur];
   nh.innerHTML=no[0]>=0?`<span class="av p${no[0]+1}">${SPK[no[0]].split(' ').map(w=>w[0]).join('')}</span><span>${SPK[no[0]]}<br><small>${no[1]}</small></span>`:`<span>${no[1]}</span>`;
-  nt.textContent=no[2];
+  if(no[2].indexOf('\n')<0)nt.textContent=no[2];else nt.innerHTML=noteHtml(no[2]);
 }
 function show(n,hold){
   kstop();
@@ -1908,6 +1920,7 @@ function swapSlide(n,dir){
 }
 function notesHtml(i){
   const no=NOTES[i];
+  if(no[2].indexOf('\n')>=0)return '<h4>'+esc(no[1])+'</h4>'+noteHtml(no[2]);
   const sent=no[2].replace(/([.!?])\s+(?=[A-Z“"(])/g,'$1\u0001').split('\u0001'),ps=[];
   for(let k=0;k<sent.length;k+=2)ps.push(sent.slice(k,k+2).join(' '));
   return '<h4>'+esc(no[1])+'</h4>'+ps.map(p=>'<p>'+esc(p)+'</p>').join('');
