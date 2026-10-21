@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lleida.net Financial Analysis</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="build" content="20261021-140307">
+<meta name="build" content="20261021-165359">
 <script>
 /* GitHub Pages lets a browser keep the page for ten minutes (cache-control: max-age=600). On Pages the deck therefore asks for a fresh
    copy of itself, skipping the cache, when it opens and when the tab comes back to the front, and reloads once if that copy is newer.
@@ -218,12 +218,10 @@ html:-webkit-full-screen body{background:#000}
 .cover{padding:0;display:grid;grid-template-columns:1fr 664px}
 .cv-main{padding:52px 40px 44px 72px;display:flex;flex-direction:column;min-width:0}
 .cv-course .pill{background:var(--mist);color:var(--slate);font-size:14.5px}
-.cv-logo{margin-top:96px}
+.cv-logo{margin-top:56px}
 .cv-co{font-size:14px;color:var(--slate);margin-top:16px;line-height:1.5}
 .cv-title{font-family:var(--display);font-weight:700;font-size:52px;line-height:1.05;letter-spacing:-.035em;max-width:820px;margin-top:40px;text-wrap:balance}
 .cv-sub{font-size:21px;line-height:1.4;max-width:760px;margin-top:16px;color:var(--slate)}
-.team{list-style:none;padding:0;margin-top:auto;display:grid;grid-template-columns:repeat(3,max-content);column-gap:40px;row-gap:12px;font-size:16.5px;font-weight:600}
-.team li{display:flex;align-items:center;gap:10px}
 .cv-meta{display:flex;align-items:center;font-size:14.5px;color:var(--slate);margin-top:24px;padding-top:18px;border-top:1px solid var(--rule)}
 .cv-meta span+span::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--q3);margin:0 12px;vertical-align:2px}
 .cv-panel{position:relative;z-index:1;margin:24px;border-radius:var(--r-xl);color:var(--ink);padding:42px 38px;overflow:hidden;display:flex;flex-direction:column;gap:14px;
@@ -531,6 +529,7 @@ html:-webkit-full-screen body{background:#000}
 .cl-a{font-size:19px;margin-top:14px;color:#2A3556;line-height:1.4}
 .cl-team{list-style:none;padding:0;margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .cl-team li{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.7);-webkit-backdrop-filter:blur(14px) saturate(1.7);backdrop-filter:blur(14px) saturate(1.7);box-shadow:inset 0 0 0 1px rgba(255,255,255,.8),inset 2px 2px 5px -2px #fff,0 1px 0 rgba(105,148,212,.28),0 14px 22px -16px rgba(0,60,140,.55);border-radius:999px;padding:7px 14px 7px 7px;font-size:15.5px;font-weight:600;white-space:nowrap}
+.cover:not(.close) .cl-team li{background:rgba(255,255,255,.86)}   /* over the sphere of the cover the pills stay clean */
 
 /* ---------- presenter chrome ---------- */
 #ctrl{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:flex;align-items:center;gap:4px;padding:4px;
@@ -813,6 +812,24 @@ body.auto #aprog{display:block}
 .pv-root .ap-r{accent-color:var(--ac)}
 .pv-root .ap-t{font-size:13.5px;min-width:96px}
 
+/* ---------- closing slide: looping drawings of what Lleida.net does (src/loops.js draws them) ---------- */
+.lp{position:relative;flex:1;min-height:250px;margin:34px 0 28px;padding:14px;display:grid;grid-template-columns:262px 1fr;gap:18px;border-radius:var(--r-xl);
+  background:rgba(255,255,255,.72);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.85),inset 3px 3px 6px -3px #fff,inset -3px -3px 6px -3px rgba(255,255,255,.9),0 0 0 1px rgba(105,148,212,.22),0 18px 30px -20px rgba(0,60,140,.42)}
+.lp-l{display:flex;flex-direction:column;min-width:0;padding:14px 0 6px 14px}
+.lp-k{font:700 13.5px/1 var(--display);color:var(--slate);letter-spacing:.01em}
+.lp-t{position:relative;flex:1;margin-top:18px}
+.lp-c{position:absolute;left:0;right:0;top:0}
+.lp-c h3{font:700 29px/1.1 var(--display);letter-spacing:-.025em;margin-bottom:10px}
+.lp-c p{font-size:16.5px;line-height:1.42;color:var(--slate);text-wrap:balance}
+.lp-r{position:relative;min-width:0;border-radius:calc(var(--r-xl) - 10px);background:rgba(0,115,218,.13);box-shadow:inset 0 0 0 1px rgba(255,255,255,.7);overflow:hidden}
+.slide .lp-sv{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}
+.lp-pg{display:flex;align-items:center;gap:7px;height:12px}
+.lp-pg button{appearance:none;border:0;padding:0;margin:0;position:relative;overflow:hidden;flex:none;width:10px;height:10px;border-radius:999px;background:rgba(0,74,152,.2);cursor:pointer;transition:width .5s var(--ease)}
+.lp-pg button::after{content:"";position:absolute;inset:0;background:var(--ac,var(--qualified));transform:scaleX(var(--p,0));transform-origin:0 50%}
+.lp-pg button[aria-current="true"]{width:50px}
+.lp-pg button:focus-visible{outline:2px solid var(--qualified);outline-offset:3px}
+
 </style>
 
 <div id="stage" class="gl" aria-roledescription="slide deck" aria-label="Lleida.net financial analysis">
@@ -856,8 +873,11 @@ body.auto #aprog{display:block}
     <p class="cv-co b" style="--d:200">Lleidanetworks Serveis Telemàtics, S.A. Listed on BME Growth (LLN) and Euronext Growth Paris (ALLLN)</p>
     <p class="cv-title" data-split="w" style="--d:300">Financial analysis of the 2024 and 2025 financial years</p>
     <p class="cv-sub b" style="--d:360">Diagnosis, performance, financial decisions and recommendations</p>
-    <ul class="team"><li class="b" style="--d:520"><span class="av p1">AE</span>Anibal Estrada</li><li class="b" style="--d:590"><span class="av p2">IC</span>Irene Carballeira</li><li class="b" style="--d:660"><span class="av p3">JT</span>Juan Tent</li><li class="b" style="--d:730"><span class="av p4">DM</span>Diego Martínez</li><li class="b" style="--d:800"><span class="av p5">LM</span>Leyla Marco</li><li class="b" style="--d:870"><span class="av p6">ES</span>Emma Soto</li></ul>
-    <p class="cv-meta b" style="--d:560"><i class="lg lg-ed" style="width:121px;height:30px;margin-right:22px" role="img" aria-label="EDHEC Business School"></i><span>Professor Rania Labaki</span><span>IBT4 Lille</span><span>22 October 2026</span></p>
+    <div class="lp b" style="--d:440" role="group" aria-label="What Lleida.net does, in looping drawings">
+      <div class="lp-l"><p class="lp-k">What Lleida.net does</p><div class="lp-t"></div><div class="lp-pg" role="group" aria-label="Choose a drawing"></div></div>
+      <div class="lp-r"><svg class="lp-sv" viewBox="0 0 510 250" aria-hidden="true"></svg></div>
+    </div>
+    <p class="cv-meta b" style="--d:560;margin-top:auto"><i class="lg lg-ed" style="width:121px;height:30px;margin-right:22px" role="img" aria-label="EDHEC Business School"></i><span>Professor Rania Labaki</span><span>IBT4 Lille</span><span>22 October 2026</span></p>
   </div>
   <aside class="cv-panel">
     <i class="glass"></i>
@@ -879,6 +899,7 @@ body.auto #aprog{display:block}
       </div>
     </div>
     <div class="kpg b" style="--d:700" role="group" aria-label="Card sets"><button type="button" aria-label="Show the SME criteria" aria-current="true"></button><button type="button" aria-label="Show the 2025 key figures"></button></div>
+    <ul class="cl-team"><li class="b" style="--d:1000"><span class="av p1">AE</span>Anibal Estrada</li><li class="b" style="--d:1070"><span class="av p2">IC</span>Irene Carballeira</li><li class="b" style="--d:1140"><span class="av p3">JT</span>Juan Tent</li><li class="b" style="--d:1210"><span class="av p4">DM</span>Diego Martínez</li><li class="b" style="--d:1280"><span class="av p5">LM</span>Leyla Marco</li><li class="b" style="--d:1350"><span class="av p6">ES</span>Emma Soto</li></ul>
   </aside>
 </section>
 
@@ -1277,6 +1298,10 @@ body.auto #aprog{display:block}
     <i class="lg lg-ll b" style="width:300px;height:81px;margin-top:60px;--d:100" role="img" aria-label="Lleida.net"></i>
     <h2 class="cv-name" data-split="c" style="--d:260">Thank you</h2>
     <p class="cv-sub b" style="--d:260">We are happy to take your questions.</p>
+    <div class="lp b" style="--d:520" role="group" aria-label="What Lleida.net does, in looping drawings">
+      <div class="lp-l"><p class="lp-k">What Lleida.net does</p><div class="lp-t"></div><div class="lp-pg" role="group" aria-label="Choose a drawing"></div></div>
+      <div class="lp-r"><svg class="lp-sv" viewBox="0 0 510 250" aria-hidden="true"></svg></div>
+    </div>
     <p class="cv-meta b" style="--d:420;margin-top:auto"><i class="lg lg-ed" style="width:121px;height:30px;margin-right:22px" role="img" aria-label="EDHEC Business School"></i><span>Professor Rania Labaki</span><span>IBT4 Lille</span><span>22 October 2026</span></p>
   </div>
   <aside class="cv-panel">
@@ -1742,6 +1767,347 @@ const h0=parseInt(location.hash.slice(1),10),start=h0>=1&&h0<=N?h0-1:0;
 let started=false;
 const isPhone=()=>innerWidth<=820||(innerHeight<=500&&innerWidth<=1100);
 const begin=()=>{if(started)return;started=true;if(isPhone()){notes.hidden=false;bn.setAttribute('aria-pressed','true')}go(start,true)};
+/* Looping drawings of what Lleida.net does (certified e-mail and SMS, e-signature, court-ready evidence, the burofax it replaces,
+   telecom traffic between carriers), in a panel (.lp) on the cover and another on the closing slide. Injected inside the deck IIFE
+   by tools/build.py (it uses S, T, reduce).
+   Every drawing is a function of time: build(root) creates the SVG once and returns draw(t), t in seconds since that drawing began.
+   The loop only decides which drawings are visible and how far along each one is, so any moment can be drawn, paused or jumped to
+   (the dots under the caption do that). Nothing runs while another slide is on screen, in the presenter view or with reduced motion
+   (then a finished frame of each drawing is shown, and so in the PDF). */
+(function(){
+const hosts=[...document.querySelectorAll('.lp')];
+if(!hosts.length)return;
+const C={ink:'#181C32',blue:'#004A98',web:'#0073DA',sky:'#9DC3EC',ice:'#DCEAF8',slate:'#5E6278',gold:'#F5B335',red:'#C10230',teal:'#007167',tealT:'#E1F0EE',redT:'#FAE4EA',goldT:'#FDF2DB'};
+const RING='rgba(105,148,212,.5)',SHADE='rgba(0,60,140,.15)',OV=.5;   /* OV: seconds two drawings overlap while one hands over to the next */
+
+/* ---------- maths ---------- */
+const cl=(v,a,b)=>v<a?a:v>b?b:v;
+const pr=(t,a,b)=>cl((t-a)/(b-a),0,1);   /* how far t is from a to b: 0 before a, 1 after b */
+const lerp=(a,b,k)=>a+(b-a)*k;
+const ease={
+  out:k=>1-Math.pow(1-k,3),
+  io:k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2,
+  pop:k=>{const u=k-1;return 1+2.9*u*u*u+1.9*u*u},                    /* overshoots a little, then settles */
+  zip:k=>1-Math.pow(1-k,4),
+  swing:k=>k<=0?0:k>=1?1:1-Math.exp(-6*k)*Math.cos(14*k)               /* damped swing, for the scales */
+};
+const bez=(a,c,b,k)=>[(1-k)*(1-k)*a[0]+2*(1-k)*k*c[0]+k*k*b[0],(1-k)*(1-k)*a[1]+2*(1-k)*k*c[1]+k*k*b[1]];
+const kf=(t,pts)=>{if(t<=pts[0][0])return pts[0][1];for(let i=1;i<pts.length;i++)if(t<=pts[i][0])return lerp(pts[i-1][1],pts[i][1],ease.io(pr(t,pts[i-1][0],pts[i][0])));return pts[pts.length-1][1]};
+
+/* ---------- svg helpers ---------- */
+const G=(p,a)=>S('g',a,p);
+const rect=(p,x,y,w,h,r,f,a)=>S('rect',Object.assign({x:x,y:y,width:w,height:h,rx:r,fill:f},a),p);
+const disc=(p,x,y,r,f,a)=>S('circle',Object.assign({cx:x,cy:y,r:r,fill:f},a),p);
+const path=(p,d,a)=>S('path',Object.assign({d:d},a),p);
+const say=(p,x,y,s,col,size,a)=>T(p,x,y,s,Object.assign({fill:col,'text-anchor':'middle',style:'font-size:'+size+'px;font-weight:700'},a));
+const put=(g,x,y,s,r)=>g.setAttribute('transform','translate('+x.toFixed(1)+' '+y.toFixed(1)+')'+(r?' rotate('+r.toFixed(1)+')':'')+(s!=null&&s!==1?' scale('+s.toFixed(3)+')':''));
+const fade=(g,a)=>g.setAttribute('opacity',a<.003?0:a>.997?1:a.toFixed(3));
+const dots=(p,d)=>path(p,d,{fill:'none',stroke:C.sky,'stroke-width':2.8,'stroke-dasharray':'.1 8','stroke-linecap':'round'});
+const scrawl=(p,d,col,w)=>path(p,d,{fill:'none',stroke:col,'stroke-width':w,'stroke-linecap':'round','stroke-linejoin':'round',pathLength:1,'stroke-dasharray':'1 1','stroke-dashoffset':1,opacity:0});
+const trace=(el,k)=>{el.setAttribute('stroke-dashoffset',(1-k).toFixed(3));el.setAttribute('opacity',k>0?1:0)};   /* draws a scrawl, k from 0 to 1 */
+const ring=(el,k,r0,r1,a0)=>{if(k<=0||k>=1){fade(el,0);return}el.setAttribute('r',lerp(r0,r1,ease.out(k)).toFixed(1));fade(el,a0*(1-k))};   /* an expanding, fading ripple */
+
+/* ---------- parts the drawings are made of ---------- */
+function mark(p,h){   /* the four-colour logo mark, copied from the geometry of the hero on this slide */
+  const g=G(p),m=G(g,{transform:'scale('+(h/69.3).toFixed(4)+') translate(-31.7 -34.65)'});
+  document.querySelectorAll('.hero .markg path').forEach(e=>S('path',{d:e.getAttribute('d'),fill:e.getAttribute('fill')},m));
+  return g}
+function bank(p){   /* origin: bottom centre */
+  const g=G(p);
+  rect(g,-42,-8,84,8,3,C.blue);rect(g,-36,-14,72,6,2,C.web);
+  [-27,-9,9,27].forEach(x=>rect(g,x-4.5,-46,9,32,3,'#fff',{stroke:RING,'stroke-width':1}));
+  rect(g,-38,-52,76,6,2,C.web);path(g,'M-43 -52L0 -77L43 -52Z',{fill:C.blue,stroke:C.blue,'stroke-width':3,'stroke-linejoin':'round'});disc(g,0,-60,4.5,C.gold);
+  return g}
+function person(p,col){   /* origin: bottom centre */
+  const g=G(p);path(g,'M-30 0C-30 -22 -17 -33 0 -33C17 -33 30 -22 30 0Z',{fill:col});disc(g,0,-52,15,col);return g}
+function platform(p){   /* the trusted third party: a tile with the logo mark; origin: centre */
+  const g=G(p);rect(g,-38,-31,76,76,22,SHADE);rect(g,-38,-38,76,76,22,'#fff',{stroke:RING,'stroke-width':1.5});mark(g,44);return g}
+function seal(p,r){   /* gold certification seal with a check */
+  const g=G(p),a=[];
+  for(let i=0;i<24;i++){const q=i*Math.PI/12,k=i%2?.86:1;a.push((r*k*Math.cos(q)).toFixed(1)+','+(r*k*Math.sin(q)).toFixed(1))}
+  S('polygon',{points:a.join(' '),fill:C.gold,stroke:C.gold,'stroke-width':1,'stroke-linejoin':'round'},g);
+  disc(g,0,0,r*.7,'#FDE3A6');
+  path(g,'M'+(-r*.32)+' '+(r*.02)+'L'+(-r*.08)+' '+(r*.27)+'L'+(r*.34)+' '+(-r*.22),{fill:'none',stroke:C.ink,'stroke-width':r*.17,'stroke-linecap':'round','stroke-linejoin':'round'});
+  return g}
+function sheet(p,w,h){   /* a page: shadow and white card, origin at its centre */
+  const g=G(p);rect(g,-w/2,-h/2+5,w,h,8,SHADE);rect(g,-w/2,-h/2,w,h,8,'#fff',{stroke:RING,'stroke-width':1.4});return g}
+function envelope(p){   /* origin: centre; set(open 0..1, seal scale) */
+  const g=G(p),back=G(g,{transform:'translate(0 -16)'}),letter=G(g);
+  path(back,'M-21.5 0L0 -17L21.5 0Z',{fill:'#EAF2FB',stroke:C.web,'stroke-width':2.4,'stroke-linejoin':'round'});
+  rect(letter,-17,-22,34,28,3,'#fff',{stroke:C.sky,'stroke-width':1.6});rect(letter,-11,-15,22,3.6,1.8,C.ice);rect(letter,-11,-8,15,3.6,1.8,C.ice);
+  rect(g,-23,-16,46,32,6,'#fff',{stroke:C.web,'stroke-width':2.4});
+  const front=G(g,{transform:'translate(0 -16)'}),sl=G(g);
+  path(front,'M-21.5 1.2L0 17L21.5 1.2Z',{fill:C.ice,stroke:C.web,'stroke-width':2.4,'stroke-linejoin':'round'});
+  seal(sl,9);
+  return{g:g,set:(o,s)=>{
+    front.setAttribute('transform','translate(0 -16) scale(1 '+(o<.5?1-2*o:0).toFixed(3)+')');
+    back.setAttribute('transform','translate(0 -16) scale(1 '+(o<.5?0:2*o-1).toFixed(3)+')');
+    put(letter,0,8-24*pr(o,.45,1));fade(letter,o>.05?1:0);put(sl,17,12,s)}}}
+function paper(p){   /* a paper letter with a red band, origin: centre */
+  const g=G(p);rect(g,-23,-16,46,32,4,'#fff',{stroke:RING,'stroke-width':1.4});path(g,'M-23 -7V-12Q-23 -16 -19 -16H19Q23 -16 23 -12V-7Z',{fill:C.red});
+  rect(g,-15,-1,30,4,2,C.ice);rect(g,-15,7,20,4,2,C.ice);return g}
+function chip(p,x,y,w,s){   /* a step of the proof: pending until set(1), then ticked */
+  const g=G(p,{transform:'translate('+x+' '+y+')'}),off=G(g),on=G(g);
+  rect(off,0,0,w,30,15,'#fff',{stroke:RING,'stroke-width':1.2});disc(off,16,15,8.5,'none',{stroke:C.sky,'stroke-width':2});
+  rect(on,0,0,w,30,15,C.tealT,{stroke:'rgba(0,113,103,.3)','stroke-width':1.2});disc(on,16,15,9,C.teal);
+  const tk=scrawl(G(on,{transform:'translate(16 15)'}),'M-4 .5L-1 3.6L4.4 -2.8','#fff',2.2),tx=T(g,30,20,s,{style:'font-size:14px;font-weight:700',fill:C.slate});
+  return{g:g,set:k=>{fade(on,k);fade(off,1-k);trace(tk,pr(k,.2,1));tx.setAttribute('fill',k>.5?C.ink:C.slate)}}}
+function pill(p,x,y,w,s,fill,col){   /* a label; g sits at its centre (cx, cy) so it can pop from there */
+  const g=G(p,{transform:'translate('+(x+w/2)+' '+(y+14)+')'}),i=G(g);rect(i,-w/2,-14,w,28,14,fill,{stroke:'rgba(105,148,212,.3)','stroke-width':1.1});
+  say(i,0,5,s,col,13.5);return{g:g,cx:x+w/2,cy:y+14}}
+function badge(p,r){   /* a round teal tick, origin: centre */
+  const g=G(p);disc(g,0,0,r,C.teal,{stroke:'#fff','stroke-width':2});
+  const k=r/10;path(g,'M'+(-4*k)+' '+(.4*k)+'L'+(-1*k)+' '+(3.4*k)+'L'+(4.6*k)+' '+(-3*k),{fill:'none',stroke:'#fff','stroke-width':2.2*k,'stroke-linecap':'round','stroke-linejoin':'round'});return g}
+function phone(p){   /* origin: centre; the chat bubble b grows into place, then two ticks */
+  const g=G(p);
+  rect(g,-34,-54,68,120,15,SHADE);rect(g,-34,-60,68,120,15,C.ink);rect(g,-29,-54,58,108,11,'#F7FAFE');rect(g,-8,-51,16,4.5,2.25,C.ink);
+  disc(g,-16,-33,5.5,C.sky);rect(g,-7,-36,26,6,3,C.ice);
+  const b=G(g),lines=G(b);
+  rect(b,-24,-17,50,34,10,C.web);path(b,'M-18 14L-26 25L-9 16Z',{fill:C.web});
+  rect(lines,-16,-9,32,5,2.5,'#fff');rect(lines,-16,1,20,5,2.5,'#fff');
+  const t1=scrawl(g,'M10 32L12.8 35L17.8 29',C.teal,2.3),t2=scrawl(g,'M15.4 32L18.2 35L23.2 29',C.teal,2.3);
+  return{g:g,b:b,lines:lines,t1:t1,t2:t2}}
+function pen(p){   /* the tip is the origin; it leans to the right */
+  const g=G(p),r=G(g,{transform:'rotate(34)'});
+  rect(r,-5,-54,10,42,4,C.blue);rect(r,-5,-30,10,5,0,C.gold);rect(r,-5,-60,10,9,4,C.web);path(r,'M-5 -13L5 -13L0 0Z',{fill:C.ink,stroke:C.ink,'stroke-width':1,'stroke-linejoin':'round'});
+  return g}
+function clock(p){   /* origin: centre */
+  const g=G(p);disc(g,0,0,13,'#fff',{stroke:RING,'stroke-width':1.5});
+  const h=path(g,'M0 0V-6.5',{stroke:C.ink,'stroke-width':2.2,'stroke-linecap':'round'}),m=path(g,'M0 0V-9.5',{stroke:C.web,'stroke-width':1.8,'stroke-linecap':'round'});disc(g,0,0,1.6,C.ink);
+  return{g:g,set:(a,b)=>{h.setAttribute('transform','rotate('+a.toFixed(1)+')');m.setAttribute('transform','rotate('+b.toFixed(1)+')')}}}
+function tower(p,col){   /* a carrier node: coloured disc with an antenna, origin: centre */
+  const g=G(p),ink=col===C.gold?C.ink:'#fff';
+  rect(g,-23,-17,46,46,23,SHADE);disc(g,0,0,23,col);
+  path(g,'M0 -1L-6 13M0 -1L6 13M-3 8H3',{fill:'none',stroke:ink,'stroke-width':2.4,'stroke-linecap':'round','stroke-linejoin':'round'});disc(g,0,-5,2.8,ink);
+  path(g,'M-8 -10A11 11 0 0 0 -8 0M8 -10A11 11 0 0 1 8 0',{fill:'none',stroke:ink,'stroke-width':2.2,'stroke-linecap':'round'});
+  return g}
+
+/* ---------- 1. certified e-mail: the platform sits in the middle and keeps the proof ---------- */
+function mail(g){
+  const R1=[[112,104],[172,40],[212,106]],R2=[[298,106],[350,40],[392,96]],A=[62,154],N=[255,114],B=[448,154];
+  const rt=[R1,R2].map(r=>dots(g,'M'+r[0]+'Q'+r[1]+' '+r[2]));
+  const bk=G(g),nd=G(g),pe=G(g);bank(bk);platform(nd);person(pe,C.teal);
+  const lb=[say(g,A[0],178,'Sender',C.slate,13.5),say(g,N[0],178,'Lleida.net',C.ink,14),say(g,B[0],178,'Recipient',C.slate,13.5)];
+  const ch=[chip(g,88,196,88,'Sent'),chip(g,188,196,118,'Delivered'),chip(g,318,196,104,'Opened')];
+  const rg=[disc(g,N[0],N[1],40,'none',{stroke:C.web,'stroke-width':3}),disc(g,R2[2][0],R2[2][1],16,'none',{stroke:C.teal,'stroke-width':2.4})];
+  const ev=envelope(g);
+  const ce=G(g);sheet(ce,48,60);rect(ce,-16,-22,22,6,3,C.web);rect(ce,-16,-10,32,4,2,C.ice);rect(ce,-16,-1,32,4,2,C.ice);rect(ce,-16,8,18,4,2,C.ice);
+  const cs=G(ce);seal(cs,12);
+  return t=>{
+    [[bk,A,.05],[nd,N,.15],[pe,B,.25]].forEach(a=>{
+      const k=ease.pop(pr(t,a[2],a[2]+.5)),b=a[0]===nd?1+.09*Math.sin(Math.PI*pr(t,2,2.5)):1;
+      put(a[0],a[1][0],a[1][1]+(1-k)*14,(.7+.3*k)*b);fade(a[0],k*3)});
+    rt.forEach(r=>fade(r,pr(t,.3,.8)));lb.forEach(l=>fade(l,pr(t,.5,.9)));ch.forEach(c=>fade(c.g,pr(t,.6,1)));
+    let p=R1[0],s=1,a=1,r=0;                                            /* the envelope: out of the sender, through the platform, to the recipient */
+    if(t<1.15){const k=pr(t,.85,1.15);s=ease.pop(k);a=k*3}
+    else if(t<2){const k=ease.io(pr(t,1.15,2));p=bez(R1[0],R1[1],R1[2],k);r=lerp(-14,10,k)}
+    else if(t<2.35){const k=ease.io(pr(t,2,2.35));p=[lerp(R1[2][0],N[0],k),lerp(R1[2][1],N[1],k)];s=1-.7*k;a=1-k;r=10}
+    else if(t<2.75){const k=ease.out(pr(t,2.45,2.75));p=[lerp(N[0],R2[0][0],k),lerp(N[1],R2[0][1],k)];s=.3+.7*k;a=k}
+    else if(t<3.6){const k=ease.io(pr(t,2.75,3.6));p=bez(R2[0],R2[1],R2[2],k);r=lerp(-10,0,k)}
+    else p=R2[2];
+    put(ev.g,p[0],p[1],s,r);fade(ev.g,a);ev.set(ease.io(pr(t,3.7,4.15)),ease.pop(pr(t,2.65,3)));
+    ch[0].set(pr(t,2.05,2.4));ch[1].set(pr(t,3.65,4));ch[2].set(pr(t,4.15,4.5));
+    ring(rg[0],pr(t,2,2.8),40,70,.55);ring(rg[1],pr(t,3.6,4.25),16,36,.5);
+    const kc=ease.out(pr(t,4.4,5));put(ce,N[0],lerp(N[1],40,kc),.4+.6*kc);fade(ce,kc*2);put(cs,14,19,ease.pop(pr(t,4.95,5.3)))}}
+
+/* ---------- 2. certified SMS: one send, three phones, each with its proof ---------- */
+function sms(g){
+  const X=[112,255,398],PY=134,HB=[255,38];
+  const lk=X.map(x=>dots(g,'M'+HB[0]+' '+(HB[1]+22)+'Q'+(HB[0]+x)/2+' '+(HB[1]+34)+' '+x+' '+(PY-62)));
+  const hb=G(g);platform(hb);
+  const rgs=X.map(()=>disc(g,HB[0],HB[1],24,'none',{stroke:C.web,'stroke-width':2.5}));
+  const ph=X.map(()=>phone(g));
+  const fb=X.map(()=>{const b=G(g);rect(b,-13,-9,26,18,6,C.web);path(b,'M-8 8L-12 15L-2 9Z',{fill:C.web});return b});
+  const tm=X.map((x,i)=>{const w=G(g),e=S('text',{x:x,y:PY+86,'text-anchor':'middle',style:'font-size:12.5px;font-weight:700'},w),a=S('tspan',{fill:C.teal},e),b=S('tspan',{fill:C.slate},e);a.textContent='Delivered ';b.textContent=['10:42:03','10:42:03','10:42:04'][i];return w});
+  const sl=G(g);seal(sl,17);
+  return t=>{
+    const k0=ease.pop(pr(t,.05,.55));put(hb,HB[0],HB[1]+(1-k0)*10,.6*(.7+.3*k0));fade(hb,k0*3);lk.forEach(l=>fade(l,pr(t,.4,.9)));
+    X.forEach((x,i)=>{
+      const e=.85+.28*i,land=e+.75,k=pr(t,e,land),pk=ease.pop(pr(t,.15+.1*i,.65+.1*i)),bob=Math.sin(t*2.4+i*1.7)*2.2*pr(t,1,1.4);
+      put(ph[i].g,x,PY+(1-pk)*16+bob,.8+.2*pk);fade(ph[i].g,pk*3);
+      const q=bez(HB,[(HB[0]+x)/2,58],[x-2,PY-7+bob],ease.io(k));
+      put(fb[i],q[0],q[1],lerp(.5,1.92,ease.io(k)));fade(fb[i],pr(t,e,e+.12)*(k<1?1:0));
+      const landed=t>=land;put(ph[i].b,-2,-7,1);fade(ph[i].b,landed?1:0);fade(ph[i].lines,pr(t,land,land+.25));
+      trace(ph[i].t1,pr(t,land+.35,land+.6));trace(ph[i].t2,pr(t,land+.6,land+.85));
+      ring(rgs[i],pr(t,e,e+.7),24,52,.5);fade(tm[i],pr(t,land+.85,land+1.15));tm[i].setAttribute('transform','translate(0 '+bob.toFixed(1)+')')});
+    const ks=ease.pop(pr(t,3.1,3.45));put(sl,X[1]+30,PY-50,ks,-14*(1-ks));fade(sl,ks*3)}}
+
+/* ---------- 3. e-signature: two people sign, the contract is sealed and locked ---------- */
+function sign(g){
+  const D=[255,125],A=[62,150],B=[448,150];
+  const arcs=['M90 96Q138 44 188 68','M420 96Q372 44 322 68'].map(d=>dots(g,d));
+  const pa=G(g),pb=G(g);person(pa,C.teal);person(pb,C.gold);
+  const lb=[say(g,A[0],172,'Signer',C.slate,13.5),say(g,B[0],172,'Signer',C.slate,13.5)];
+  const dc=G(g);sheet(dc,132,206);put(dc,D[0],D[1]);
+  rect(dc,-50,-88,56,9,4.5,C.web);
+  const ls=[[-68,100],[-56,100],[-44,88],[-32,100],[-20,60],[-2,100],[10,92],[22,64]].map(a=>rect(dc,-50,a[0],a[1],5,2.5,C.ice));
+  rect(dc,-52,64,44,2.4,1.2,C.sky);rect(dc,8,64,44,2.4,1.2,C.sky);
+  const sA=scrawl(dc,'M-50 58C-46 36 -38 36 -40 52C-41 62 -31 38 -27 44C-23 50 -28 62 -20 52C-16 47 -12 52 -9 56',C.blue,2.6),sB=scrawl(dc,'M10 56C14 42 22 34 26 42C30 50 18 64 28 55C34 49 36 40 42 44C47 48 41 58 51 53',C.blue,2.6);
+  const bd=[badge(g,10),badge(g,10)];
+  const ss=G(g);seal(ss,18);
+  const lk=G(g),shk=G(lk);path(shk,'M-6 -2V-7A6 6 0 0 1 6 -7V-2',{fill:'none',stroke:C.ink,'stroke-width':2.8,'stroke-linecap':'round'});rect(lk,-10,-2,20,16,4,C.gold);disc(lk,0,5.5,2.2,C.ink);rect(lk,-.9,6,1.8,4,.9,C.ink);
+  const pn=pen(g);
+  let LA,LB;
+  return t=>{
+    if(LA==null){LA=sA.getTotalLength();LB=sB.getTotalLength()}
+    [[pa,A,.05,1.1,2.6],[pb,B,.12,2.9,4.4]].forEach(a=>{const k=ease.pop(pr(t,a[2],a[2]+.5)),w=1+.05*Math.sin(Math.PI*pr(t,a[3],a[4]));put(a[0],a[1][0],a[1][1]+(1-k)*14,(.7+.3*k)*w);fade(a[0],k*3)});
+    lb.forEach(l=>fade(l,pr(t,.5,.9)));
+    const kd=ease.pop(pr(t,.1,.6));put(dc,D[0],D[1]+(1-kd)*12,.9+.1*kd);fade(dc,kd*3);
+    ls.forEach((l,i)=>fade(l,pr(t,.3+i*.07,.5+i*.07)));
+    const ka=ease.io(pr(t,1.3,2.25)),kb=ease.io(pr(t,3.1,4.05));trace(sA,ka);trace(sB,kb);
+    arcs[0].setAttribute('stroke-dashoffset',(-t*16).toFixed(1));arcs[1].setAttribute('stroke-dashoffset',(t*16).toFixed(1));
+    fade(arcs[0],pr(t,.9,1.2)*(1-pr(t,2.4,2.7)));fade(arcs[1],pr(t,2.7,3)*(1-pr(t,4.2,4.5)));
+    let q,pk,lift;                                                      /* the pen follows the stroke being drawn */
+    if(t<2.65){q=sA.getPointAtLength(LA*ka);pk=pr(t,1.05,1.3)*(1-pr(t,2.25,2.55));lift=pr(t,2.25,2.55)}
+    else{q=sB.getPointAtLength(LB*kb);pk=pr(t,2.85,3.1)*(1-pr(t,4.1,4.4));lift=pr(t,4.1,4.4)}
+    put(pn,D[0]+q.x+12*lift,D[1]+q.y-14*lift,.9+.1*pk);fade(pn,pk);
+    bd.forEach((b,i)=>{const k=ease.pop(pr(t,i?4.15:2.35,i?4.5:2.7));put(b,(i?B[0]:A[0])+26,A[1]-78,k);fade(b,k*3)});
+    const ks=ease.pop(pr(t,4.45,4.8));put(ss,D[0]+46,D[1]+90,ks,-16*(1-ks));fade(ss,ks*3);
+    const kl=ease.pop(pr(t,.45,.8));put(lk,D[0]+46,D[1]-88,kl);fade(lk,kl*3);
+    const kc=ease.out(pr(t,4.95,5.3));shk.setAttribute('transform','translate(0 '+(-5*(1-kc)).toFixed(1)+') rotate('+(-30*(1-kc)).toFixed(1)+' -6 -2)')}}
+
+/* ---------- 4. court-ready evidence: the certificate tips the scales, the gavel falls ---------- */
+function court(g){
+  const PV=[218,72],HL=96,CH=60,LT=1.9;
+  rect(g,214,72,8,126,4,C.blue);rect(g,178,192,80,12,6,C.blue);rect(g,196,182,44,12,5,C.web);
+  const bm=G(g),pn=[G(g),G(g)];
+  rect(bm,-HL,-4,2*HL,8,4,C.web);disc(bm,-HL,0,6,C.blue);disc(bm,HL,0,6,C.blue);
+  pn.forEach(p=>{path(p,'M0 0L-36 '+CH+'M0 0L36 '+CH,{fill:'none',stroke:C.ink,'stroke-width':1.6,opacity:.5,'stroke-linecap':'round'});path(p,'M-44 '+CH+'Q0 '+(CH+36)+' 44 '+CH+'Z',{fill:C.blue});rect(p,-46,CH-3,92,6,3,C.web)});
+  const pv=disc(g,PV[0],PV[1],9,C.gold);
+  const ev=G(g);sheet(ev,40,52);rect(ev,-13,-18,16,4.5,2.2,C.web);rect(ev,-13,-9,26,4,2,C.ice);rect(ev,-13,0,26,4,2,C.ice);const es=G(ev);seal(es,11);put(es,12,16);
+  rect(g,366,198,68,14,7,C.blue);
+  const imp=path(g,'M384 192L376 185M400 189V178M416 192L424 185',{fill:'none',stroke:C.gold,'stroke-width':3.2,'stroke-linecap':'round'});
+  const gv=G(g);rect(gv,-64,-4,64,8,4,C.web);rect(gv,-86,-22,24,44,7,C.ink);rect(gv,-86,-5,24,10,0,C.gold);
+  const bg=G(g);rect(bg,-52,-15,104,30,15,C.tealT,{stroke:'rgba(0,113,103,.3)','stroke-width':1.2});disc(bg,-34,0,9,C.teal);
+  path(bg,'M-38 .5L-35 3.6L-29.6 -2.8',{fill:'none',stroke:'#fff','stroke-width':2.2,'stroke-linecap':'round','stroke-linejoin':'round'});T(bg,-20,5,'Accepted',{style:'font-size:14px;font-weight:700',fill:C.ink});
+  return t=>{
+    const k0=ease.pop(pr(t,.05,.55));fade(pv,k0*3);
+    const th=Math.sin(t*2.1)*1.3*(1-pr(t,LT-.2,LT+.4))+11*ease.swing(pr(t,LT,LT+1.7)),c=Math.cos(th*Math.PI/180),s=Math.sin(th*Math.PI/180);
+    const lx=PV[0]-HL*c,ly=PV[1]+HL*s,rx=PV[0]+HL*c,ry=PV[1]-HL*s;
+    put(bm,PV[0],PV[1]+(1-k0)*10,1,-th);fade(bm,k0*3);put(pn[0],lx,ly+(1-k0)*10);put(pn[1],rx,ry+(1-k0)*10);pn.forEach(p=>fade(p,k0*3));
+    const tg=[lx,ly+CH-29],kf1=ease.io(pr(t,.8,LT)),p=kf1<1?bez([36,30],[100,6],tg,kf1):tg;
+    put(ev,p[0],p[1],1,lerp(-18,0,kf1));fade(ev,pr(t,.7,.95));
+    const ang=kf(t,[[0,34],[3.15,34],[3.32,0],[3.5,14],[3.66,0]]),kg=ease.pop(pr(t,.3,.8));
+    put(gv,472,176+(1-kg)*10,1,ang);fade(gv,kg*3);
+    fade(imp,Math.max(t>=3.32?1-pr(t,3.32,3.55):0,t>=3.66?1-pr(t,3.66,3.9):0));   /* sparks at each blow */
+    const kb=ease.pop(pr(t,3.4,3.75));put(bg,412,76,kb);fade(bg,kb*3)}}
+
+/* ---------- 5. faster than a burofax: a paper letter and a certified e-mail set off together ---------- */
+function burofax(g){
+  const X0=170,X1=452,Y1=88,Y2=186,GO='#8A5A00';
+  [Y1,Y2].forEach(y=>{dots(g,'M'+X0+' '+y+'H'+X1);disc(g,X1+18,y,10,'#fff',{stroke:RING,'stroke-width':1.5})});
+  const l1=pill(g,16,Y1-14,118,'Paper burofax','#fff',C.slate),l2=pill(g,16,Y2-14,126,'Certified e-mail','#fff',C.blue);
+  const r1=[pill(g,396,Y1-72,74,'Days',C.redT,C.red),pill(g,336,Y1-72,50,'€€€',C.goldT,GO)],r2=[pill(g,384,Y2-72,86,'Seconds',C.tealT,C.teal),pill(g,336,Y2-72,38,'€',C.goldT,GO)];
+  const pa=paper(g),ev=envelope(g),c1=clock(g),c2=clock(g),bd=badge(g,11);
+  const wind=[0,1,2].map(i=>path(g,'M0 '+(i*8-8)+'h'+(i*5-26),{stroke:C.sky,'stroke-width':3,'stroke-linecap':'round'}));
+  const pop=(l,k)=>{put(l.g,l.cx,l.cy,k);fade(l.g,k*3)};
+  return t=>{
+    [l1,l2].forEach(l=>fade(l.g,pr(t,.2,.6)));
+    const kp=ease.pop(pr(t,.45,.85)),x1=lerp(X0+12,306,ease.io(pr(t,.8,5.2)));   /* the letter crawls and never gets there */
+    put(pa,x1,Y1,kp);fade(pa,kp*3);put(c1.g,x1,Y1-34,kp);fade(c1.g,kp*3);c1.set(t*330,t*27.5);
+    const x2=lerp(X0+12,X1-10,ease.zip(pr(t,.85,1.7))),sp=pr(t,.85,1.7);          /* the e-mail is there in a blink */
+    put(ev.g,x2,Y2,kp);fade(ev.g,kp*3);ev.set(ease.io(pr(t,1.8,2.2)),0);
+    put(c2.g,x2,Y2-34,kp);fade(c2.g,kp*3*(1-pr(t,1.7,2)));c2.set(sp*720,sp*60);
+    wind.forEach(w=>{put(w,x2-30,Y2);fade(w,Math.sin(Math.PI*pr(t,.85,1.5)))});
+    const kb=ease.pop(pr(t,1.85,2.2));put(bd,X1+18,Y2,kb);fade(bd,kb*3);
+    r2.forEach(l=>pop(l,ease.pop(pr(t,1.9,2.25))));r1.forEach(l=>pop(l,ease.pop(pr(t,2.5,2.85))))}}
+
+/* ---------- 6. telecom carriers: messages and calls cross the platform between operators ---------- */
+function carriers(g){
+  const LN=[[62,52],[62,125],[62,198]],RN=[[448,52],[448,125],[448,198]],HB=[255,125];
+  const COL=[[C.teal,C.gold,C.red],[C.blue,C.teal,C.gold]];
+  const link=(s,i)=>{const n=s?RN[i]:LN[i],d=s?-1:1;return[[n[0]+d*24,n[1]],[n[0]+d*104,n[1]],[HB[0]-d*38,HB[1]]]};   /* node edge, bend, platform edge */
+  const gl=G(g,{fill:'none',stroke:C.sky,'stroke-width':1.4,opacity:.75});
+  disc(gl,HB[0],HB[1],104,'none',{'stroke-dasharray':'2 7','stroke-linecap':'round'});
+  S('ellipse',{cx:HB[0],cy:HB[1],rx:104,ry:30},gl);const m1=S('ellipse',{cx:HB[0],cy:HB[1],rx:50,ry:104},gl),m2=S('ellipse',{cx:HB[0],cy:HB[1],rx:50,ry:104},gl);
+  [0,1].forEach(s=>[0,1,2].forEach(i=>{const l=link(s,i);dots(g,'M'+l[0]+'Q'+l[1]+' '+l[2])}));
+  const nd=[0,1].map(s=>[0,1,2].map(i=>{const n=G(g);tower(n,COL[s][i]);return n}));
+  const nr=[0,1].map(()=>[0,1,2].map(()=>disc(g,0,0,22,'none',{stroke:C.web,'stroke-width':2.5})));
+  const hb=G(g);platform(hb);
+  const PK=[[0,0,1,.55,'m'],[1,2,1,.85,'c'],[0,2,0,1.2,'m'],[1,0,2,1.85,'m'],[0,1,2,2.25,'c'],[0,0,2,2.65,'m'],[1,1,0,3.05,'m'],[0,2,1,3.45,'c'],[1,2,1,3.85,'m'],[0,1,0,4.2,'m']].map(a=>{
+    const p=G(g);let bars=null;
+    if(a[4]==='m'){rect(p,-13,-9,26,18,6,C.web);path(p,'M-8 8L-12 15L-2 9Z',{fill:C.web});rect(p,-7,-3.5,14,3,1.5,'#fff');rect(p,-7,2,9,3,1.5,'#fff')}
+    else{disc(p,0,0,11.5,C.teal);bars=[0,1,2,3,4].map(i=>rect(p,-6.6+i*3.3,-2,2.2,4,1.1,'#fff'))}
+    return{g:p,fs:a[0],fi:a[1],ti:a[2],t0:a[3],bars:bars}});
+  return t=>{
+    [0,1].forEach(s=>[0,1,2].forEach(i=>{const d=.05+(s*3+i)*.07,k=ease.pop(pr(t,d,d+.5)),n=s?RN[i]:LN[i];put(nd[s][i],n[0],n[1]+(1-k)*10,.7+.3*k);fade(nd[s][i],k*3)}));
+    const kh=ease.pop(pr(t,.1,.6));let pulse=0;
+    PK.forEach(a=>{const d=t-a.t0-.9;if(d>0&&d<.5)pulse+=Math.sin(Math.PI*d/.5)*.07});
+    put(hb,HB[0],HB[1]+(1-kh)*8,(.7+.3*kh)*(1+pulse));fade(hb,kh*3);
+    const w=t*.55;m1.setAttribute('rx',(104*Math.abs(Math.cos(w))).toFixed(1));m2.setAttribute('rx',(104*Math.abs(Math.cos(w+Math.PI/2))).toFixed(1));fade(gl,pr(t,.3,.8)*.75);
+    nr.forEach((r,s)=>r.forEach((e,i)=>{let k=0;PK.forEach(a=>{const d=(t-a.t0-1.8)/.6;if(a.fs!==s&&a.ti===i&&d>0&&d<1)k=d});const n=s?RN[i]:LN[i];e.setAttribute('cx',n[0]);e.setAttribute('cy',n[1]);ring(e,k,22,40,.55)}));
+    PK.forEach(a=>{
+      const u=t-a.t0;if(u<0||u>1.8){fade(a.g,0);return}
+      const l=u<.9?link(a.fs,a.fi):link(1-a.fs,a.ti),k=ease.io((u<.9?u:u-.9)/.9),q=u<.9?bez(l[0],l[1],l[2],k):bez(l[2],l[1],l[0],k);
+      put(a.g,q[0],q[1],.85+.15*Math.sin(Math.PI*(u<.9?k:1-k)));
+      if(a.bars)a.bars.forEach((r,i)=>{const h=3+(i%2?7:10)*(.55+.45*Math.sin(t*11+i*1.7));r.setAttribute('height',h.toFixed(1));r.setAttribute('y',(-h/2).toFixed(1))});fade(a.g,Math.min(pr(u,0,.12),1-pr(u,1.68,1.8)))})}}
+
+/* ---------- the drawings, in order ---------- */
+const SPEC=[
+  {t:'Certified e-mail',d:'Proof that a message was sent, delivered and opened.',ac:C.blue,dur:6.8,poster:5.6,build:mail},
+  {t:'Certified SMS',d:'Reaches any mobile phone and keeps proof of delivery.',ac:C.teal,dur:5.1,poster:4.5,build:sms},
+  {t:'E-signature',d:'Contracts signed online and sealed as evidence.',ac:C.gold,dur:6.4,poster:5.7,build:sign},
+  {t:'Court-ready evidence',d:'Proof that courts accept. The MASC law now asks for a negotiation attempt first.',ac:C.red,dur:5.2,poster:4.7,build:court},
+  {t:'Faster than a burofax',d:'Replaces paper registered mail at a fraction of the time and cost.',ac:C.blue,dur:5.6,poster:4.8,build:burofax},
+  {t:'Telecom carriers',d:'Routes international SMS and voice traffic between operators.',ac:C.teal,dur:6.2,poster:5.5,build:carriers}
+];
+
+/* ---------- one player per panel; each one runs only while its own slide is on screen ---------- */
+function player(host){
+  const slide=host.closest('.slide'),svg=host.querySelector('.lp-sv'),txt=host.querySelector('.lp-t'),pg=host.querySelector('.lp-pg');
+  const SC=SPEC.map(s=>Object.assign({},s)),ST=[];let P=0;
+  SC.forEach((s,i)=>{
+    ST.push(P);P+=s.dur-OV;
+    s.g=G(svg);s.draw=s.build(s.g);
+    s.c=document.createElement('div');s.c.className='lp-c';s.c.innerHTML='<h3></h3><p></p>';s.c.firstChild.textContent=s.t;s.c.lastChild.textContent=s.d;txt.appendChild(s.c);
+    s.b=document.createElement('button');s.b.type='button';s.b.setAttribute('aria-label',s.t);s.b.style.setProperty('--ac',s.ac);pg.appendChild(s.b);
+    s.b.addEventListener('click',e=>{e.stopPropagation();jump(i)});
+  });
+
+  let T0=0,raf=0,last=0,live=false,now=-1,lap=0,hold=0;   /* lap: 0 until the loop first wraps round, so the end of the last drawing is not shown before anything has played */
+  function dot(i){
+    if(i===now)return;now=i;
+    SC.forEach((s,j)=>{if(j===i)s.b.setAttribute('aria-current','true');else{s.b.removeAttribute('aria-current');s.b.style.setProperty('--p',0)}})}
+  function render(T){   /* draw the loop at T seconds: the drawings that are on, with their fade and slide, and the dot of the leading one */
+    let lead=0;
+    SC.forEach((s,i)=>{
+      let l=T-ST[i],on;
+      if(l<0){l+=P;on=lap>0&&l<s.dur}else on=l<s.dur;   /* the last drawing is still fading out at the start of the next lap */
+      if(on!==s.on){s.on=on;s.g.setAttribute('display',on?'inline':'none');s.c.style.visibility=on?'visible':'hidden'}
+      if(!on)return;
+      const fi=pr(l,0,OV),fo=pr(l,s.dur-OV,s.dur),dx=(1-ease.out(fi))*30-fo*30;
+      s.g.setAttribute('transform','translate('+dx.toFixed(1)+' 0)');fade(s.g,ease.out(pr(fi,.3,1))*(1-pr(fo,0,.7)));   /* drawings cross quickly */
+      const ca=pr(fi,.5,1)*(1-pr(fo,0,.5));s.c.style.opacity=ca.toFixed(3);s.c.style.transform='translateX('+(dx*.5).toFixed(1)+'px)';   /* captions leave first, then the next arrives */
+      s.draw(l);
+      if(fi>=.5&&fo<.5){lead=i;s.b.style.setProperty('--p',cl(l/(s.dur-OV),0,1).toFixed(3))}
+    });
+    dot(lead)}
+  function still(i){   /* one finished frame, no motion */
+    SC.forEach((s,j)=>{const on=j===i;s.on=on;s.g.setAttribute('display',on?'inline':'none');s.g.setAttribute('transform','translate(0 0)');fade(s.g,1);
+      s.c.style.cssText='opacity:1;transform:none;visibility:'+(on?'visible':'hidden');if(on)s.draw(s.poster)});
+    dot(i);SC[i].b.style.setProperty('--p',1)}
+  function tick(ts){
+    const dt=Math.min(.1,(ts-last)/1000);last=ts;
+    if(hold>0)hold-=dt;   /* the panel is still fading in */
+    else{T0+=dt;if(T0>=P){T0-=P;lap=1}render(T0)}
+    raf=requestAnimationFrame(tick)}
+  function start(){
+    if(live)return;live=true;
+    if(reduce.matches){still(0);return}
+    T0=0;lap=0;hold=.55;now=-1;SC.forEach(s=>s.b.style.setProperty('--p',0));render(0);last=performance.now();raf=requestAnimationFrame(tick)}
+  function stop(){live=false;cancelAnimationFrame(raf)}
+  function jump(i){
+    if(reduce.matches){still(i);return}
+    T0=ST[i]+.2;lap=0;hold=0;render(T0);last=performance.now()}
+
+  still(0);   /* a finished frame is always in the page: the presenter view copies the slide, and so does the PDF */
+  if(!/[?&]presenter\b/.test(location.search)){
+    const sync=()=>{slide.classList.contains('on')&&!slide.classList.contains('pre')?start():stop()};
+    new MutationObserver(sync).observe(slide,{attributes:true,attributeFilter:['class']});sync()}
+}
+hosts.forEach(player);
+})();
+
 /* ======================================================================================================================
    Audio of the speech (injected inside the deck IIFE by tools/build.py, in front of presenter.js; avInit() is called after it).
    - a player in the speaker notes (deck window and presenter view) with the audio of the slide that is on screen
